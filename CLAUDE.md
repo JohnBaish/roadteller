@@ -29,9 +29,8 @@ Read these first, in this order:
    the master copies; if they change, re-copy them and note it here.
 6. The baish.net overview, `design/overview/` in clockwheel.
 
-**No `SPEC.md` or `PLAN.md` yet:** John chooses among the options first
-(his order, November 9th 2026), then the spec and plan are written. Nothing
-gets built until he agrees them.
+**`SPEC.md` and `PLAN.md`** (drafted November 9th 2026, waiting for John
+to agree them and answer SPEC §13). Nothing gets built until he does.
 
 Key points:
 
@@ -68,6 +67,14 @@ Data notes:
   of the Great Britain rate in words and % (John, November 9th 2026).
 
 ## Log
+
+### 2026-11-09 — spec and plan drafted
+
+**John:** go ahead. `SPEC.md` (what's agreed, what's proposed, eight questions
+in §13) and `PLAN.md` (stages 0 to 6) written from the proposal, John's answers,
+the data tests and the five rounds on option B. Size checked for the circle's
+trend: 3,998,361 collisions from 2000 to 2025 in STATS19 (9,116,625 since
+1979). Docs only.
 
 ### 2026-11-09 — round 5: batch 4 answered
 
