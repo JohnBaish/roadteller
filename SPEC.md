@@ -6,7 +6,8 @@ Great Britain: how many people are hurt on the roads round here, who they are,
 when it happens, which roads, and how that compares, fairly, with elsewhere.
 
 Each part is marked **Agreed** (John has decided) or **Proposed** (Claude's
-suggestion, for John to agree). The numbered questions for John are in §13.
+suggestion, for John to agree). John answered the questions in §13 on
+November 9th 2026.
 
 Sources for this spec: the proposal
 (https://claude.ai/artifact/VqAyHmbhu7Aiv2n7W1z38D), John's answers to it, the
@@ -61,9 +62,9 @@ in the open data).
    `local_authority_highway`, which match DfT's traffic file. 205 in Great
    Britain have traffic figures for every year 2021 to 2025. (The districts in
    STATS19 don't match the traffic file, so aren't used.)
-2. **Circles (Agreed):** half a mile, one mile or two miles round the place.
-   **Proposed:** one mile by default, as in the proposal.
-3. **Proposed:** a postcode or place opens its circle, with a link to the whole
+2. **Circles (Agreed):** half a mile, one mile or two miles round the place,
+   one mile by default.
+3. **Agreed:** a postcode or place opens its circle, with a link to the whole
    council area it's in ("See all of West Berkshire"). A council area can also
    be chosen from a list, as Hindcaster's counties are.
 4. **Proposed:** a council area's region is its English region; in Scotland and
@@ -110,7 +111,7 @@ in the open data).
 6. **A circle has no rate of its own** (it has no traffic figure): it shows
    counts, plus a rate for each A-road stretch passing through it, and its
    council area's rate beside the count.
-7. **Proposed:** a rate is shown only where at least 10 collisions lie behind
+7. **Agreed:** a rate is shown only where at least 10 collisions lie behind
    it; below that, "too few to say". (Short stretches gave unsteady rates in
    the Reading test.)
 8. **Proposed:** each rate uses exact figures and is rounded only when shown
@@ -230,22 +231,20 @@ targets 44px; boxes 16px on touch screens; dark mode following the device.
    with"), beyond Great Britain and the region.
 3. Filtering by road user or by road (the proposal's optional inputs).
 
-## 13. Questions for John
+## 13. Questions for John (all answered November 9th 2026)
 
-1. **The 10-collision rule** (§5.7): show a rate only where at least 10
-   collisions lie behind it?
+1. **The 10-collision rule** (§5.7): yes.
 2. **Default circle:** one mile, with half a mile and two miles as buttons, and
-   a link to the whole council area (§3.2, §3.3)?
-3. **The longer trend:** the chart starts at 2000 for both views (as in the
-   agreed design). Should a circle also offer counts back to 1979?
-4. **The map of shaded squares:** where on the page, and how big a square
-   (Claude suggests 250 metres for a circle, one kilometre for a council area)?
-   To be shown as options A, B and C in stage 5.
-5. **Provisional half-years** (§8.2): Claude suggests the five-year figures stay
-   on complete years, and the provisional January to June figures show only on
-   the trend chart, marked "provisional". Agreed?
-6. **Filters and a second place** (§12.2, §12.3): leave for later?
-7. **No collector, data rebuilt by hand or by a "Rebuild data" workflow**, and
-   the data kept in this repo (§9)?
-8. **A testing stage before launch** (the tracker's open question): list
-   Roadteller under "Testing" while John and a few others try it?
+   a link to the whole council area: yes.
+3. **The longer trend:** yes, a circle also offers counts back to 1979 (rates
+   still from 2000).
+4. **The map of shaded squares:** try 250 metres for a circle and one kilometre
+   for a council area, and see; options in stage 5.
+5. **Provisional half-years:** yes, five-year figures on complete years only;
+   the provisional January to June figures on the trend chart, marked
+   "provisional".
+6. **Filters and a second place:** left for later, if at all.
+7. **Updating the data:** agreed in principle, kept in this repo; how it's
+   rebuilt (by hand or a workflow) to be worked out in stage 1.
+8. **A testing stage:** only once Roadteller is built and John says "It's now in
+   testing".

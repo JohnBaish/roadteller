@@ -29,8 +29,8 @@ Read these first, in this order:
    the master copies; if they change, re-copy them and note it here.
 6. The baish.net overview, `design/overview/` in clockwheel.
 
-**`SPEC.md` and `PLAN.md`** (drafted November 9th 2026, waiting for John
-to agree them and answer SPEC §13). Nothing gets built until he does.
+**`SPEC.md` and `PLAN.md`** (agreed by John on November 9th 2026, with his
+answers in SPEC §13). Read them before anything else; work stage by stage.
 
 Key points:
 
@@ -67,6 +67,15 @@ Data notes:
   of the Great Britain rate in words and % (John, November 9th 2026).
 
 ## Log
+
+### 2026-11-09 — spec and plan agreed
+
+**John:** all eight questions answered (SPEC §13): the 10-collision rule; one
+mile by default with half a mile, two miles and the council area; a circle's
+counts back to 1979; squares of 250 metres and one kilometre to try; provisional
+half-years on the trend only; filters and a second place left for later, if at
+all; data kept in this repo, how it's rebuilt to be worked out; a testing stage
+only when he says "It's now in testing". "Let's go!": stage 1 next.
 
 ### 2026-11-09 — spec and plan drafted
 

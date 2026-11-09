@@ -3,12 +3,11 @@
 Each stage on its own branch, merged only when John says (notes and documents
 may be merged without asking). Every stage is checked in a real browser at
 1200px, 390px with touch and 844 by 390 with touch, with what couldn't be
-checked said plainly. Nothing is built until John agrees `SPEC.md` and this
-plan.
+checked said plainly. John agreed `SPEC.md` and this plan on November 9th 2026.
 
-## Stage 0 — spec and plan (now)
+## Stage 0 — spec and plan (done)
 
-`SPEC.md` and this file, for John to agree, with the questions in SPEC §13.
+`SPEC.md` and this file, agreed by John on November 9th 2026 ("Let's go!").
 
 ## Stage 1 — the data build (no page yet)
 
@@ -25,7 +24,8 @@ plan.
    14.0 million miles, 46% of what national averages would give; the Reading
    A329 stretch checked by hand; Great Britain's totals against DfT's published
    tables.
-5. A "Rebuild data" workflow (Run workflow only), if John agrees SPEC §13.7.
+5. How the data gets rebuilt each year (by hand here, or a "Rebuild data"
+   workflow), worked out with John (SPEC §13.7).
 
 ## Stage 2 — choosing a place
 
@@ -59,7 +59,8 @@ built.
 3. Search set-up (`SEO-HANDOVER.md`): title, description, canonical, robots.txt,
    sitemap.
 4. Vercel project and `roadteller.baish.net` (John), Web Analytics.
-5. A testing stage if John wants one (SPEC §13.8), then `/fresh-look`.
+5. `/fresh-look`; a testing stage only when John says "It's now in testing"
+   (SPEC §13.8).
 6. After launch: the card on www.baish.net, the overview and the tracker.
 
 ## Later
