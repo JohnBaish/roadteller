@@ -19,7 +19,8 @@ Read these first, in this order:
    https://claude.ai/artifact/VqAyHmbhu7Aiv2n7W1z38D
 3. `design/data-tests/README.md`: the West Berkshire and Reading tests.
    The original Reading test is in the "My websites" Claude project
-   (`claude/roadteller-data-tests.md`), which Claude Code can't open.
+   (`claude/riskreckoner-data-tests.md`, under its old name), which Claude
+   Code can't open.
 4. The design options: https://claude.ai/artifact/Ej97EjfWGY6DYMLcVTwt8d
    (source `design/mockups/`; pictures in `design/mockups/previews/`).
 5. `HOUSE-STYLE.md`, copied from clockwheel on November 9th 2026 (commit
@@ -67,6 +68,15 @@ Data notes:
   of the Great Britain rate in words and % (John, November 9th 2026).
 
 ## Log
+
+### 2026-11-09 — repo created; work pushed
+
+John created `JohnBaish/roadteller` (public). The four commits made in the
+session were pushed to `main` unchanged; GitHub holds them (checked with
+`git ls-remote`). They had been parked as a git bundle on clockwheel's
+session branch `claude/wizardly-babbage-nb841w` while there was no repo; that
+copy is now removed. Fixed: the rename had also changed the name of the
+original Reading test file in the Claude project, which keeps its old name.
 
 ### 2026-11-09 — renamed Roadteller
 
