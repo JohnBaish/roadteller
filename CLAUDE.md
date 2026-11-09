@@ -69,6 +69,18 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — round 5: batch 4 answered
+
+**John (batch 4):** West Berkshire's rates cover A-roads and motorways only (the
+switch is gone; counts elsewhere still cover all roads); the "previous five
+years" comparison stays, 2020 included ("people know when the pandemic was");
+West Berkshire gets the same line ("This compares to 1,122 in the previous five
+years.", 2016 to 2020). The options page now ends with "Next: SPEC.md and
+PLAN.md". Pictures in `design/mockups/previews/round-5/`.
+
+**Checked:** 1200px, 390px with touch and 844 by 390 with touch, West
+Berkshire and the circle: no errors, no sideways scrolling.
+
 ### 2026-11-09 — round 4 of option B
 
 **John (batch 3):** questions 3 to 5 yes (stretch names, "2021 to 2025

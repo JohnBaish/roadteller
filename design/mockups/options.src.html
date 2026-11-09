@@ -184,15 +184,13 @@ details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display
   <div class="col">
     <span class="mock-group"><b>Area</b>
       <button data-place="circle">One mile round RG14</button><button data-place="council">West Berkshire</button></span>
-    <span class="mock-group"><b>West Berkshire figures</b>
-      <button data-basis="am">A-roads and motorways only</button><button data-basis="all">All roads</button></span>
   </div>
 </div>
 
 <div class="gutter intro"><div class="col">
-  <p class="card-kicker">Design · round 4 · November 9th 2026</p>
-  <h2>Roadteller: option B, round 4</h2>
-  <p>John's round 3 changes, plus a second dark-bar switch for West Berkshire's figures: "A-roads and motorways only" (John's wording) or "All roads" (the earlier figures, which include DfT's estimates of minor-road traffic). Real figures throughout. All wording is a first draft for John.</p>
+  <p class="card-kicker">Design · round 5 · November 9th 2026</p>
+  <h2>Roadteller: option B, round 5</h2>
+  <p>With John's batch 4 answers: West Berkshire's rates are for A-roads and motorways only (counts still cover every road), and its summary compares with the previous five years, as the circle's does. Real figures throughout. Use the dark bar to switch between a mile round the middle of RG14 (Newbury) and the whole of West Berkshire.</p>
 </div></div>
 
 <div class="nav gutter"><div class="col">
@@ -224,12 +222,8 @@ details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display
   <p style="max-width:75ch;margin-top:var(--space-3)">On winding roads the rebuilt shapes matter far more. The M4 across West Berkshire went from 0.8 to 2.7 injury collisions per 100 million vehicle miles on one 18.6 km stretch, because the straight line between its ends runs more than half a kilometre from the motorway in places. Two things helped the rebuild: snapping a stretch's ends up to 2.5 km away (DfT's M4 ends sit out at junctions such as Chieveley), and letting the path cross short pieces of road that OS gives no number, such as roundabouts, at four times their length. Without them, 34 of the 47 stretches rebuilt.</p>
 </div></section>
 <section class="gutter qs"><div class="col">
-  <h3>Questions for John (batch 4)</h3>
-  <ol>
-    <li>West Berkshire's figures: A-roads and motorways only (one for every 14.0 million miles; 46% of what national averages would give), or all roads including DfT's estimates for minor roads (8.6 million; 54%)?</li>
-    <li>The circle's "previous five years" (2016 to 2020) includes 2020, when lockdown cut traffic and collisions. Keep it as it is?</li>
-    <li>Should West Berkshire's summary also say "This compares to 1,122 in the previous five years"?</li>
-  </ol>
+  <h3>Next</h3>
+  <p>All four batches are answered. Next come SPEC.md and PLAN.md for John to agree before anything is built.</p>
   <div class="footer-notice">Contains DfT road safety and traffic data, Open Government Licence v3.0. Contains OS data © Crown copyright and database right 2026. Mock-up only: wording and layout are drafts.</div>
 </div></section>
 
@@ -246,7 +240,7 @@ const USERS = [['car','in cars'],['walking','walking'],['cycling','cycling'],['m
 const hourText = h => { const f = x => x === 0 ? 'midnight' : x === 12 ? 'midday' : (x % 12) + (x < 12 ? 'am' : 'pm'); return f(h) + ' to ' + f((h + 1) % 24); };
 let state = { opt: 'B', place: 'council', trend: 'since2000', mix: false, year: 'all' };
 try { const s = JSON.parse(localStorage.getItem('rr-mock-3') || '{}'); Object.assign(state, s); } catch (e) {}
-state.opt = 'B'; state.sel = null;
+state.opt = 'B'; state.sel = null; state.basis = 'am';
 const save = () => { try { localStorage.setItem('rr-mock-3', JSON.stringify({ ...state, sel: null })); } catch (e) {} };
 
 /* ---------- figures for the chosen area ---------- */
@@ -566,7 +560,7 @@ function render() {
     if (a.kind === 'council') {
       h += `<div class="card"><div class="b-hero"><div><p class="big-lead">One injury collision <span class="small">for every</span></p><p class="big">${r1(100 / B.rate)} million miles</p><p class="muted" style="margin:6px 0 0">driven on ${B.where}</p>
         <p style="margin:var(--space-3) 0 0;font-size:17px"><b>${compareText(B.rate / B.gb, B.gbWhat)}</b></p>
-        <p style="margin-top:var(--space-3)">${headline(a)}</p></div>
+        <p style="margin-top:var(--space-3)">${headline(a)} This compares to ${fmt(D.wb.prev5)} in the previous five years.</p></div>
         <div class="pair"><div><b>Great Britain</b><br>one for every ${r1(100 / B.gb)} million miles</div><div><b>South East</b><br>one for every ${r1(100 / B.se)} million miles</div></div></div></div>`;
       const kinds = AM ? [['motorway', 'Motorways', A.exp_m], ['a', 'A-roads', A.exp_a]] : [['motorway', 'Motorways'], ['a', 'A-roads'], ['minor', 'Minor roads']];
       const exp = k => D.wb.share[k] * D.wb.mvm / 100 * D.gb.kind_rate[k];
@@ -671,7 +665,7 @@ document.querySelectorAll('[data-basis]').forEach(b => b.onclick = () => { state
 const sw = document.querySelector('.switch');
 sw.onclick = () => { const dark = document.documentElement.dataset.theme !== 'dark' && !(matchMedia('(prefers-color-scheme: dark)').matches && !document.documentElement.dataset.theme); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; sw.setAttribute('aria-checked', dark); };
 const qp = new URLSearchParams(location.search);
-if (qp.get('basis')) state.basis = qp.get('basis'); if (qp.get('opt')) state.opt = qp.get('opt'); if (qp.get('place')) state.place = qp.get('place'); if (qp.get('trend')) state.trend = qp.get('trend'); if (qp.get('mix')) state.mix = qp.get('mix') === '1';
+if (qp.get('opt')) state.opt = qp.get('opt'); if (qp.get('place')) state.place = qp.get('place'); if (qp.get('trend')) state.trend = qp.get('trend'); if (qp.get('mix')) state.mix = qp.get('mix') === '1';
 document.addEventListener('pointerdown', e => { if (state.sel && !e.target.closest('.trend-chart')) { state.sel = null; render(); } });
 let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 120); });
 render(); 
