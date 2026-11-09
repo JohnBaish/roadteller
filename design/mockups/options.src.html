@@ -1,0 +1,535 @@
+<title>Riskreckoner design options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*FONTS*/
+/* Layout: the baish.net page (one column, 1100px, cards on the cream ground). Tokens are
+   Hindcaster's (organic.css and its agreed dark values). Chart colours: this place in
+   terracotta, comparisons in grey (dashed) and olive. */
+:root {
+  --color-bg: #f5ead8; --color-surface: #ebddc5; --color-text: #201e1d; --color-accent: #c67139;
+  --color-accent-2: #6c7a50;
+  --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
+  --color-neutral-100: #f9f4ed; --color-neutral-300: #dcd3c4; --color-neutral-400: #c0b6a5;
+  --color-neutral-500: #8d8476; --color-neutral-700: #645c50; --color-neutral-800: #474238;
+  --color-accent-100: #fff2eb; --color-accent-700: #8c491a;
+  --font-heading: "Caprasimo", Georgia, serif; --font-body: "Figtree", system-ui, sans-serif;
+  --space-1: 4.4px; --space-2: 8.8px; --space-3: 13.2px; --space-4: 17.6px; --space-6: 26.4px; --space-8: 35.2px;
+  --radius-md: 16px; --radius-lg: 28px;
+  --mock-bg: #2e2b25; --mock-fg: #f5ead8;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --color-bg: #2a2723; --color-surface: #37332e; --color-text: #e8dfcf; --color-accent: #dd8a56; --color-accent-2: #a9bb86;
+  --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+  --color-neutral-100: #423d36; --color-neutral-300: #5a544b; --color-neutral-400: #6a6358; --color-neutral-500: #8f8677;
+  --color-neutral-700: #b0a593; --color-neutral-800: #e3d9c7;
+  --color-accent-100: #4a2a14; --color-accent-700: #f2a573;
+  --mock-bg: #14120f; --mock-fg: #e8dfcf;
+} }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #2a2723; --color-surface: #37332e; --color-text: #e8dfcf; --color-accent: #dd8a56; --color-accent-2: #a9bb86;
+  --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+  --color-neutral-100: #423d36; --color-neutral-300: #5a544b; --color-neutral-400: #6a6358; --color-neutral-500: #8f8677;
+  --color-neutral-700: #b0a593; --color-neutral-800: #e3d9c7;
+  --color-accent-100: #4a2a14; --color-accent-700: #f2a573;
+  --mock-bg: #14120f; --mock-fg: #e8dfcf;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } }
+:root[data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; line-height: 1.12; letter-spacing: -0.015em; margin: 0 0 var(--space-2); text-wrap: balance; }
+h2 { font-size: 32px; } h3 { font-size: 21px; } h4 { font-size: 17px; }
+p { margin: 0 0 var(--space-3); }
+a { color: var(--color-accent-700); text-underline-offset: 3px; }
+button { font: inherit; color: inherit; }
+:focus { outline: none; } :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.mono, .num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--color-neutral-700); }
+.note { font-size: 12.5px; color: var(--color-neutral-700); margin: 4px 0 0; }
+.card { padding: var(--space-6); border-radius: calc(var(--radius-lg) * 1.15); background: var(--color-surface); min-width: 0; }
+.card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin: 0 0 4px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 721px) { .gutter { padding-left: max(var(--space-6), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-6), env(safe-area-inset-right, 0px)); } }
+.col { max-width: 1100px; margin: 0 auto; }
+
+/* nav and strip */
+.nav { background: var(--color-surface); padding-block: var(--space-3); }
+.nav .col { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.brand { font-family: var(--font-heading); font-size: 18px; }
+.brand small { font-family: var(--font-body); font-size: 12px; color: var(--color-neutral-700); margin-left: 8px; }
+.switch { display: inline-flex; align-items: center; gap: 8px; color: var(--color-neutral-700); background: none; border: 0; cursor: pointer; min-height: 44px; }
+.switch-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.switch-track { position: relative; width: 46px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 18%, transparent); }
+.switch-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-bg); box-shadow: 0 1px 3px #0004; }
+@media (max-width: 720px) { .switch-label, .brand small { display: none; } }
+.strip { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin: var(--space-6) 0 0; padding: var(--space-3) var(--space-6); }
+.strip h2 { margin: 0; font-size: 21px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; font-family: var(--font-heading); font-size: 14px; line-height: 1.2; background: transparent; border: 1px solid var(--color-divider); padding: var(--space-2) var(--space-4); border-radius: 999px; min-height: 40px; }
+.chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.chips button { font-size: 13px; background: transparent; border: 1px solid var(--color-divider); padding: 6px 12px; border-radius: 999px; cursor: pointer; min-height: 36px; }
+.chips button[aria-pressed="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+@media (max-width: 720px) { .chips button { min-height: 44px; } }
+.page-head { padding: var(--space-6) 0 var(--space-4); }
+.page-head h2 { margin: 2px 0 0; }
+
+/* mock bar (not part of the design) */
+.mock { background: var(--mock-bg); color: var(--mock-fg); font-size: 13px; padding-block: 8px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+.mock .col { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+.mock b { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; }
+.mock-group { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.mock button { color: var(--mock-fg); background: none; padding: 4px 11px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--mock-fg) 30%, transparent); cursor: pointer; }
+.mock button[aria-pressed="true"] { background: var(--mock-fg); color: var(--mock-bg); }
+.intro { padding-block: var(--space-6) 0; }
+.intro p { max-width: 70ch; }
+
+/* shared pieces */
+.summary { padding: var(--space6, 26.4px); margin-bottom: var(--space-4); }
+.summary p { font-size: 17px; line-height: 1.5; margin: 0; max-width: 72ch; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+.stack { display: flex; flex-direction: column; gap: var(--space-4); }
+@media (max-width: 720px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.lede { font-size: 16px; line-height: 1.5; margin: 0 0 var(--space-3); }
+.table { border-collapse: collapse; font-size: 14px; width: 100%; }
+.table th { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--color-divider); }
+.table td { padding: 7px 8px; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent); vertical-align: top; }
+.table td.r, .table th.r { text-align: right; }
+.table tr.me td { font-weight: 700; background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.tablewrap { overflow-x: auto; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--color-neutral-700); }
+.chart .lbl { fill: var(--color-text); font-weight: 600; font-size: 12px; }
+.chart .grid { stroke: var(--color-divider); stroke-width: 1; }
+.chart .me { stroke: var(--color-accent); fill: var(--color-accent); }
+.chart .gb { stroke: var(--color-neutral-500); fill: var(--color-neutral-500); }
+.chart .reg { stroke: var(--color-accent-2); fill: var(--color-accent-2); }
+.chart .line { fill: none; stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.chart .dash { stroke-dasharray: 5 4; }
+.chart .bar { stroke: none; }
+.chart .bar.soft { opacity: 0.45; }
+.chart .ring { fill: var(--color-surface); stroke-width: 2; }
+.chart .faint { opacity: 0.35; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--color-neutral-700); margin-top: 6px; }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.legend i.l { height: 0; border-top: 2.5px solid; border-radius: 0; vertical-align: 3px; }
+.legend i.d { border-top-style: dashed; }
+.k-me { background: var(--color-accent); border-color: var(--color-accent) !important; }
+.k-gb { background: var(--color-neutral-500); border-color: var(--color-neutral-500) !important; }
+.k-reg { background: var(--color-accent-2); border-color: var(--color-accent-2) !important; }
+.illus { font-size: 12px; color: var(--color-neutral-700); font-style: italic; }
+.row-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-2); }
+.row-head h3 { margin: 0; }
+.big { font-family: var(--font-heading); font-size: 44px; line-height: 1; margin: 0; }
+.big small { font-family: var(--font-body); font-size: 15px; }
+.bars-h { display: flex; flex-direction: column; gap: 6px; }
+
+/* Option B */
+.b-hero { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--space-6); align-items: center; margin-bottom: var(--space-4); }
+.b-hero .pair { display: flex; flex-direction: column; gap: var(--space-3); }
+.b-hero .pair div { border-top: 1px solid var(--color-divider); padding-top: var(--space-2); }
+@media (max-width: 720px) { .b-hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); } .big { font-size: 34px; } }
+
+/* Option C */
+.c-wrap { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+.c-nav { position: sticky; top: 64px; display: flex; flex-direction: column; gap: 2px; }
+.c-nav a { text-decoration: none; color: var(--color-text); padding: 8px 12px; border-radius: 12px; font-size: 14px; }
+.c-nav a.on { background: var(--color-surface); color: var(--color-accent-700); font-weight: 600; }
+.c-q { scroll-margin-top: 60px; }
+.c-q h3 { font-size: 23px; }
+.then-now { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+.then-now div { border-top: 1px solid var(--color-divider); padding-top: var(--space-2); }
+.then-now .v { font-family: var(--font-heading); font-size: 26px; line-height: 1.1; }
+.then-now .v small { font-family: var(--font-body); font-size: 13px; color: var(--color-neutral-700); }
+@media (max-width: 720px) {
+  .c-wrap { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  .c-nav { flex-direction: row; overflow-x: auto; top: 44px; background: var(--color-bg); padding-block: 6px; z-index: 3; }
+  .c-nav a { white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; }
+  .then-now { grid-template-columns: minmax(0, 1fr); }
+}
+details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+
+/* similar places demos */
+.demos { padding-block: var(--space-8) var(--space-6); }
+.demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+@media (max-width: 720px) { .demo-grid { grid-template-columns: minmax(0, 1fr); } }
+.pros { font-size: 13.5px; margin: var(--space-3) 0 0; padding-left: 18px; }
+.pros li { margin-bottom: 3px; }
+.qs { padding-block: var(--space-6); }
+.qs ol { padding-left: 22px; max-width: 75ch; }
+.qs li { margin-bottom: 8px; }
+.footer-notice { margin-top: 48px; padding-top: var(--space-3); border-top: 1px solid var(--color-divider); font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); text-align: center; }
+.about p { font-size: 14px; max-width: 75ch; }
+</style>
+
+<div class="mock gutter" data-noprint>
+  <div class="col">
+    <span class="mock-group"><b>Option</b>
+      <button data-opt="A">A · Sentence cards</button><button data-opt="B">B · One big yardstick</button><button data-opt="C">C · Questions</button></span>
+    <span class="mock-group"><b>Area</b>
+      <button data-place="circle">One mile round RG14</button><button data-place="council">West Berkshire</button></span>
+  </div>
+</div>
+
+<div class="gutter intro"><div class="col">
+  <p class="card-kicker">Design options · November 9th 2026</p>
+  <h2>Riskreckoner: three ways to show it</h2>
+  <p>Each option shows the same real figures, for 2021 to 2025, from the police's injury collision records and DfT's traffic counts. Use the dark bar to switch between the options and between a mile round the middle of RG14 (Newbury) and the whole of West Berkshire. The comparisons and the longer trend are where the options differ most. Below them are four ways of choosing "similar places", worked out for West Berkshire. All wording is a first draft for John.</p>
+</div></div>
+
+<div class="nav gutter"><div class="col">
+  <span class="brand">Riskreckoner<small>Road safety measured against traffic levels</small></span>
+  <button class="switch" role="switch" aria-checked="false" type="button" aria-label="Dark mode"><span class="switch-label">Dark</span><span class="switch-track"><span class="switch-knob"></span></span></button>
+</div></div>
+
+<main class="gutter"><div class="col" id="page"></div></main>
+
+<section class="gutter demos" id="similar"><div class="col">
+  <p class="card-kicker">Similar places · four ways to choose them</p>
+  <h2>Who should West Berkshire be compared with?</h2>
+  <p class="muted" style="max-width:75ch">Busy roads have the most collisions, and motorways have far fewer per mile driven than town streets. So a fair comparison needs places with a similar mix of roads, or a way of allowing for the mix. Each demo uses the same real figures, 2021 to 2025, per 100 million vehicle miles on all roads.</p>
+  <div class="demo-grid" id="demos"></div>
+</div></section>
+
+<section class="gutter qs" id="test"><div class="col">
+  <p class="card-kicker">Data test · West Berkshire beside Reading</p>
+  <h3>How the matching copes with winding roads</h3>
+  <p style="max-width:75ch">The same method run on both areas, 2021 to 2025. West Berkshire is 70% rural; Reading 5%. Each collision on an A-road or motorway is matched to the nearest stretch of the same road, using DfT's straight lines or the stretches rebuilt along the real road from OS Open Roads.</p>
+  <div class="tablewrap"><table class="table" style="max-width:760px">
+    <thead><tr><th></th><th class="r">Reading</th><th class="r">West Berkshire</th></tr></thead>
+    <tbody>
+      <tr><td>Injury collisions</td><td class="r num">1,305</td><td class="r num">1,014</td></tr>
+      <tr><td>On A-roads and motorways</td><td class="r num">665</td><td class="r num">510</td></tr>
+      <tr><td>Median distance from the road, straight lines</td><td class="r num">38 m</td><td class="r num">88 m</td></tr>
+      <tr><td>Median distance from the road, rebuilt</td><td class="r num">4 m</td><td class="r num">6 m</td></tr>
+      <tr><td>More than 500 m from any straight line (lost)</td><td class="r num">6</td><td class="r num">97</td></tr>
+      <tr><td>Not matched once rebuilt</td><td class="r num">5</td><td class="r num">9</td></tr>
+      <tr><td>Matched to a different stretch once rebuilt</td><td class="r num">37 (6%)</td><td class="r num">115 (23%)</td></tr>
+      <tr><td>Stretches rebuilt</td><td class="r num">34 of 48</td><td class="r num">39 of 47</td></tr>
+      <tr><td>Stretches with 10 or more collisions</td><td class="r num">18</td><td class="r num">18</td></tr>
+      <tr><td>Of those, rate changed by more than 20%</td><td class="r num">1</td><td class="r num">3</td></tr>
+      <tr><td>Of those, gained or lost a rate at the 10-collision line</td><td class="r num">0</td><td class="r num">3</td></tr>
+    </tbody></table></div>
+  <p style="max-width:75ch;margin-top:var(--space-3)">On winding roads the rebuilt shapes matter far more. The M4 across West Berkshire went from 0.8 to 2.7 injury collisions per 100 million vehicle miles on one 18.6 km stretch, because the straight line between its ends runs more than half a kilometre from the motorway in places. Two things helped the rebuild: snapping a stretch's ends up to 2.5 km away (DfT's M4 ends sit out at junctions such as Chieveley), and letting the path cross short pieces of road that OS gives no number, such as roundabouts, at four times their length. Without them, 34 of the 47 stretches rebuilt.</p>
+</div></section>
+<section class="gutter qs"><div class="col">
+  <h3>Questions for John</h3>
+  <ol>
+    <li>Which option, A, B or C (or a mix, say A's cards with C's then-and-now)?</li>
+    <li>Which way of stating a rate: "11.6 injury collisions per 100 million vehicle miles" (A), "one for every 8.6 million miles driven" (B), or "about a third of the Great Britain rate" (C)? The proposal used per million vehicle miles (0.12 here).</li>
+    <li>Similar places: demo 1, 2, 3 or 4, or 4 as the main comparison with 1 or 2 beside it?</li>
+    <li>The longer trend: rates for a council area from 2000, counts for a circle from 1979. Should a circle also get rates over time, worked out road by road (more work, and only on A-roads and motorways)?</li>
+    <li>A single year: as chips beside the five years (B shows them), or only in the "Over the years" chart?</li>
+  </ol>
+  <div class="footer-notice">Contains DfT road safety and traffic data, Open Government Licence v3.0. Contains OS data © Crown copyright and database right 2026. Mock-up only: wording and layout are drafts.</div>
+</div></section>
+
+<script>
+const D = /*DATA*/null;
+const W = ['zero','one','two','three','four','five','six','seven','eight','nine'];
+const word = n => n < 10 && n >= 0 && Number.isInteger(n) ? W[n] : n.toLocaleString('en-GB');
+const Word = n => { const w = word(n); return w[0].toUpperCase() + w.slice(1); };
+const fmt = n => n.toLocaleString('en-GB');
+const r1 = n => (Math.round(Math.abs(n) * 10) / 10 * Math.sign(n)).toFixed(1);
+const pct = (a, b) => Math.round(100 * a / b);
+const DAYS = ['','Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'];
+const USERS = [['car','in cars'],['walking','walking'],['cycling','cycling'],['motorcycle','on motorcycles'],['other','others']];
+const hourText = h => { const f = x => x === 0 ? 'midnight' : x === 12 ? 'midday' : (x % 12) + (x < 12 ? 'am' : 'pm'); return f(h) + ' to ' + f((h + 1) % 24); };
+let state = { opt: 'A', place: 'council', trend: 'since2000', mix: false, year: 'all' };
+try { const s = JSON.parse(localStorage.getItem('rr-mock') || '{}'); Object.assign(state, s); } catch (e) {}
+const save = () => { try { localStorage.setItem('rr-mock', JSON.stringify(state)); } catch (e) {} };
+
+/* ---------- figures for the chosen area ---------- */
+function area() {
+  const wb = D.wb, c = D.circle;
+  if (state.place === 'council') {
+    const d = wb.detail;
+    return { kind: 'council', name: 'West Berkshire', in: 'in West Berkshire', n: d.n, cas: d.casualties, killed: d.killed,
+      ksi: d.ksi_recorded, years: d.by_year, users: d.users, hours: d.hours, days: d.days,
+      roads: wb.roads.filter(r => r.rate !== null), rate: wb.rate, expected: wb.expected, ratio: wb.ratio };
+  }
+  return { kind: 'circle', name: 'a mile round RG14 (Newbury)', in: 'within a mile of the middle of RG14 (Newbury)', n: c.n, cas: c.casualties,
+    killed: c.killed, ksi: c.ksi_recorded, years: c.by_year, users: c.users, hours: c.hours, days: c.days, roads: c.roads };
+}
+const busiest = h => Object.entries(h).sort((a, b) => b[1] - a[1])[0];
+const quietDay = d => Object.entries(d).sort((a, b) => a[1] - b[1])[0];
+
+function headline(a, year) {
+  if (year && year !== 'all') {
+    const n = a.years[year];
+    return `In ${year}, police recorded ${fmt(n)} collisions ${a.in} in which someone was hurt. That's ${n > avg(a.years) ? 'more than' : 'fewer than'} the five-year average of ${fmt(Math.round(avg(a.years)))}.`;
+  }
+  return `In the five years 2021 to 2025, police recorded ${fmt(a.n)} collisions ${a.in} in which someone was hurt. ${fmt(a.cas)} people were injured, ${word(a.killed)} of them fatally, and ${fmt(a.ksi)} collisions were serious or fatal.`;
+}
+const avg = o => Object.values(o).reduce((s, v) => s + v, 0) / Object.values(o).length;
+function whoSentence(a) {
+  const tot = Object.values(a.users).reduce((s, v) => s + v, 0);
+  const share = k => pct(a.users[k] || 0, tot);
+  const gb = k => Math.round(D.gb_users[k] * 100);
+  const best = ['walking','cycling','motorcycle'].sort((x, y) => share(y) / gb(y) - share(x) / gb(x))[0];
+  const nm = { walking: 'walking', cycling: 'cycling', motorcycle: 'on motorcycles' }[best];
+  return `${Word(share(best))}${share(best) < 10 ? '' : '%'} of the people hurt were ${nm}${share(best) < 10 ? ' in every hundred' : ''}, against ${gb(best)}% across Great Britain.`.replace(/^(\d)/, '$1');
+}
+function whoSentenceClean(a) {
+  const tot = Object.values(a.users).reduce((s, v) => s + v, 0);
+  const share = k => pct(a.users[k] || 0, tot), gb = k => Math.round(D.gb_users[k] * 100);
+  const best = ['car','walking','cycling','motorcycle'].sort((x, y) => Math.abs(share(y) - gb(y)) - Math.abs(share(x) - gb(x)))[0];
+  const nm = { car: 'in cars', walking: 'walking', cycling: 'cycling', motorcycle: 'on motorcycles' }[best];
+  return `${share(best)}% of the people hurt were ${nm}, against ${gb(best)}% across Great Britain.`;
+}
+
+/* ---------- charts (SVG, drawn to the card's width) ---------- */
+const svg = (w, h, body) => `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img">${body}</svg>`;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function yearBars(years, w, opts = {}) {
+  const ys = Object.keys(years).map(Number).sort((a, b) => a - b), vals = ys.map(y => years[y]);
+  const h = opts.h || 150, padL = 34, padB = 22, padT = 16, max = opts.max || niceMax(Math.max(...vals));
+  const bw = (w - padL - 4) / ys.length;
+  const y = v => padT + (h - padT - padB) * (1 - v / max);
+  let s = ticks(max).map(t => `<line class="grid" x1="${padL}" x2="${w}" y1="${y(t)}" y2="${y(t)}"/><text x="${padL - 6}" y="${y(t) + 4}" text-anchor="end">${fmt(t)}</text>`).join('');
+  ys.forEach((yr, i) => {
+    const x = padL + i * bw + bw * 0.15, bwi = bw * 0.7;
+    const soft = opts.soft && opts.soft(yr);
+    s += `<rect class="bar me${soft ? ' soft' : ''}" x="${x}" y="${y(vals[i])}" width="${bwi}" height="${y(0) - y(vals[i])}"/>`;
+    const every = ys.length > 30 ? 5 : ys.length > 12 ? 2 : 1;
+    if (yr % every === 0 || ys.length <= 12) s += `<text x="${x + bwi / 2}" y="${h - 6}" text-anchor="middle">${ys.length > 12 ? yr : yr}</text>`;
+    if (ys.length <= 6) s += `<text class="lbl" x="${x + bwi / 2}" y="${y(vals[i]) - 4}" text-anchor="middle">${fmt(vals[i])}</text>`;
+  });
+  return svg(w, h, s);
+}
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+function ticks(max) { const p = Math.pow(10, Math.floor(Math.log10(max))); let st = p; for (const m of [0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5]) { if (max / (m * p) <= 6) { st = m * p; break; } } const out = []; for (let v = 0; v <= max + 1e-9; v += st) out.push(Math.round(v * 100) / 100); return out; }
+function lines(series, w, opts = {}) {
+  const h = opts.h || 190, padL = 34, padR = 52, padB = 22, padT = 12;
+  const xs = series.flatMap(s => s.pts.map(p => p[0])), x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const max = opts.max || niceMax(Math.max(...series.flatMap(s => s.pts.map(p => p[1]))));
+  const X = v => padL + (w - padL - padR) * (v - x0) / (x1 - x0), Y = v => padT + (h - padT - padB) * (1 - v / max);
+  let s = ticks(max).map(t => `<line class="grid" x1="${padL}" x2="${w - padR}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${padL - 6}" y="${Y(t) + 4}" text-anchor="end">${fmt(t)}</text>`).join('');
+  for (let yr = Math.ceil(x0 / 5) * 5; yr <= x1; yr += 5) s += `<text x="${X(yr)}" y="${h - 6}" text-anchor="middle">${yr}</text>`;
+  const ends = [];
+  series.forEach(se => {
+    s += `<path class="line ${se.cls}${se.dash ? ' dash' : ''}" d="${se.pts.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1)).join('')}"/>`;
+    const last = se.pts[se.pts.length - 1];
+    s += `<circle class="${se.cls}" cx="${X(last[0])}" cy="${Y(last[1])}" r="3.5"/>`;
+    ends.push({ y: Y(last[1]), t: se.end, cls: se.cls });
+  });
+  ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 14) ends[i].y = ends[i - 1].y + 14;
+  ends.forEach(e => s += `<text class="lbl" x="${w - padR + 7}" y="${e.y + 4}">${e.t}</text>`);
+  return svg(w, h, s);
+}
+function yardstick(marks, w, max) {
+  const h = 96, pad = 14, base = 52, X = v => pad + (w - 2 * pad) * Math.min(v, max) / max;
+  let s = `<line class="grid" x1="${pad}" x2="${w - pad}" y1="${base}" y2="${base}"/>`;
+  for (let t = 0; t <= max; t += max / 4) s += `<line class="grid" x1="${X(t)}" x2="${X(t)}" y1="${base - 4}" y2="${base + 4}"/><text x="${X(t)}" y="${h - 4}" text-anchor="middle">${t}${t === max ? '+' : ''}</text>`;
+  const rows = [base - 16, base + 24, base - 32], used = rows.map(() => []);
+  marks.filter(m => m.small).forEach(m => s += `<circle class="${m.cls} faint" cx="${X(m.v)}" cy="${base}" r="4"/>`);
+  marks.filter(m => !m.small).sort((a, b) => (b.me ? 1 : 0) - (a.me ? 1 : 0)).forEach(m => {
+    const x = X(m.v), tw = m.t.length * 6.8 + 8;
+    let x0 = Math.max(pad, Math.min(w - pad - tw, x - tw / 2));
+    let r = rows.findIndex((_, i) => used[i].every(([l, rr]) => x0 + tw < l || x0 > rr)); if (r < 0) r = 2;
+    used[r].push([x0, x0 + tw]);
+    s += `<circle class="${m.cls}" cx="${x}" cy="${base}" r="${m.me ? 8 : 6}"/><text class="lbl" x="${x0 + tw / 2}" y="${rows[r]}" text-anchor="middle">${esc(m.t)}</text>`;
+  });
+  return svg(w, h, s);
+}
+function hourBars(hours, w) {
+  const h = 120, padB = 20, padT = 8, max = Math.max(...Object.values(hours)), bw = w / 24;
+  const Y = v => padT + (h - padT - padB) * (1 - v / max);
+  let s = '';
+  for (let i = 0; i < 24; i++) { const v = hours[i] || 0; s += `<rect class="bar me${v === max ? '' : ' soft'}" x="${i * bw + 1}" y="${Y(v)}" width="${bw - 2}" height="${Y(0) - Y(v)}"/>`; }
+  [0, 6, 12, 18].forEach(i => s += `<text x="${i * bw + 2}" y="${h - 4}">${i === 0 ? 'midnight' : i === 12 ? 'midday' : (i % 12) + (i < 12 ? 'am' : 'pm')}</text>`);
+  return svg(w, h, s);
+}
+function hbars(rows, w, max, unit) {
+  return `<div class="bars-h">${rows.map(r => `<div style="display:grid;grid-template-columns:minmax(0,9rem) minmax(0,1fr) 3.4rem;gap:8px;align-items:center;font-size:13.5px${r.me ? ';font-weight:700' : ''}">
+    <span style="overflow-wrap:anywhere">${esc(r.t)}</span>
+    <span style="height:14px;border-radius:4px;background:var(--color-${r.cls === 'me' ? 'accent' : r.cls === 'reg' ? 'accent-2' : 'neutral-400'});width:${Math.max(2, 100 * Math.min(r.v, max) / max)}%"></span>
+    <span class="num" style="text-align:right">${unit(r.v)}</span></div>`).join('')}</div>`;
+}
+function dotStrip(all, me, nearest, w, key) {
+  const h = 110, pad = 16, lo = Math.log(key === 'ratio' ? 0.25 : 4), hi = Math.log(key === 'ratio' ? 4 : 250);
+  const X = v => pad + (w - 2 * pad) * (Math.log(Math.max(Math.exp(lo), Math.min(Math.exp(hi), v))) - lo) / (hi - lo);
+  let s = '';
+  const tk = key === 'ratio' ? [0.25, 0.5, 1, 2, 4] : [5, 10, 20, 50, 100, 200];
+  tk.forEach(t => s += `<line class="grid" x1="${X(t)}" x2="${X(t)}" y1="20" y2="78"/><text x="${X(t)}" y="${h - 14}" text-anchor="middle">${key === 'ratio' ? (t < 1 ? (t === 0.5 ? 'half' : 'quarter') : t === 1 ? 'as GB' : t === 2 ? 'twice' : '4 times') : t}</text>`);
+  const near = new Set(nearest.map(x => x.name));
+  all.forEach((a, i) => { const isN = near.has(a.name); if (a.name === me) return; s += `<circle class="gb ${isN ? '' : 'faint'}" cx="${X(a[key])}" cy="${48 + ((i * 7) % 21) - 10}" r="${isN ? 4.5 : 3}"/>`; });
+  const g = key === 'ratio' ? 1 : D.gb.rate;
+  s += `<line class="line gb dash" x1="${X(g)}" x2="${X(g)}" y1="14" y2="82"/><text class="lbl" x="${X(g) + 4}" y="12">Great Britain</text>`;
+  const m = all.find(a => a.name === me);
+  s += `<circle class="me" cx="${X(m[key])}" cy="48" r="8"/><text class="lbl" x="${X(m[key])}" y="${Math.abs(X(m[key]) - X(g)) < 90 ? 100 : 12}" text-anchor="middle" style="fill:var(--color-accent-700)">${esc(me)}</text>`;
+  return svg(w, h + 8, s);
+}
+
+/* ---------- comparisons and trends, by option ---------- */
+function trendData() {
+  const t = D.wb_trend, g = D.gb_trend;
+  const from = 2000;
+  return {
+    wbRate: Object.keys(t).map(Number).filter(y => y >= from && t[y].rate).map(y => [y, t[y].rate]),
+    gbRate: Object.keys(g).map(Number).filter(y => y >= from).map(y => [y, g[y].rate]),
+    wbN: Object.fromEntries(Object.keys(t).map(Number).filter(y => t[y].n).map(y => [y, t[y].n])),
+    circN: Object.fromEntries(Object.entries(D.circle.long).map(([y, v]) => [+y, v])),
+    gbN: Object.fromEntries(Object.entries(D.gb_trend).map(([y, v]) => [+y, v.n]))
+  };
+}
+const fall = (a, b) => Math.round(100 * (1 - b / a));
+
+function A_compare(a, w) {
+  if (a.kind === 'council') {
+    const third = a.rate / D.gb.rate;
+    let h = `<p class="lede">Allowing for traffic, West Berkshire's roads had <b>${r1(a.rate)} injury collisions per 100 million vehicle miles</b>, about a third of the rate for Great Britain (${r1(D.gb.rate)}).</p>`;
+    h += yardstick([{ v: a.rate, t: 'West Berkshire', cls: 'me', me: 1 }, { v: D.se.rate, t: 'South East', cls: 'reg' }, { v: D.gb.rate, t: 'Great Britain', cls: 'gb' },
+      ...D.nearest.map(n => ({ v: n.rate, t: n.name, cls: 'gb', small: 1 }))], w, 80);
+    h += `<p class="note">Faint dots: the six nearest council areas. Reading is off the end, at ${r1(D.nearest[0].rate)}.</p>`;
+    h += `<p style="margin-top:var(--space-3)">Half of West Berkshire's traffic is on the M4 and A34, where there are always fewer collisions per mile. Allowing for its mix of roads, it had about half (${pct(a.n, a.expected)}%) the collisions that Great Britain's averages would give: ${fmt(a.n)} against ${fmt(a.expected)}.</p>`;
+    return h;
+  }
+  const rows = a.roads.filter(r => r.rate).map(r => ({ t: `${r.road}, ${r.km} km stretch`, v: r.rate, cls: 'me' }));
+  let h = `<p class="lede">The busiest stretch of the A4 here had <b>${r1(a.roads[0].rate)} injury collisions per 100 million vehicle miles</b>, half as high again as the average for Great Britain's A-roads (${r1(D.gb.kind_rate.a)}).</p>`;
+  h += hbars([...rows, { t: "Great Britain's A-roads", v: D.gb.kind_rate.a, cls: 'gb' }, { t: "West Berkshire's A-roads", v: D.wb.kind_rate.a, cls: 'reg' }], w, 60, v => r1(v));
+  h += `<p class="note">A rate for a circle uses whole stretches of road that pass through it, and only stretches with at least 10 collisions get one. ${Word(a.roads.filter(r => !r.rate).length)} other stretches had fewer. Minor roads (${D.circle.minor} of the ${a.n} collisions) have no traffic figures, so they get counts only.</p>`;
+  return h;
+}
+function A_trend(a, w) {
+  const td = trendData(); const t = state.trend;
+  let h = `<div class="row-head"><h3>Over the years</h3><span class="chips" data-set="trend">
+    <button aria-pressed="${t === 'five'}" data-v="five">2021 to 2025</button><button aria-pressed="${t === 'since2000'}" data-v="since2000">Since 2000</button><button aria-pressed="${t === 'since1979'}" data-v="since1979">Since 1979</button></span></div>`;
+  if (t === 'five') {
+    h += `<p>${fmt(a.years[2025])} collisions last year, ${a.years[2025] > avg(a.years) ? 'more than' : 'fewer than'} the five-year average of ${fmt(Math.round(avg(a.years)))}.</p>` + yearBars(a.years, w);
+  } else if (t === 'since2000' && a.kind === 'council') {
+    h += `<p>Allowing for traffic, collisions have fallen by about two thirds since 2000: by ${fall(td.wbRate[0][1], td.wbRate.at(-1)[1])}% in West Berkshire and ${fall(td.gbRate[0][1], td.gbRate.at(-1)[1])}% across Great Britain.</p>`;
+    h += lines([{ pts: td.gbRate, cls: 'gb', dash: 1, end: 'GB' }, { pts: td.wbRate, cls: 'me', end: 'W Berks' }], w);
+    h += `<div class="legend"><span><i class="l k-me"></i>West Berkshire</span><span><i class="l d k-gb"></i>Great Britain</span><span>Injury collisions per 100 million vehicle miles</span></div>`;
+  } else {
+    const yrs = t === 'since1979' ? (a.kind === 'council' ? td.wbN : td.circN) : Object.fromEntries(Object.entries(a.kind === 'council' ? td.wbN : td.circN).filter(([y]) => +y >= 2000));
+    const ys = Object.keys(yrs).map(Number), first = ys[0];
+    h += `<p>${fmt(yrs[first])} collisions in ${first}, ${fmt(yrs[2025])} in 2025.${a.kind === 'circle' ? ' Counts only: a circle has no traffic figure for every year.' : ''}</p>`;
+    h += yearBars(yrs, w, { soft: y => y < 1992 });
+    if (t === 'since1979') h += `<p class="note">${a.kind === 'council' ? 'West Berkshire has had its own figures since 1994. ' : ''}Before the early 1990s about a third of locations were rounded to the nearest 100 metres (paler bars), so counts for a small circle are rougher.</p>`;
+  }
+  return h;
+}
+
+function render() {
+  const a = area(), page = document.getElementById('page');
+  document.querySelectorAll('[data-opt]').forEach(b => b.setAttribute('aria-pressed', b.dataset.opt === state.opt));
+  document.querySelectorAll('[data-place]').forEach(b => b.setAttribute('aria-pressed', b.dataset.place === state.place));
+  const narrow = innerWidth <= 720;
+  const full = Math.min(1100, document.querySelector('main .col').clientWidth || 1000) - 53;
+  const half = narrow ? full : (full - 18) / 2 - 53;
+  const strip = `<div class="card strip"><h2>${a.kind === 'council' ? 'West Berkshire' : 'One mile round RG14 (Newbury)'}</h2><button class="btn" type="button">Change</button></div>`;
+  const head = `<div class="page-head"><p class="card-kicker">Injury collisions, 2021 to 2025</p><h2>${a.kind === 'council' ? 'West Berkshire' : 'RG14 (Newbury)'}</h2></div>`;
+  const tot = Object.values(a.users).reduce((s, v) => s + v, 0);
+  const who = `<h3>Who was hurt</h3><p>${whoSentenceClean(a)}</p>` + hbars(USERS.map(([k, t]) => ({ t: 'People ' + t, v: pct(a.users[k] || 0, tot), cls: 'me' })).map(r => ({ ...r, t: r.t.replace('People others', 'Others') })), half, 60, v => v + '%') +
+    `<p class="note">Across Great Britain: cars ${Math.round(D.gb_users.car * 100)}%, walking ${Math.round(D.gb_users.walking * 100)}%, cycling ${Math.round(D.gb_users.cycling * 100)}%, motorcycles ${Math.round(D.gb_users.motorcycle * 100)}%.</p>`;
+  const bh = busiest(a.hours), qd = quietDay(a.days);
+  const whenAt = ww => `<h3>When</h3><p>The busiest hour was ${hourText(+bh[0])}, with ${fmt(bh[1])} collisions in five years. ${DAYS[qd[0]]} had the fewest.</p>` + hourBars(a.hours, ww);
+  const when = whenAt(half);
+  const roadsTbl = a.kind === 'council'
+    ? `<h3>Which roads</h3><p>Of the main roads, the ${a.roads[0].road} had the highest rate. The M4 had the lowest, as motorways always do.</p><div class="tablewrap"><table class="table"><thead><tr><th>Road</th><th class="r">Collisions</th><th class="r">Per 100m vehicle miles</th></tr></thead><tbody>${a.roads.map(r => `<tr><td>${r.road}</td><td class="r num">${fmt(Math.round(r.n))}</td><td class="r num">${r1(r.rate)}</td></tr>`).join('')}<tr><td>Minor roads</td><td class="r num">${fmt(D.wb.detail.kind.minor)}</td><td class="r muted">counts only</td></tr></tbody></table></div><p class="note">Great Britain: motorways ${r1(D.gb.kind_rate.motorway)}, A-roads ${r1(D.gb.kind_rate.a)}, minor roads ${r1(D.gb.kind_rate.minor)}.</p>`
+    : `<h3>Which roads</h3><p>${fmt(a.n - D.circle.minor)} of the ${fmt(a.n)} collisions were on A-roads, ${fmt(D.circle.minor)} on minor roads.</p><div class="tablewrap"><table class="table"><thead><tr><th>Stretch</th><th class="r">Collisions</th><th class="r">Per 100m vehicle miles</th></tr></thead><tbody>${a.roads.map(r => `<tr><td>${r.road} (${r.km} km)</td><td class="r num">${fmt(r.n)}</td><td class="r num">${r.rate ? r1(r.rate) : '<span class="muted">too few</span>'}</td></tr>`).join('')}</tbody></table></div><p class="note">Collisions at a junction between two stretches count half to each.</p>`;
+
+  let h = strip + head;
+  if (state.opt === 'A') {
+    h += `<div class="card summary"><p class="card-kicker">In short</p><p>${headline(a)}</p></div>`;
+    h += `<div class="stack"><div class="card"><h3>How it compares</h3>${A_compare(a, full)}</div>`;
+    h += `<div class="card">${A_trend(a, full)}</div>`;
+    h += `<div class="grid2"><div class="card">${who}</div><div class="card">${when}</div></div><div class="card">${roadsTbl}</div></div>`;
+  }
+  if (state.opt === 'B') {
+    const yearChips = `<span class="chips" data-set="year">${['all', '2021', '2022', '2023', '2024', '2025'].map(y => `<button aria-pressed="${state.year === y}" data-v="${y}">${y === 'all' ? 'All five years' : y}</button>`).join('')}</span>`;
+    h += `<div style="margin-bottom:var(--space-4)">${yearChips}</div>`;
+    if (a.kind === 'council') {
+      h += `<div class="card"><div class="b-hero"><div><p class="card-kicker">One injury collision for every</p><p class="big">${r1(100 / a.rate)} million miles</p><p class="muted" style="margin:6px 0 0">driven on West Berkshire's roads</p>
+        <p style="margin-top:var(--space-3)">${headline(a, state.year)}</p></div>
+        <div class="pair"><div><b>Great Britain</b><br>one for every ${r1(100 / D.gb.rate)} million miles</div><div><b>South East</b><br>one for every ${r1(100 / D.se.rate)} million miles</div><div><b>Reading, next door</b><br>one for every ${r1(100 / D.nearest[0].rate)} million miles</div></div></div></div>`;
+      const mix = state.mix;
+      const rows = [{ t: 'West Berkshire', v: mix ? a.ratio : a.rate, cls: 'me', me: 1 }, { t: 'South East', v: mix ? D.se.ratio : D.se.rate, cls: 'reg' }, { t: 'Great Britain', v: mix ? 1 : D.gb.rate, cls: 'gb' },
+        ...D.nearest.map(n => ({ t: n.name, v: mix ? n.ratio : n.rate, cls: 'gb' }))].sort((x, y) => y.v - x.v);
+      h += `<div class="stack" style="margin-top:var(--space-4)"><div class="card"><div class="row-head"><h3>Compared with neighbours</h3><span class="chips" data-set="mix"><button aria-pressed="${!mix}" data-v="0">As recorded</button><button aria-pressed="${mix}" data-v="1">Allowing for the mix of roads</button></span></div>`;
+      h += mix ? `<p>Measured against what Great Britain's averages would give for each area's own mix of motorways, A-roads and minor roads (1 means exactly as expected).</p>` + hbars(rows, full, 2.2, v => v.toFixed(2)) : `<p>Collisions per 100 million vehicle miles. Fewer is better.</p>` + hbars(rows, full, 80, v => r1(v));
+      h += `</div>`;
+      const td = trendData();
+      const idx = pts => pts.map(([y, v]) => [y, 100 * v / pts[0][1]]);
+      h += `<div class="card"><h3>Better or worse than before?</h3><p>Since 2000, collisions per mile driven have fallen by ${fall(td.wbRate[0][1], td.wbRate.at(-1)[1])}% in West Berkshire and ${fall(td.gbRate[0][1], td.gbRate.at(-1)[1])}% across Great Britain. Both lines start at 100 in 2000.</p>`
+        + lines([{ pts: idx(td.gbRate), cls: 'gb', dash: 1, end: 'GB' }, { pts: idx(td.wbRate), cls: 'me', end: 'W Berks' }], full, { max: 120 })
+        + `<div class="legend"><span><i class="l k-me"></i>West Berkshire</span><span><i class="l d k-gb"></i>Great Britain</span><span>Rate in 2000 = 100</span></div>
+        <details><summary>Counts each year since 1994</summary>${yearBars(td.wbN, full, { h: 130 })}</details></div>`;
+    } else {
+      const top = a.roads[0];
+      h += `<div class="card"><div class="b-hero"><div><p class="card-kicker">One injury collision for every</p><p class="big">${r1(100 / top.rate)} million miles</p><p class="muted" style="margin:6px 0 0">driven on the A4 through the middle</p>
+        <p style="margin-top:var(--space-3)">${headline(a, state.year)}</p></div>
+        <div class="pair"><div><b>Great Britain's A-roads</b><br>one for every ${r1(100 / D.gb.kind_rate.a)} million miles</div><div><b>West Berkshire's A-roads</b><br>one for every ${r1(100 / D.wb.kind_rate.a)} million miles</div><div class="note">A circle's rates come from whole stretches of road through it. Minor roads have no traffic figures.</div></div></div></div>`;
+      const td = trendData();
+      const idx = o => { const ys = Object.keys(o).map(Number).filter(y => y >= 2000); return ys.map(y => [y, 100 * o[y] / o[2000]]); };
+      h += `<div class="stack" style="margin-top:var(--space-4)"><div class="card"><h3>Better or worse than before?</h3><p>There were ${fmt(td.circN[2000])} collisions here in 2000 and ${fmt(td.circN[2025])} in 2025, down by ${fall(td.circN[2000], td.circN[2025])}%. Across Great Britain they fell by ${fall(td.gbN[2000], td.gbN[2025])}%. Both lines start at 100 in 2000.</p>`
+        + lines([{ pts: idx(td.gbN), cls: 'gb', dash: 1, end: 'GB' }, { pts: idx(td.circN), cls: 'me', end: 'RG14' }], full, { max: 120 })
+        + `<p class="note">Counts, not rates: a year-by-year rate needs traffic on every road in the circle. One year can swing a lot in a small area.</p><details><summary>Counts each year since 1979</summary>${yearBars(td.circN, full, { h: 130, soft: y => y < 1992 })}<p class="note">Paler: years when many locations were rounded to 100 metres.</p></details></div>`;
+    }
+    h += `<div class="grid2"><div class="card">${who}</div><div class="card">${when}</div></div><div class="card">${roadsTbl}</div></div>`;
+  }
+  if (state.opt === 'C') {
+    const qs = [['how-many', 'How many?'], ['compared', 'Compared with where?'], ['before', 'Better than before?'], ['who', 'Who was hurt?'], ['when', 'When?'], ['roads', 'Which roads?']];
+    h += `<div class="c-wrap"><nav class="c-nav">${qs.map((q, i) => `<a href="#${q[0]}" class="${i === 0 ? 'on' : ''}">${q[1]}</a>`).join('')}</nav><div class="stack">`;
+    h += `<div class="card c-q" id="how-many"><h3>How many?</h3><p class="lede">${headline(a)}</p>${yearBars(a.years, narrow ? full : full - 210, { h: 130 })}</div>`;
+    if (a.kind === 'council') {
+      const key = state.mix ? 'ratio' : 'rate';
+      h += `<div class="card c-q" id="compared"><div class="row-head"><h3>Compared with where?</h3><span class="chips" data-set="mix"><button aria-pressed="${!state.mix}" data-v="0">Per mile driven</button><button aria-pressed="${state.mix}" data-v="1">Allowing for the mix of roads</button></span></div>
+        <p class="lede">${state.mix ? `Allowing for its roads, West Berkshire had <b>about half</b> the collisions Great Britain's averages would give. ${D.wb.count - D.wb.rank_ratio} of ${D.wb.count} council areas did better.` : `Per mile driven, West Berkshire had <b>about a third</b> of the Great Britain rate. Of ${D.wb.count} council areas, ${D.wb.count - D.wb.rank} had a lower rate.`}</p>
+        ${dotStrip(D.all_las, 'West Berkshire', D.nearest, narrow ? full : full - 210, key)}<p class="note">Each dot is a council area. Darker dots: the six nearest to West Berkshire.</p></div>`;
+      const t = D.wb_trend, g = D.gb_trend, av = (o, f, ys) => ys.reduce((s, y) => s + o[y][f], 0) / ys.length;
+      const then = [2000, 2001, 2002, 2003, 2004], now = [2021, 2022, 2023, 2024, 2025];
+      h += `<div class="card c-q" id="before"><h3>Better than before?</h3><p class="lede">Yes, by a long way. Twenty years ago West Berkshire had more than twice as many injury collisions a year, with less traffic.</p>
+        <div class="then-now"><div><span class="muted">Collisions a year</span><div class="v">${fmt(Math.round(av(t, 'n', then)))} → ${fmt(Math.round(av(t, 'n', now)))}</div><small class="muted">2000 to 2004, then 2021 to 2025</small></div>
+        <div><span class="muted">Per 100m vehicle miles</span><div class="v">${r1(av(t, 'rate', then))} → ${r1(av(t, 'rate', now))}</div></div>
+        <div><span class="muted">Great Britain, per 100m</span><div class="v">${r1(av(g, 'rate', then))} → ${r1(av(g, 'rate', now))}</div></div></div>
+        <details><summary>Every year since 2000</summary>${lines([{ pts: trendData().gbRate, cls: 'gb', dash: 1, end: 'GB' }, { pts: trendData().wbRate, cls: 'me', end: 'W Berks' }], narrow ? full : full - 210)}</details></div>`;
+    } else {
+      h += `<div class="card c-q" id="compared"><h3>Compared with where?</h3><p class="lede">The A4 through the middle had about one and a half times the collisions per mile of Great Britain's A-roads as a whole.</p>${A_compare(a, narrow ? full : full - 210).replace(/<p class="lede">.*?<\/p>/, '')}</div>`;
+      const c = D.circle.long, av = ys => ys.reduce((s, y) => s + c[y], 0) / ys.length;
+      h += `<div class="card c-q" id="before"><h3>Better than before?</h3><p class="lede">Yes. The 1980s averaged about ${word(Math.round(av([1980, 1981, 1982, 1983, 1984]) / 10) * 10)} a year here; the last five years about ${Math.round(av([2021, 2022, 2023, 2024, 2025]))}.</p>
+        <div class="then-now"><div><span class="muted">1980 to 1984</span><div class="v">${Math.round(av([1980, 1981, 1982, 1983, 1984]))} <small>a year</small></div></div><div><span class="muted">2000 to 2004</span><div class="v">${Math.round(av([2000, 2001, 2002, 2003, 2004]))} <small>a year</small></div></div><div><span class="muted">2021 to 2025</span><div class="v">${Math.round(av([2021, 2022, 2023, 2024, 2025]))} <small>a year</small></div></div></div>
+        <details><summary>Every year since 1979</summary>${yearBars(c, narrow ? full : full - 210, { h: 130, soft: y => y < 1992 })}<p class="note">Paler: years when many locations were rounded to 100 metres.</p></details></div>`;
+    }
+    h += `<div class="card c-q" id="who">${who}</div><div class="card c-q" id="when">${whenAt(narrow ? full : full - 210)}</div><div class="card c-q" id="roads">${roadsTbl}</div></div></div>`;
+  }
+  h += `<div class="card about" style="margin-top:var(--space-4)"><h3>About these figures</h3><p>Injury collisions reported to the police (STATS19), and DfT's traffic estimates. Crashes in which nobody was hurt aren't recorded, and Northern Ireland isn't included. Rates use all injury collisions; "serious or fatal" counts are as recorded. Most traffic figures are DfT estimates rather than counts.</p></div>`;
+  page.innerHTML = h;
+  page.querySelectorAll('[data-set] button').forEach(b => b.onclick = () => {
+    const k = b.parentElement.dataset.set; state[k] = k === 'mix' ? b.dataset.v === '1' : b.dataset.v; save(); render();
+  });
+  page.querySelectorAll('.c-nav a').forEach(l => l.onclick = () => { page.querySelectorAll('.c-nav a').forEach(x => x.classList.toggle('on', x === l)); });
+}
+
+function demos() {
+  const w = document.getElementById('demos'), wb = D.wb;
+  const table = (rows, cols) => `<div class="tablewrap"><table class="table"><thead><tr>${cols.map(c => `<th${c[2] ? ' class="r"' : ''}>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr${r.me ? ' class="me"' : ''}>${cols.map(c => `<td${c[2] ? ' class="r num"' : ''}>${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const me = { name: 'West Berkshire', rate: wb.rate, ratio: wb.ratio, share: wb.share, me: 1 };
+  const cols = [['Council area', r => esc(r.name)], ['Per 100m vehicle miles', r => r1(r.rate), 1], ['On motorways', r => Math.round(r.share.motorway * 100) + '%', 1]];
+  w.innerHTML = `
+  <div class="card"><p class="card-kicker">Demo 1</p><h3>Neighbours: a fixed list</h3><p>The six council areas nearest to West Berkshire (here the nearest middles; the real list would use shared borders).</p>
+   ${table([me, ...D.nearest], cols)}
+   <ul class="pros"><li>Easy to understand, and places people know.</li><li>But neighbours can be very different: Reading is a town of short, busy streets, and its rate is six times West Berkshire's.</li></ul></div>
+  <div class="card"><p class="card-kicker">Demo 2</p><h3>Lookalikes: a similar mix of roads</h3><p>The six council areas most like West Berkshire in share of traffic on motorways, on minor roads, how many collisions are in towns, and how busy its roads are.</p>
+   ${table([me, ...D.lookalike], cols)}
+   <ul class="pros"><li>Fairer: like is compared with like.</li><li>But the list can surprise (Neath Port Talbot sits on the M4 too), and it needs explaining.</li></ul></div>
+  <div class="card"><p class="card-kicker">Demo 3</p><h3>No list: allow for the mix of roads</h3><p>For each kind of road, take Great Britain's average rate and apply it to the area's own traffic: motorways ${r1(D.gb.kind_rate.motorway)}, A-roads ${r1(D.gb.kind_rate.a)}, minor roads ${r1(D.gb.kind_rate.minor)} per 100 million vehicle miles.</p>
+   <p class="lede">West Berkshire's roads would be expected to have <b>${fmt(wb.expected)}</b> injury collisions in five years. It had <b>${fmt(wb.n)}</b>, about half (${pct(wb.n, wb.expected)}%).</p>
+   ${hbars([{ t: 'West Berkshire', v: wb.ratio, cls: 'me', me: 1 }, { t: 'South East', v: D.se.ratio, cls: 'reg' }, { t: 'Great Britain', v: 1, cls: 'gb' }, { t: 'Reading', v: D.nearest[0].ratio, cls: 'gb' }], 300, 2.2, v => Math.round(v * 100) + '%')}
+   <ul class="pros"><li>Works for every place, with no list to choose or defend.</li><li>Uses DfT's estimates of minor-road traffic, which are rougher than counts.</li></ul></div>
+  <div class="card"><p class="card-kicker">Demo 4 · for a circle</p><h3>Road by road</h3><p>A circle has no traffic figure of its own, so each stretch of A-road is set beside the average for its kind of road.</p>
+   ${hbars([...D.circle.roads.filter(r => r.rate).map(r => ({ t: `${r.road}, ${r.km} km`, v: r.rate, cls: 'me' })), { t: "GB's A-roads", v: D.gb.kind_rate.a, cls: 'gb' }], 300, 60, v => r1(v))}
+   <ul class="pros"><li>Honest about what a small area can show.</li><li>Says nothing about minor roads, which had about half the collisions round RG14.</li></ul></div>`;
+}
+
+document.querySelectorAll('[data-opt]').forEach(b => b.onclick = () => { state.opt = b.dataset.opt; save(); render(); });
+document.querySelectorAll('[data-place]').forEach(b => b.onclick = () => { state.place = b.dataset.place; save(); render(); });
+const sw = document.querySelector('.switch');
+sw.onclick = () => { const dark = document.documentElement.dataset.theme !== 'dark' && !(matchMedia('(prefers-color-scheme: dark)').matches && !document.documentElement.dataset.theme); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; sw.setAttribute('aria-checked', dark); };
+const qp = new URLSearchParams(location.search);
+if (qp.get('opt')) state.opt = qp.get('opt'); if (qp.get('place')) state.place = qp.get('place'); if (qp.get('trend')) state.trend = qp.get('trend'); if (qp.get('mix')) state.mix = qp.get('mix') === '1';
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 120); });
+render(); demos();
+</script>
