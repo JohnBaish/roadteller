@@ -69,6 +69,35 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — round 4 of option B
+
+**John (batch 3):** questions 3 to 5 yes (stretch names, "2021 to 2025
+inclusive", the comparison wording); the circle leads with its count. His
+changes: the line above each big figure in orange, with "for every" smaller on
+West Berkshire's; the circle's second line "This compares to 126 in the
+previous five years." (2016 to 2020); "West Berkshire as a whole (A-roads and
+motorways only)"; the circle's two explanatory notes dropped; "In the circle"
+and "Collisions on the whole stretch" columns dropped; the circle's road note
+in his words; "driven on West Berkshire's A-roads and motorways"; his wording
+for "Allowing for the mix of roads"; a "Great Britain rate" column in "Which
+roads", with "Rates not available" for minor roads.
+
+**Found, put to John:** West Berkshire's figures until now were for all roads
+(DfT estimates minor-road traffic for each council area), so his "A-roads and
+motorways only" wording didn't match them. Both are now on the page, with a
+switch. A-roads and motorways only, 2021 to 2025: 510 collisions over 7,138
+million vehicle miles, one for every 14.0 million miles (Great Britain 4.3
+million, 31%; South East 4.9 million); national averages would give 1,120,
+so 46%; South East 97%. Year by year from 2000 in
+`design/data-tests/a-roads-and-motorways-by-year.json`. All roads: as before
+(8.6 million, 37%, 54%). **Caught before publishing:** the first build showed
+14.1 million, worked from the rate already rounded to 7.1; exact rates are now
+stored.
+
+**Checked:** 1200px, 390px with touch and 844 by 390 with touch, both
+versions and the circle: no errors, no sideways scrolling; share buttons still
+make their pictures.
+
 ### 2026-11-09 — repo created; work pushed
 
 John created `JohnBaish/roadteller` (public). The four commits made in the

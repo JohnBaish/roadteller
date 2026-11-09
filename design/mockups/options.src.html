@@ -161,7 +161,8 @@ details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display
 .qs li { margin-bottom: 8px; }
 .year-line { margin: var(--space-3) 0 0; padding: var(--space-2) var(--space-3); border-radius: 12px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
 .chart .hit:focus-visible { outline: none; stroke: var(--color-accent); stroke-width: 2; }
-.big-lead { font-family: var(--font-body); font-weight: 700; font-size: 22px; line-height: 1.2; margin: 0 0 4px; }
+.big-lead { font-family: var(--font-body); font-weight: 700; font-size: 22px; line-height: 1.2; margin: 0 0 4px; color: var(--color-accent-700); }
+.big-lead .small { font-size: 16px; }
 @media (max-width: 720px) { .big-lead { font-size: 19px; } }
 .share-row { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
 .share-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-accent-700); font: 600 14px var(--font-body); cursor: pointer; }
@@ -183,13 +184,15 @@ details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display
   <div class="col">
     <span class="mock-group"><b>Area</b>
       <button data-place="circle">One mile round RG14</button><button data-place="council">West Berkshire</button></span>
+    <span class="mock-group"><b>West Berkshire figures</b>
+      <button data-basis="am">A-roads and motorways only</button><button data-basis="all">All roads</button></span>
   </div>
 </div>
 
 <div class="gutter intro"><div class="col">
-  <p class="card-kicker">Design · round 3 · November 9th 2026</p>
-  <h2>Roadteller: option B, round 3</h2>
-  <p>John's round 2 changes: the bold lead line above the big figure; "44% higher than …" above the Great Britain figure; "2021 to 2025 inclusive"; Great Britain's bars beside each "Who was hurt" bar; a year on the trend chart cleared by clicking or tapping anywhere else; and a share button on every chart (here it shows the picture it would share). A circle now leads with its count, and its main roads are named, with how much of each lies inside it. Real figures throughout. Use the dark bar to switch between a mile round the middle of RG14 (Newbury) and the whole of West Berkshire. All wording is a first draft for John.</p>
+  <p class="card-kicker">Design · round 4 · November 9th 2026</p>
+  <h2>Roadteller: option B, round 4</h2>
+  <p>John's round 3 changes, plus a second dark-bar switch for West Berkshire's figures: "A-roads and motorways only" (John's wording) or "All roads" (the earlier figures, which include DfT's estimates of minor-road traffic). Real figures throughout. All wording is a first draft for John.</p>
 </div></div>
 
 <div class="nav gutter"><div class="col">
@@ -221,13 +224,11 @@ details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display
   <p style="max-width:75ch;margin-top:var(--space-3)">On winding roads the rebuilt shapes matter far more. The M4 across West Berkshire went from 0.8 to 2.7 injury collisions per 100 million vehicle miles on one 18.6 km stretch, because the straight line between its ends runs more than half a kilometre from the motorway in places. Two things helped the rebuild: snapping a stretch's ends up to 2.5 km away (DfT's M4 ends sit out at junctions such as Chieveley), and letting the path cross short pieces of road that OS gives no number, such as roundabouts, at four times their length. Without them, 34 of the 47 stretches rebuilt.</p>
 </div></section>
 <section class="gutter qs"><div class="col">
-  <h3>Questions for John (batch 3)</h3>
+  <h3>Questions for John (batch 4)</h3>
   <ol>
-    <li>A circle now leads with its count ("129 injury collisions") and West Berkshire's rate beside it, rather than one road's rate. Agreed?</li>
-    <li>The note under "Main roads through the circle": is the wording clear?</li>
-    <li>Stretches are named by DfT's junction names, tidied ("A4 A339 junction to Pipers Way, Thatcham"). Is that clear enough?</li>
-    <li>Does "2021 to 2025 inclusive" read better?</li>
-    <li>Below the Great Britain rate the words are "about a third of … (37%)"; above it "44% higher than …"; from about twice, "about twice … (204%)" rather than "104% higher". In the stretch table, "about the same (99%)" and "30% lower". Do those all work?</li>
+    <li>West Berkshire's figures: A-roads and motorways only (one for every 14.0 million miles; 46% of what national averages would give), or all roads including DfT's estimates for minor roads (8.6 million; 54%)?</li>
+    <li>The circle's "previous five years" (2016 to 2020) includes 2020, when lockdown cut traffic and collisions. Keep it as it is?</li>
+    <li>Should West Berkshire's summary also say "This compares to 1,122 in the previous five years"?</li>
   </ol>
   <div class="footer-notice">Contains DfT road safety and traffic data, Open Government Licence v3.0. Contains OS data © Crown copyright and database right 2026. Mock-up only: wording and layout are drafts.</div>
 </div></section>
@@ -514,6 +515,7 @@ function render() {
   const a = area(), page = document.getElementById('page');
   document.querySelectorAll('[data-opt]').forEach(b => b.setAttribute('aria-pressed', b.dataset.opt === state.opt));
   document.querySelectorAll('[data-place]').forEach(b => b.setAttribute('aria-pressed', b.dataset.place === state.place));
+  document.querySelectorAll('[data-basis]').forEach(b => b.setAttribute('aria-pressed', b.dataset.basis === (state.basis || 'am')));
   const narrow = innerWidth <= 720;
   const full = Math.min(1100, document.querySelector('main .col').clientWidth || 1000) - 53;
   const half = narrow ? full : (full - 18) / 2 - 53;
@@ -538,14 +540,13 @@ function render() {
   SHARE.hours = { title: 'Injury collisions by hour of day', sub: placeSub, svg: ww => hourBars(a.hours, ww) };
   SHARE.days = { title: 'Injury collisions by day of the week', sub: placeSub, svg: ww => dayBars(a.days, ww) };
   const per = r => `${r1(100 / r)} million miles`;
+  const AM = state.basis !== 'all';
+  const gbFor = road => road.startsWith('M') ? D.gb.kind_rate.motorway : D.gb.kind_rate.a;
   const roadsB = a.kind === 'council'
-    ? `<h3>Which roads</h3><p>Of the main roads, the ${a.roads[0].road} had the most collisions for its traffic. The M4 had the fewest, as motorways always do.</p><div class="tablewrap"><table class="table"><thead><tr><th>Road</th><th class="r">Collisions</th><th class="r">One for every</th></tr></thead><tbody>${a.roads.map(r => `<tr><td>${r.road}</td><td class="r num">${fmt(Math.round(r.n))}</td><td class="r num">${per(r.rate)}</td></tr>`).join('')}<tr><td>Minor roads</td><td class="r num">${fmt(D.wb.detail.kind.minor)}</td><td class="r muted">counts only</td></tr></tbody></table></div><p class="note">Great Britain: motorways one for every ${per(D.gb.kind_rate.motorway)}, A-roads ${per(D.gb.kind_rate.a)}, minor roads ${per(D.gb.kind_rate.minor)}.</p>`
+    ? `<h3>Which roads</h3><p>Of the main roads, the ${a.roads[0].road} had the most collisions for its traffic. The M4 had the fewest, as motorways always do.</p><div class="tablewrap"><table class="table"><thead><tr><th>Road</th><th class="r">Collisions</th><th class="r">One for every</th><th class="r">Great Britain rate</th></tr></thead><tbody>${a.roads.map(r => `<tr><td>${r.road}</td><td class="r num">${fmt(Math.round(r.n))}</td><td class="r num">${per(r.rate)}</td><td class="r num">${per(gbFor(r.road))}</td></tr>`).join('')}<tr><td>Minor roads</td><td class="r num">${fmt(D.wb.detail.kind.minor)}</td>${AM ? '<td class="r muted">Rates not available</td><td class="r muted">Rates not available</td>' : `<td class="r num">${per(D.wb.kind_rate.minor)} <span class="muted">(estimate)</span></td><td class="r num">${per(D.gb.kind_rate.minor)}</td>`}</tr></tbody></table></div><p class="note">"Great Britain rate" is the average for that kind of road: motorways or A-roads.</p>`
     : `<h3>Main roads through the circle</h3><p>${fmt(D.circle.a_road)} of the ${fmt(a.n)} collisions in the circle were on A-roads and ${fmt(D.circle.minor)} on minor roads. Of the A-road stretches that pass through it, the A4 from the A339 junction to Pipers Way, Thatcham, had the most collisions: one for every ${per(a.roads[0].rate)} driven, ${compareText(a.roads[0].rate / D.gb.kind_rate.a, "the rate for Great Britain's A-roads").replace(/^./, c => c.toLowerCase())}.</p>
-       ${narrow ? `<div class="road-cards">${a.roads.map(r => `<div class="road-card"><b>${r.road} ${esc(r.name)}</b><dl><dt>In the circle</dt><dd>about ${r.inside} of ${r.km} km</dd><dt>Collisions on the whole stretch</dt><dd>${fmt(r.n)}</dd><dt>One for every</dt><dd>${r.rate ? per(r.rate) : 'too few to say'}</dd>${r.rate ? `<dt>Against GB's A-roads</dt><dd>${colText(r.rate / D.gb.kind_rate.a)}</dd>` : ''}</dl></div>`).join('')}</div>` : `<div class="tablewrap"><table class="table"><thead><tr><th>Stretch</th><th class="r">In the circle</th><th class="r">Collisions on the whole stretch</th><th class="r">One for every</th><th>Against GB's A-roads</th></tr></thead><tbody>${a.roads.map(r => `<tr><td><b>${r.road}</b> ${esc(r.name)}</td><td class="r num">about ${r.inside} of ${r.km} km</td><td class="r num">${fmt(r.n)}</td><td class="r num">${r.rate ? per(r.rate) : '<span class="muted">too few</span>'}</td><td>${r.rate ? colText(r.rate / D.gb.kind_rate.a) : ''}</td></tr>`).join('')}</tbody></table></div>`}
-       <p class="note">The one-mile circle's rates are for whole stretches of main road, from one junction to the next, because that's how traffic is counted. So they include the parts of each road outside the circle, and the collisions there. Minor roads have no traffic figures, so they get counts only. Collisions at a junction between two stretches count half to each.</p>`;
-  const roadsTbl = a.kind === 'council'
-    ? `<h3>Which roads</h3><p>Of the main roads, the ${a.roads[0].road} had the highest rate. The M4 had the lowest, as motorways always do.</p><div class="tablewrap"><table class="table"><thead><tr><th>Road</th><th class="r">Collisions</th><th class="r">Per 100m vehicle miles</th></tr></thead><tbody>${a.roads.map(r => `<tr><td>${r.road}</td><td class="r num">${fmt(Math.round(r.n))}</td><td class="r num">${r1(r.rate)}</td></tr>`).join('')}<tr><td>Minor roads</td><td class="r num">${fmt(D.wb.detail.kind.minor)}</td><td class="r muted">counts only</td></tr></tbody></table></div><p class="note">Great Britain: motorways ${r1(D.gb.kind_rate.motorway)}, A-roads ${r1(D.gb.kind_rate.a)}, minor roads ${r1(D.gb.kind_rate.minor)}.</p>`
-    : `<h3>Which roads</h3><p>${fmt(a.n - D.circle.minor)} of the ${fmt(a.n)} collisions were on A-roads, ${fmt(D.circle.minor)} on minor roads.</p><div class="tablewrap"><table class="table"><thead><tr><th>Stretch</th><th class="r">Collisions</th><th class="r">Per 100m vehicle miles</th></tr></thead><tbody>${a.roads.map(r => `<tr><td>${r.road} (${r.km} km)</td><td class="r num">${fmt(r.n)}</td><td class="r num">${r.rate ? r1(r.rate) : '<span class="muted">too few</span>'}</td></tr>`).join('')}</tbody></table></div><p class="note">Collisions at a junction between two stretches count half to each.</p>`;
+       ${narrow ? `<div class="road-cards">${a.roads.map(r => `<div class="road-card"><b>${r.road} ${esc(r.name)}</b><dl><dt>One for every</dt><dd>${r.rate ? per(r.rate) : 'too few to say'}</dd>${r.rate ? `<dt>Against GB's A-roads</dt><dd>${colText(r.rate / D.gb.kind_rate.a)}</dd>` : ''}</dl></div>`).join('')}</div>` : `<div class="tablewrap"><table class="table"><thead><tr><th>Stretch</th><th class="r">One for every</th><th>Against GB's A-roads</th></tr></thead><tbody>${a.roads.map(r => `<tr><td><b>${r.road}</b> ${esc(r.name)}</td><td class="r num">${r.rate ? per(r.rate) : '<span class="muted">too few</span>'}</td><td>${r.rate ? colText(r.rate / D.gb.kind_rate.a) : ''}</td></tr>`).join('')}</tbody></table></div>`}
+       <p class="note">Traffic is counted between junctions, so some collisions are included which are outside the one-mile circle. Collisions at a junction between two stretches count half to each.</p>`;
 
   let h = strip + head;
   if (state.opt === 'A') {
@@ -557,38 +558,46 @@ function render() {
   if (state.opt === 'B') {
     const td = trendData(), sel = state.sel, shown = sel || 2025;
     const yearNote = `<p class="note">${isTouch() ? 'Tap' : 'Click'} a year on the chart for its own figures; ${isTouch() ? 'tap' : 'click'} anywhere else to clear it.</p>`;
+    const A = D.am;
+    const B = AM ? { rate: A.rate, gb: A.gb_rate, se: A.se_rate, ratio: A.n / A.expected, seRatio: A.se_ratio, n: A.n, expected: A.expected,
+        where: "West Berkshire's A-roads and motorways", gbWhat: 'the Great Britain rate for A-roads and motorways', whole: 'West Berkshire as a whole (A-roads and motorways only)' }
+      : { rate: D.wb.rate, gb: D.gb.rate, se: D.se.rate, ratio: D.wb.ratio, seRatio: D.se.ratio, n: D.wb.n, expected: D.wb.expected,
+        where: "West Berkshire's roads", gbWhat: 'the Great Britain rate', whole: 'West Berkshire as a whole (all roads)' };
     if (a.kind === 'council') {
-      const ratio = a.rate / D.gb.rate;
-      h += `<div class="card"><div class="b-hero"><div><p class="big-lead">One injury collision for every</p><p class="big">${r1(100 / a.rate)} million miles</p><p class="muted" style="margin:6px 0 0">driven on West Berkshire's roads</p>
-        <p style="margin:var(--space-3) 0 0;font-size:17px"><b>${compareText(ratio, 'the Great Britain rate')}</b></p>
+      h += `<div class="card"><div class="b-hero"><div><p class="big-lead">One injury collision <span class="small">for every</span></p><p class="big">${r1(100 / B.rate)} million miles</p><p class="muted" style="margin:6px 0 0">driven on ${B.where}</p>
+        <p style="margin:var(--space-3) 0 0;font-size:17px"><b>${compareText(B.rate / B.gb, B.gbWhat)}</b></p>
         <p style="margin-top:var(--space-3)">${headline(a)}</p></div>
-        <div class="pair"><div><b>Great Britain</b><br>one for every ${r1(100 / D.gb.rate)} million miles</div><div><b>South East</b><br>one for every ${r1(100 / D.se.rate)} million miles</div></div></div></div>`;
-      const kinds = [['motorway', 'Motorways'], ['a', 'A-roads'], ['minor', 'Minor roads']];
+        <div class="pair"><div><b>Great Britain</b><br>one for every ${r1(100 / B.gb)} million miles</div><div><b>South East</b><br>one for every ${r1(100 / B.se)} million miles</div></div></div></div>`;
+      const kinds = AM ? [['motorway', 'Motorways', A.exp_m], ['a', 'A-roads', A.exp_a]] : [['motorway', 'Motorways'], ['a', 'A-roads'], ['minor', 'Minor roads']];
       const exp = k => D.wb.share[k] * D.wb.mvm / 100 * D.gb.kind_rate[k];
-      const mixRows = [{ t: 'West Berkshire', v: D.wb.ratio, cls: 'me', me: 1 }, { t: 'South East', v: D.se.ratio, cls: 'reg' }, { t: 'Great Britain', v: 1, cls: 'gb' }];
-      SHARE.mix = { title: 'Allowing for the mix of roads', sub: "Injury collisions against what Great Britain's averages would give, 2021 to 2025 inclusive", svg: ww => svgBars(mixRows, ww, 1.5, v => Math.round(v * 100) + '%') };
+      const mixRows = [{ t: 'West Berkshire', v: B.ratio, cls: 'me', me: 1 }, { t: 'South East', v: B.seRatio, cls: 'reg' }, { t: 'Great Britain', v: 1, cls: 'gb' }];
+      SHARE.mix = { title: 'Allowing for the mix of roads', sub: `Injury collisions against what national averages would give, ${AM ? 'A-roads and motorways, ' : ''}2021 to 2025 inclusive`, svg: ww => svgBars(mixRows, ww, 1.5, v => Math.round(v * 100) + '%') };
+      const intro = AM ? "Taking the mix of roads for West Berkshire's A-roads and motorways, and applying the national average for those kinds of roads to West Berkshire's own traffic,"
+        : "Taking West Berkshire's mix of motorways, A-roads and minor roads, and applying the national average for each kind of road to West Berkshire's own traffic,";
       h += `<div class="stack" style="margin-top:var(--space-4)"><div class="card"><h3>Allowing for the mix of roads</h3>
-        <p>Half of West Berkshire's traffic is on the M4 and A34, and motorways always have the fewest collisions per mile. So the fairest test is to take Great Britain's average for each kind of road and apply it to West Berkshire's own traffic. That would give ${fmt(D.wb.expected)} injury collisions in five years. There were ${fmt(D.wb.n)}: <b>${shareWords(D.wb.ratio)} (${pct(D.wb.n, D.wb.expected)}%)</b>.</p>
+        <p>${intro} would give ${fmt(B.expected)} injury collisions in five years. There were ${fmt(B.n)}: <b>${shareWords(B.ratio)} (${pct(B.n, B.expected)}%)</b>.</p>
         ${svgBars(mixRows, full, 1.5, v => Math.round(v * 100) + '%')}${shareBtn('mix')}
-        <p class="note">100% means exactly as many as Great Britain's averages would give for that mix of roads.</p>
+        <p class="note">100% means exactly as many as national averages would give for that mix of roads.</p>
         <div class="tablewrap" style="margin-top:var(--space-3)"><table class="table"><thead><tr><th>Kind of road</th><th class="r">Share of traffic</th><th class="r">Collisions</th><th class="r">At Great Britain's rate</th></tr></thead><tbody>
-        ${kinds.map(([k, t]) => `<tr><td>${t}</td><td class="r num">${Math.round(D.wb.share[k] * 100)}%</td><td class="r num">${fmt(D.wb.detail.kind[k])}</td><td class="r num">${fmt(Math.round(exp(k)))}</td></tr>`).join('')}
-        <tr><td><b>All roads</b></td><td class="r num">100%</td><td class="r num"><b>${fmt(D.wb.n)}</b></td><td class="r num"><b>${fmt(D.wb.expected)}</b></td></tr></tbody></table></div>
-        <p class="note">Minor-road traffic is DfT's estimate, not a count, so that row is the roughest.</p></div>`;
-      const pts = td.wbRate, gbp = td.gbRate, idx = p => p.map(([y, v]) => [y, 100 * v / p[0][1]]);
-      const t = D.wb_trend, row = t[shown];
-      const line = `<b>${shown}:</b> ${fmt(row.n)} injury collisions, one for every ${r1(100 / row.rate)} million miles driven (Great Britain: one for every ${r1(100 / D.gb_trend[shown].rate)} million).`;
+        ${kinds.map(([k, t, e]) => `<tr><td>${t}</td><td class="r num">${Math.round(D.wb.share[k] / (AM ? D.wb.share.motorway + D.wb.share.a : 1) * 100)}%</td><td class="r num">${fmt(D.wb.detail.kind[k])}</td><td class="r num">${fmt(Math.round(e ?? exp(k)))}</td></tr>`).join('')}
+        <tr><td><b>${AM ? 'A-roads and motorways' : 'All roads'}</b></td><td class="r num">100%</td><td class="r num"><b>${fmt(B.n)}</b></td><td class="r num"><b>${fmt(B.expected)}</b></td></tr></tbody></table></div>
+        <p class="note">${AM ? 'Minor roads are left out: their traffic is only estimated.' : "Minor-road traffic is DfT's estimate, not a count, so that row is the roughest."}</p></div>`;
+      const yrs = Object.keys(A.trend).map(Number);
+      const pts = AM ? yrs.map(y => [y, A.trend[y].wb_rate]) : td.wbRate, gbp = AM ? yrs.map(y => [y, A.trend[y].gb_rate]) : td.gbRate;
+      const idx = p => p.map(([y, v]) => [y, 100 * v / p[0][1]]);
+      const rowN = AM ? A.trend[shown].wb_n : D.wb_trend[shown].n, rowR = AM ? A.trend[shown].wb_rate : D.wb_trend[shown].rate, rowG = AM ? A.trend[shown].gb_rate : D.gb_trend[shown].rate;
+      const line = `<b>${shown}:</b> ${fmt(rowN)} injury collisions${AM ? ' on A-roads and motorways' : ''}, one for every ${r1(100 / rowR)} million miles driven (Great Britain: one for every ${r1(100 / rowG)} million).`;
       const ser = [{ pts: idx(gbp), cls: 'gb', dash: 1, end: 'GB' }, { pts: idx(pts), cls: 'me', end: 'W Berks' }];
-      SHARE.trend = { title: 'Better or worse than before?', sub: 'Injury collisions per mile driven, 2000 = 100: West Berkshire (solid) and Great Britain (dashed)', svg: ww => lines(ser, ww, { max: 120 }) };
-      h += `<div class="card"><h3>Better or worse than before?</h3><p>Since 2000, collisions per mile driven have fallen by ${fall(pts[0][1], pts.at(-1)[1])}% in West Berkshire and ${fall(gbp[0][1], gbp.at(-1)[1])}% across Great Britain. Both lines start at 100 in 2000.</p>`
+      SHARE.trend = { title: 'Better or worse than before?', sub: `Injury collisions per mile driven${AM ? ' on A-roads and motorways' : ''}, 2000 = 100`, svg: ww => lines(ser, ww, { max: 120 }) };
+      h += `<div class="card"><h3>Better or worse than before?</h3><p>Since 2000, collisions per mile driven${AM ? ' on A-roads and motorways' : ''} have fallen by ${fall(pts[0][1], pts.at(-1)[1])}% in West Berkshire and ${fall(gbp[0][1], gbp.at(-1)[1])}% across Great Britain. Both lines start at 100 in 2000.</p>`
         + `<div class="trend-chart">${lines(ser, full, { max: 120, overlay: yearHits(idx(pts), sel) })}</div>`
         + `<div class="legend"><span><i class="l k-me"></i>West Berkshire</span><span><i class="l d k-gb"></i>Great Britain</span><span>Rate in 2000 = 100</span></div>
         <p class="year-line">${line}</p>${yearNote}${shareBtn('trend')}</div>`;
     } else {
       h += `<div class="card"><div class="b-hero"><div><p class="big-lead">Within a mile of the middle of RG14</p><p class="big">${fmt(a.n)} injury collisions</p><p class="muted" style="margin:6px 0 0">from 2021 to 2025 inclusive</p>
         <p style="margin:var(--space-3) 0 0;font-size:17px"><b>${fmt(a.cas)} people hurt, ${word(a.killed)} of them fatally</b></p>
-        <p style="margin-top:var(--space-3)">${fmt(a.ksi)} of the collisions were serious or fatal. ${fmt(D.circle.a_road)} were on A-roads and ${fmt(D.circle.minor)} on minor roads.</p></div>
-        <div class="pair"><div><b>West Berkshire as a whole</b><br>one injury collision for every ${r1(100 / D.wb.rate)} million miles driven, ${compareText(D.wb.rate / D.gb.rate, 'the Great Britain rate').replace(/^./, c => c.toLowerCase())}</div><div class="note">A circle has no overall rate of its own, because minor roads have no traffic figures. The main roads through it have theirs below.</div></div></div></div>`;
+        <p style="margin-top:var(--space-3)">This compares to ${fmt(D.circle.prev5)} in the previous five years.</p></div>
+        <div class="pair"><div><b>${B.whole}</b><br>one injury collision for every ${r1(100 / B.rate)} million miles driven, ${compareText(B.rate / B.gb, B.gbWhat).replace(/^./, c => c.toLowerCase())}</div></div></div></div>`;
       const c = td.circN, ys = Object.keys(c).map(Number).filter(y => y >= 2000);
       const idxO = o => ys.map(y => [y, 100 * o[y] / o[2000]]), mine = idxO(c);
       const ser = [{ pts: idxO(td.gbN), cls: 'gb', dash: 1, end: 'GB' }, { pts: mine, cls: 'me', end: 'RG14' }];
@@ -596,7 +605,7 @@ function render() {
       h += `<div class="stack" style="margin-top:var(--space-4)"><div class="card"><h3>Better or worse than before?</h3><p>There were ${fmt(c[2000])} collisions here in 2000 and ${fmt(c[2025])} in 2025, down by ${fall(c[2000], c[2025])}%. Across Great Britain they fell by ${fall(td.gbN[2000], td.gbN[2025])}%. Both lines start at 100 in 2000.</p>`
         + `<div class="trend-chart">${lines(ser, full, { max: 140, overlay: yearHits(mine, sel) })}</div>`
         + `<div class="legend"><span><i class="l k-me"></i>A mile round RG14</span><span><i class="l d k-gb"></i>Great Britain</span><span>Collisions in 2000 = 100</span></div>
-        <p class="year-line"><b>${shown}:</b> ${fmt(c[shown])} injury collisions within a mile of the middle of RG14, against ${fmt(c[shown - 1])} the year before.</p>${yearNote}<p class="note">Counts, not rates: a year-by-year rate needs traffic on every road in the circle.</p>${shareBtn('trend')}</div>`;
+        <p class="year-line"><b>${shown}:</b> ${fmt(c[shown])} injury collisions within a mile of the middle of RG14, against ${fmt(c[shown - 1])} the year before.</p>${yearNote}${shareBtn('trend')}</div>`;
     }
     h += `<div class="grid2"><div class="card">${whoB}</div><div class="card">${whenB}</div></div><div class="card">${roadsB}</div></div>`;
   }
@@ -658,10 +667,11 @@ function demos() {
 
 document.querySelectorAll('[data-opt]').forEach(b => b.onclick = () => { state.opt = b.dataset.opt; save(); render(); });
 document.querySelectorAll('[data-place]').forEach(b => b.onclick = () => { state.place = b.dataset.place; save(); render(); });
+document.querySelectorAll('[data-basis]').forEach(b => b.onclick = () => { state.basis = b.dataset.basis; save(); render(); });
 const sw = document.querySelector('.switch');
 sw.onclick = () => { const dark = document.documentElement.dataset.theme !== 'dark' && !(matchMedia('(prefers-color-scheme: dark)').matches && !document.documentElement.dataset.theme); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; sw.setAttribute('aria-checked', dark); };
 const qp = new URLSearchParams(location.search);
-if (qp.get('opt')) state.opt = qp.get('opt'); if (qp.get('place')) state.place = qp.get('place'); if (qp.get('trend')) state.trend = qp.get('trend'); if (qp.get('mix')) state.mix = qp.get('mix') === '1';
+if (qp.get('basis')) state.basis = qp.get('basis'); if (qp.get('opt')) state.opt = qp.get('opt'); if (qp.get('place')) state.place = qp.get('place'); if (qp.get('trend')) state.trend = qp.get('trend'); if (qp.get('mix')) state.mix = qp.get('mix') === '1';
 document.addEventListener('pointerdown', e => { if (state.sel && !e.target.closest('.trend-chart')) { state.sel = null; render(); } });
 let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 120); });
 render(); 
