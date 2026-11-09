@@ -68,6 +68,27 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — stage 1: John's answers; a correction (branch `stage-1-data`)
+
+**John:** counts start in 1983; 50 km squares; where the data lives left to
+Claude (this repo; git compresses it, about 13 MB per rebuild). SPEC §8.3 and
+§9.2 to 9.4 updated. Collisions are left out of councils and circles when their
+position can't be placed, or lands more than 20 km outside their police force's
+area (the first rule, "outside its usual councils", wrongly dropped about 6% of
+the Metropolitan Police's collisions before 2000, when it also covered parts of
+Surrey, Hertfordshire and Essex).
+
+**Correction:** I told John that from 1983 under 2% of collisions a year had
+unusable positions. That counted only those landing in the wrong place, not
+those that can't be placed at all. In fact 1983 to 1988 lose 4% to 15% a year
+(Strathclyde's are unusable every year; West Midlands' and Humberside's in 1986,
+Northumbria's in 1987); from 1989 it's 0.3% or less. Put back to John.
+
+**Also:** a "Rebuild data" workflow (Run workflow only; downloads, builds,
+checks, saves on a new `data-<date>` branch, never main), with
+`build/download.sh`; the latest year and the roads database's year are inputs.
+Can only be tried once it's on `main`. Data still not committed.
+
 ### 2026-11-09 — stage 1: the data build (branch `stage-1-data`, not merged)
 
 **What:** `build/` (Python): `stretches.py` rebuilds all 17,941 of DfT's stretches

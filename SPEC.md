@@ -169,9 +169,14 @@ following the device):
    designed (§13).
 2. **Provisional January to June figures are included each November**, marked
    as provisional.
-3. **Locations before the early 1990s are rougher** (about 40% rounded to 100
-   metres), so counts can go back to 1979 but rates only to 2000, when the
-   traffic counts start.
+3. **Counts go back to 1983, rates to 2000** (John, November 9th 2026). Before
+   1983 about one collision in seven has a garbled location that lands outside
+   its police force's area. In every year, a collision whose location falls
+   outside its police force's area is left out of councils and circles (about
+   1.5% a year before 2000, almost none since 2001); Great Britain's own totals
+   keep every collision. Older locations are also rougher (many rounded to 100
+   metres), which is why the files for circles use 100-metre cells before the
+   latest five years.
 
 ## 9. How it works (Proposed)
 
@@ -188,16 +193,18 @@ following the device):
    4. trim each collision to what the page needs: position, year, and for the
       latest five years also month, hour, day of the week, severity (recorded
       and adjusted), kind of road, stretch, and people hurt by road-user group;
-   5. split the collisions into files by postcode area, so the page loads only
-      the one or few its circle touches, and tells the website no more than the
-      postcode area.
-3. **Size:** five years of collisions for Great Britain, trimmed, came to 6.6 MB
-   compressed (the proposal's test), about 55 KB per postcode area on average.
-   The circle's trend from 2000 needs about 4.0 million collisions in all
-   (position and year only); to measure in stage 1, with a fall-back of counts
-   by one-kilometre square if it's too big.
+   5. split the collisions into files by 50 km square of the OS grid (John,
+      November 9th 2026), so the page loads only the one or few its circle
+      touches, and tells the website no more than roughly which part of the
+      country is being looked at. Years before 2000 are in a second file per
+      square, loaded only when the longer view is asked for.
+3. **Size** (measured in stage 1): about 13 MB compressed for all of Great
+   Britain. A circle in central London loads about 1 MB, most places 100 to
+   300 KB.
 4. **Where the data lives:** in this public repo's `data/`, rebuilt a few times a
-   year (all of it is open data).
+   year (all of it is open data). Git compresses it, so each rebuild adds about
+   13 MB to the repo's history: fine for years. If it ever grows too big, the
+   data can move to a separate repo, as Riverwatcher's did.
 5. **The page:** Vite, React and TypeScript, as the other tools; Vercel; Web
    Analytics without the part after "#".
 6. **Checks:** `npm run check` for the page's rules, and the build script checked
@@ -237,14 +244,16 @@ targets 44px; boxes 16px on touch screens; dark mode following the device.
 2. **Default circle:** one mile, with half a mile and two miles as buttons, and
    a link to the whole council area: yes.
 3. **The longer trend:** yes, a circle also offers counts back to 1979 (rates
-   still from 2000).
+   still from 2000). Then, after stage 1 showed garbled early locations: start
+   in 1983 (§8.3).
 4. **The map of shaded squares:** try 250 metres for a circle and one kilometre
    for a council area, and see; options in stage 5.
 5. **Provisional half-years:** yes, five-year figures on complete years only;
    the provisional January to June figures on the trend chart, marked
    "provisional".
 6. **Filters and a second place:** left for later, if at all.
-7. **Updating the data:** agreed in principle, kept in this repo; how it's
-   rebuilt (by hand or a workflow) to be worked out in stage 1.
+7. **Updating the data:** agreed in principle, kept in this repo (John left
+   where it lives to Claude: this repo, §9.4); how it's rebuilt (by hand or a
+   workflow) to be worked out in stage 1.
 8. **A testing stage:** only once Roadteller is built and John says "It's now in
    testing".

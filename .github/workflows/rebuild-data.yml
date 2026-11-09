@@ -1,0 +1,51 @@
+# Rebuild Roadteller's data from DfT's and OS's latest files (Run workflow only).
+# The result goes on a new branch, data-<date>, for checking before it's merged;
+# it never changes main or the live site by itself.
+name: Rebuild data
+on:
+  workflow_dispatch:
+    inputs:
+      latest:
+        description: "Latest complete year of collisions (e.g. 2025)"
+        required: true
+      mrdb:
+        description: "Year of DfT's Major Roads Database (e.g. 2025)"
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: rebuild-data
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      RT_LATEST: ${{ inputs.latest }}
+      RT_MRDB: ${{ inputs.mrdb }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r build/requirements.txt
+      - name: Download the sources
+        run: build/download.sh "$RUNNER_TEMP/dl" "$RT_MRDB"
+      - name: Build
+        run: |
+          W="$RUNNER_TEMP/work"; mkdir -p "$W"
+          python3 -I -u build/stretches.py "$RUNNER_TEMP/dl" "$W"
+          python3 -I -u build/areas.py "$RUNNER_TEMP/dl" "$W" data
+          python3 -I -u build/tiles.py "$RUNNER_TEMP/dl" "$W" data
+          python3 -I build/review.py data "$W" design/data-review.md
+      - name: Check
+        run: python3 -I build/check.py data "$RUNNER_TEMP/work"
+      - name: Save on a new branch
+        run: |
+          B="data-$(date -u +%Y-%m-%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$B"
+          git add data design/data-review.md
+          git commit -m "Data rebuilt: collisions to $RT_LATEST, roads database $RT_MRDB"
+          git push origin "$B"
+          echo "Saved on branch $B" >> "$GITHUB_STEP_SUMMARY"

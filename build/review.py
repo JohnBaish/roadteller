@@ -104,8 +104,18 @@ p(f'{len(IX["squares"])} squares of {IX["size"] // 1000} km. The biggest files (
 p()
 p('## 4. Positions before 2000')
 p()
-p('Before 1983 about one collision in seven has a garbled position that falls outside its police force\'s',
-  'area (17% in 1979, 14% in 1981); from 1983 to 1999 about 1.5% a year, and almost none since 2001.',
-  'These would add to the wrong place\'s counts.')
+p('A collision is left out of councils and circles when its position can\'t be placed, or lands more than 20 km')
+p('outside its police force\'s area (a garbled position). Great Britain\'s own totals keep every collision.')
+p()
+gbt = gb['trend']
+p('| Year | Collisions in Great Britain | Left out |')
+p('|---|---|---|')
+for y in sorted(gbt, key=int):
+    if int(y) > 2005: break
+    placed = sum(c['trend'][y][0] for c in C.values())
+    p(f'| {y} | {f(gbt[y][0])} | {round(100 * (1 - placed / gbt[y][0]), 1)}% |')
+p()
+p('From 1983 to 1988 whole police forces\' positions are unusable in some years: Strathclyde every year,')
+p('West Midlands and Humberside in 1986, Northumbria in 1987, and about half of the City of London\'s in 1986.')
 open(MD, 'w').write('\n'.join(L) + '\n')
 print('\n'.join(L))

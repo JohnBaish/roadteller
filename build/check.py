@@ -16,10 +16,11 @@ def check(name, ok, detail=''):
 
 gb = A['gb']; C = A['councils']; R = A['regions']
 # every collision with a council adds up to Great Britain, year by year
-# before 1989 many collisions have no position, so only from 1989 must councils add up
-for y in map(str, range(1989, LATEST + 1)):
+# Great Britain's counts are the full totals; councils leave out collisions with no
+# usable position (up to about 3% a year before 2000, almost none since)
+for y in map(str, range(FIRST_YEAR, LATEST + 1)):
     s = sum(c['trend'][y][0] for c in C.values())
-    check(f'councils add up, {y}', s <= gb['trend'][y][0] and s >= gb['trend'][y][0] * 0.995,
+    check(f'councils add up, {y}', s <= gb['trend'][y][0] and s >= gb['trend'][y][0] * (0.97 if int(y) < 2000 else 0.995),
           f'{s} of {gb["trend"][y][0]}')
 for y in map(str, range(RATE_FROM, LATEST + 1)):
     s = sum(c['trend'][y][2] for c in C.values())
@@ -33,6 +34,7 @@ check('West Berkshire traffic near 7,138 million miles', abs(wb['am_mvm'] - 7138
 check('West Berkshire one for every 14.0 million miles',
       round(100 / wb['rate'], 1) in (13.9, 14.0, 14.1), round(100 / wb['rate'], 2))
 check('West Berkshire about 46% of expected', 0.43 <= wb['ratio'] <= 0.49, wb['ratio'])
+check('no year before 1983', min(map(int, gb['trend'])) == FIRST_YEAR == 1983)
 check('West Berkshire previous five years near 1,122', abs(wb['prev_all'] - 1122) <= 15, wb['prev_all'])
 # Great Britain: the rate for A-roads and motorways near one for every 4.3 million miles
 check('Great Britain one for every 4.3 million miles', round(100 / gb['five']['rate'], 1) in (4.2, 4.3, 4.4),

@@ -25,7 +25,7 @@ def log(*a): print(f'[{time.time() - t0:6.0f}s]', *a, flush=True)
 FILES = sorted(glob.glob(f'{DL}/or-all/data/*_RoadLink.shp'))
 
 # ---- DfT stretches and their traffic ------------------------------------------------
-mr = shapefile.Reader(f'{DL}/mrdb/MRDB_2025_published2')
+mr = shapefile.Reader(glob.glob(f'{DL}/mrdb/*.shp')[0][:-4])   # DfT's Major Roads Database
 st = []
 for sr in mr.iterShapeRecords():
     if sr.shape.points:

@@ -3,8 +3,9 @@
 python3 -I build/areas.py <DL> <WORK> <data folder>
 
 Every collision with a position, and every DfT count point, is placed in today's
-council area (highway authority) by where it is, so trends back to 1979 (counts)
-and 2000 (rates) use today's boundaries throughout. Writes data/areas.json and a
+council area (highway authority) by where it is, so trends back to 1983 (counts)
+and 2000 (rates) use today's boundaries throughout. Collisions whose position lies
+outside their police force's area are left out (garbled positions). Writes data/areas.json and a
 report in WORK/areas-report.json.
 """
 import sys, json, time
@@ -42,7 +43,7 @@ log('traffic rows', len(a))
 # ---- collisions ---------------------------------------------------------------
 col = pd.read_csv(f'{DL}/collision-all.csv', low_memory=False,
                   usecols=['collision_index', 'collision_year', 'location_easting_osgr', 'location_northing_osgr',
-                           'local_authority_highway', 'first_road_class'])
+                           'local_authority_highway', 'first_road_class', 'police_force'])
 col['e'] = pd.to_numeric(col.location_easting_osgr, errors='coerce')
 col['n'] = pd.to_numeric(col.location_northing_osgr, errors='coerce')
 col['council'] = C.assign(col.e, col.n)
@@ -50,6 +51,10 @@ known = set(C.codes)
 no_pos = col.council == ''
 fallback = no_pos & col.local_authority_highway.isin(known)
 col.loc[fallback, 'council'] = col.loc[fallback, 'local_authority_highway']
+ok = in_force_area(col.police_force.values, col.council.values, col.collision_year.values, col.e.values, col.n.values, C)
+report['left_out_outside_force_area'] = {int(y): int(v) for y, v in col[(col.council != '') & ~ok].collision_year.value_counts().sort_index().items()}
+col.loc[~ok, 'council'] = ''
+col = col[col.collision_year >= FIRST_YEAR]
 col['kind'] = np.where(col.first_road_class.isin([1, 2]), 'motorway', np.where(col.first_road_class == 3, 'a', 'minor'))
 report['collisions'] = int(len(col))
 report['collisions_no_position'] = int(no_pos.sum())

@@ -7,13 +7,14 @@ import json, os, math
 from collections import defaultdict
 
 import numpy as np
+import pandas as pd
 import shapely
 import shapefile
 
 MILES_PER_KM = 0.621371
-FIRST_YEAR = 1979          # STATS19's first year
+FIRST_YEAR = 1983          # STATS19 starts in 1979, but many positions before 1983 are garbled (John, November 9th 2026)
 RATE_FROM = 2000           # DfT's count-point traffic starts in 2000
-LATEST = 2025              # last complete year
+LATEST = int(os.environ.get('RT_LATEST', 2025))   # last complete year of collisions
 FIVE = list(range(LATEST - 4, LATEST + 1))
 PREV_FIVE = list(range(LATEST - 9, LATEST - 4))
 
@@ -133,6 +134,34 @@ class Councils:
             res[miss[ip2]] = self.codes[ig2]
         out[ok] = res
         return out
+
+
+def in_force_area(force, council, year, x, y, councils, km=20):
+    """True where a collision lies in, or within `km` of, an area its police force
+    covers. A force's areas are the council areas holding at least 0.1% of its
+    collisions from 2000 on, when positions are reliable. The 20 km allows for
+    forces whose boundaries moved (the Metropolitan Police covered parts of
+    Surrey, Hertfordshire and Essex until 2000). Garbled positions, often hundreds
+    of kilometres out, and positions that couldn't be placed at all, are left out."""
+    force = np.asarray(force); council = np.asarray(council, dtype=object); year = np.asarray(year)
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    recent = (year >= 2000) & (council != '')
+    pairs = pd.Series(1, index=pd.MultiIndex.from_arrays([force[recent], council[recent]])).groupby(level=[0, 1]).size()
+    share = pairs / pairs.groupby(level=0).transform('sum')
+    usual = defaultdict(set)
+    for f, c in share[share >= 0.001].index:
+        usual[f].add(c)
+    ok = np.array([c in usual.get(f, ()) for f, c in zip(force, council)])
+    check = np.where(~ok & (council != ''))[0]
+    geom_of = dict(zip(councils.codes, councils.geoms))
+    for f in np.unique(force[check]):
+        idx = check[force[check] == f]
+        if f not in usual: continue
+        area = shapely.union_all([geom_of[c] for c in usual[f]])
+        shapely.prepare(area)
+        d = shapely.distance(area, shapely.points(x[idx], y[idx]))
+        ok[idx[d <= km * 1000]] = True
+    return ok
 
 
 def dump(obj, path):

@@ -17,7 +17,9 @@ roughly which part of the country is being looked at. For each square:
             [year, 100 m cells (as differences of easting × 1000 + northing),
             collisions in each cell]
     stretches: A-road and motorway stretches crossing the square
-  <sx>-<sy>-old.json  the same history for 1979 to 1999, loaded only when asked
+  <sx>-<sy>-old.json  the same history for 1983 to 1999, loaded only when asked
+
+Collisions outside their police force's area (garbled positions) are left out.
 """
 import sys, json, time, pickle, os, gzip
 from collections import defaultdict
@@ -33,11 +35,15 @@ t0 = time.time()
 def log(*a): print(f'[{time.time() - t0:6.0f}s]', *a, flush=True)
 
 col = pd.read_csv(f'{DL}/collision-all.csv', low_memory=False,
-                  usecols=['collision_index', 'collision_year', 'location_easting_osgr', 'location_northing_osgr'])
+                  usecols=['collision_index', 'collision_year', 'location_easting_osgr', 'location_northing_osgr', 'police_force'])
 col['e'] = pd.to_numeric(col.location_easting_osgr, errors='coerce')
 col['n'] = pd.to_numeric(col.location_northing_osgr, errors='coerce')
 col = col.dropna(subset=['e', 'n'])
 col = col[(col.e > 0) & (col.n > 0)]
+CO = Councils(DL)
+col['council'] = CO.assign(col.e, col.n)
+col = col[in_force_area(col.police_force.values, col.council.values, col.collision_year.values, col.e.values, col.n.values, CO)]
+col = col[col.collision_year >= FIRST_YEAR]
 col['sx'] = (col.e // SQ).astype(int); col['sy'] = (col.n // SQ).astype(int)
 col['ue'] = ((col.e - col.sx * SQ) / 10).round().astype(int)
 col['un'] = ((col.n - col.sy * SQ) / 10).round().astype(int)
@@ -86,7 +92,7 @@ def stretch_row(s):
                 rate=r(s['n'] / (s['mvm'] / 100), 4) if s['mvm'] and s['n'] >= 10 else None,
                 rebuilt=bool(s['rebuilt']), line=flat)
 
-SQ_ENV = int(os.environ.get('RT_SQUARE', SQ))
+SQ_ENV = int(os.environ.get('RT_SQUARE', SQ))   # 50 km agreed by John, November 9th 2026
 SQ = SQ_ENV
 
 def cells(df):
