@@ -1,7 +1,10 @@
-# Riskreckoner — working notes
+# Roadteller — working notes
+
+(Named Riskreckoner until November 9th 2026, and Roadreckoner before that.
+Log entries written before the rename keep the old name.)
 
 **Road safety measured against traffic levels.** A free baish.net tool
-(`riskreckoner.baish.net`, to be set up) for injured people on the roads near
+(`roadteller.baish.net`, to be set up) for injured people on the roads near
 any postcode or place in Great Britain: how many, who, when, which roads, and
 how the area compares, fairly, with elsewhere, from the police's injury
 collision records (DfT's STATS19) and DfT's traffic counts. A sister tool to
@@ -10,13 +13,13 @@ Lightreader, Refueller and Riverwatcher.
 
 Read these first, in this order:
 
-1. The tracker's `projects/riskreckoner.md` in `JohnBaish/baish.net-directory`:
+1. The tracker's `projects/roadteller.md` in `JohnBaish/baish.net-directory`:
    decisions so far, open questions and next steps.
 2. The proposal (a Claude doc, John's):
    https://claude.ai/artifact/VqAyHmbhu7Aiv2n7W1z38D
 3. `design/data-tests/README.md`: the West Berkshire and Reading tests.
    The original Reading test is in the "My websites" Claude project
-   (`claude/riskreckoner-data-tests.md`), which Claude Code can't open.
+   (`claude/roadteller-data-tests.md`), which Claude Code can't open.
 4. The design options: https://claude.ai/artifact/Ej97EjfWGY6DYMLcVTwt8d
    (source `design/mockups/`; pictures in `design/mockups/previews/`).
 5. `HOUSE-STYLE.md`, copied from clockwheel on November 9th 2026 (commit
@@ -64,6 +67,17 @@ Data notes:
   of the Great Britain rate in words and % (John, November 9th 2026).
 
 ## Log
+
+### 2026-11-09 — renamed Roadteller
+
+**John:** Riskreckoner becomes **Roadteller** (address roadteller.baish.net,
+repo `JohnBaish/roadteller`). He wanted roads or travel in the name; he
+considered RoadAssessor, but "assessor" suggests a verdict, road-condition
+surveys, insurance assessors and the Road Assessment Programme. "Reckoner"
+had been Claude's favourite in the chat, not his. Web searches found no
+product called Roadteller (not a trademark check). Every current mention is
+changed: these notes, the data-test scripts and the mock-ups. Earlier log
+entries keep the old name.
 
 ### 2026-11-09 — round 3 of option B (local, not yet pushed)
 

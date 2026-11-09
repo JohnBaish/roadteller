@@ -1,4 +1,4 @@
-"""Real figures for the Riskreckoner mock-ups. python3 -I figures.py <dl> <match json> <out.json>"""
+"""Real figures for the Roadteller mock-ups. python3 -I figures.py <dl> <match json> <out.json>"""
 import sys, json, csv, math
 from collections import defaultdict, Counter
 import pandas as pd, numpy as np

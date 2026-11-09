@@ -1,4 +1,4 @@
-<title>Riskreckoner design options</title>
+<title>Roadteller design options</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /*FONTS*/
@@ -188,12 +188,12 @@ details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display
 
 <div class="gutter intro"><div class="col">
   <p class="card-kicker">Design · round 3 · November 9th 2026</p>
-  <h2>Riskreckoner: option B, round 3</h2>
+  <h2>Roadteller: option B, round 3</h2>
   <p>John's round 2 changes: the bold lead line above the big figure; "44% higher than …" above the Great Britain figure; "2021 to 2025 inclusive"; Great Britain's bars beside each "Who was hurt" bar; a year on the trend chart cleared by clicking or tapping anywhere else; and a share button on every chart (here it shows the picture it would share). A circle now leads with its count, and its main roads are named, with how much of each lies inside it. Real figures throughout. Use the dark bar to switch between a mile round the middle of RG14 (Newbury) and the whole of West Berkshire. All wording is a first draft for John.</p>
 </div></div>
 
 <div class="nav gutter"><div class="col">
-  <span class="brand">Riskreckoner<small>Road safety measured against traffic levels</small></span>
+  <span class="brand">Roadteller<small>Road safety measured against traffic levels</small></span>
   <button class="switch" role="switch" aria-checked="false" type="button" aria-label="Dark mode"><span class="switch-label">Dark</span><span class="switch-track"><span class="switch-knob"></span></span></button>
 </div></div>
 
@@ -431,13 +431,13 @@ function picture(spec) {
   const svgText = raw.replace('<svg ', `<svg xmlns="http://www.w3.org/2000/svg" width="${cw}" height="${ch}" `).replace('role="img">', `role="img"><style>${fontsCss}${LIGHT}${chartCss}</style>`);
   return new Promise(res => { const img = new Image(); img.onload = () => {
     const W = 1000, pad = 48, sc = 2, cv = document.createElement('canvas'), x = cv.getContext('2d');
-    const credit = 'riskreckoner.baish.net · Police injury collision records (STATS19) and traffic estimates, Department for Transport. Contains public sector information licensed under the Open Government Licence v3.0.';
+    const credit = 'roadteller.baish.net · Police injury collision records (STATS19) and traffic estimates, Department for Transport. Contains public sector information licensed under the Open Government Licence v3.0.';
     x.font = '400 14px Figtree'; const words = credit.split(' '), lines2 = []; let cur = '';
     words.forEach(wd => { if (x.measureText(cur + ' ' + wd).width > W - 2 * pad) { lines2.push(cur); cur = wd; } else cur = cur ? cur + ' ' + wd : wd; }); lines2.push(cur);
     const H = pad + 22 + 44 + 30 + 20 + ch + 24 + lines2.length * 20 + pad;
     cv.width = W * sc; cv.height = H * sc; x.scale(sc, sc);
     x.fillStyle = '#f5ead8'; x.fillRect(0, 0, W, H);
-    let y = pad + 14; x.fillStyle = '#8c491a'; x.font = '700 14px Figtree'; x.fillText('RISKRECKONER', pad, y);
+    let y = pad + 14; x.fillStyle = '#8c491a'; x.font = '700 14px Figtree'; x.fillText('ROADTELLER', pad, y);
     y += 40; x.fillStyle = '#201e1d'; x.font = '400 32px Caprasimo'; x.fillText(spec.title, pad, y);
     y += 30; x.fillStyle = '#645c50'; x.font = '400 17px Figtree'; x.fillText(spec.sub, pad, y);
     y += 20; x.drawImage(img, pad, y, cw, ch); y += ch + 30;

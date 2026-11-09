@@ -1,4 +1,4 @@
-"""Riskreckoner data test: match STATS19 injury collisions to DfT road stretches,
+"""Roadteller data test: match STATS19 injury collisions to DfT road stretches,
 with stretches rebuilt along OS Open Roads where possible.
 
 Usage: python3 -I match.py <dl folder> <ONS district code> <label> <out.json>

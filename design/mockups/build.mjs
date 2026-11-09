@@ -7,6 +7,6 @@ const fonts = face('Caprasimo', 'caprasimo/files/caprasimo-latin-400-normal.woff
   [400, 600, 700].map(w => face('Figtree', `figtree/files/figtree-latin-${w}-normal.woff2`, w)).join('')
 const data = readFileSync(dataFile, 'utf8').replace(/</g, '\\u003c')
 const page = readFileSync(new URL('./options.src.html', import.meta.url), 'utf8').replace('/*FONTS*/', fonts).replace('/*DATA*/null', data)
-writeFileSync(`${out}/riskreckoner-options.html`, page)
+writeFileSync(`${out}/roadteller-options.html`, page)
 writeFileSync(`${out}/options.html`, `<!doctype html>\n<html lang="en-GB">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n</head>\n<body>\n${page}\n</body>\n</html>\n`)
 console.log('built', page.length)
