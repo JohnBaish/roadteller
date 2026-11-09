@@ -13,9 +13,10 @@ const yearsText = (five: number[]) => `${five[0]} to ${five[five.length - 1]} in
 /** "West Berkshire's A-roads and motorways", or just "A-roads" where there's no motorway */
 const roadsOf = (f: AreaFigures) => (f.five.kinds.motorway.mvm > 0 ? 'A-roads and motorways' : 'A-roads');
 
-function whoSentence(f: AreaFigures, gb: AreaFigures) {
-  const tot = f.five.hurt || 1, gtot = gb.five.hurt || 1;
-  const share = (k: string) => pct(f.five.who[k] ?? 0, tot), g = (k: string) => pct(gb.five.who[k] ?? 0, gtot);
+/** The road user whose share differs most from Great Britain's. */
+export function whoSentence(who: Record<string, number>, hurt: number, gb: AreaFigures) {
+  const tot = hurt || 1, gtot = gb.five.hurt || 1;
+  const share = (k: string) => pct(who[k] ?? 0, tot), g = (k: string) => pct(gb.five.who[k] ?? 0, gtot);
   const best = (['car', 'walking', 'cycling', 'motorcycle'] as const).slice().sort((x, y) => Math.abs(share(y) - g(y)) - Math.abs(share(x) - g(x)))[0];
   return `${share(best)}% of the people hurt were ${USER_WORDS[best]}, against ${g(best)}% across Great Britain.`;
 }
@@ -101,11 +102,11 @@ function Council({ areas, f }: { areas: AreasFile; f: AreaFigures }) {
         <div className="grid2">
           <div className="card" ref={half}>
             <h3>Who was hurt</h3>
-            <p>{whoSentence(f, gb)}</p>
-            <Who f={f} gb={gb} w={hw} name={name} sub={sub} />
+            <p>{whoSentence(v.who, v.hurt, gb)}</p>
+            <Who who={v.who} hurt={v.hurt} gb={gb} w={hw} name={name} sub={sub} />
           </div>
           <div className="card">
-            <When f={f} w={hw} sub={sub} />
+            <When hours={v.hours} days={v.days} w={hw} sub={sub} />
           </div>
         </div>
         <div className="card">
@@ -243,10 +244,10 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
   );
 }
 
-function Who({ f, gb, w, name, sub }: { f: AreaFigures; gb: AreaFigures; w: number; name: string; sub: string }) {
+export function Who({ who, hurt, gb, w, name, sub }: { who: Record<string, number>; hurt: number; gb: AreaFigures; w: number; name: string; sub: string }) {
   const svg = useRef<SVGSVGElement>(null);
-  const tot = f.five.hurt || 1, gtot = gb.five.hurt || 1;
-  const rows = USERS.map((k) => ({ t: k === 'other' ? 'Others' : `People ${USER_WORDS[k]}`, a: pct(f.five.who[k] ?? 0, tot), b: pct(gb.five.who[k] ?? 0, gtot) }));
+  const tot = hurt || 1, gtot = gb.five.hurt || 1;
+  const rows = USERS.map((k) => ({ t: k === 'other' ? 'Others' : `People ${USER_WORDS[k]}`, a: pct(who[k] ?? 0, tot), b: pct(gb.five.who[k] ?? 0, gtot) }));
   return (
     <>
       {w > 0 && <PairBars rows={rows} w={w} meName={name.length > 22 ? 'Here' : name} label="People hurt by road user, against Great Britain" svgRef={svg} />}
@@ -255,21 +256,20 @@ function Who({ f, gb, w, name, sub }: { f: AreaFigures; gb: AreaFigures; w: numb
   );
 }
 
-function When({ f, w, sub }: { f: AreaFigures; w: number; sub: string }) {
+export function When({ hours, days, w, sub }: { hours: number[]; days: number[]; w: number; sub: string }) {
   const hs = useRef<SVGSVGElement>(null), ds = useRef<SVGSVGElement>(null);
-  const hours = f.five.hours, days = f.five.days;
   const bh = hours.indexOf(Math.max(...hours));
   const most = days.indexOf(Math.max(...days)), least = days.indexOf(Math.min(...days));
   return (
     <>
       <h3>When</h3>
       <p>
-        The busiest hour was {hourText(bh)}, with {fmt(hours[bh])} collisions in five years.
+        The busiest hour was {hourText(bh)}, with {word(hours[bh])} collision{hours[bh] === 1 ? '' : 's'} in five years.
       </p>
       {w > 0 && <HourBars hours={hours} w={w} label="Collisions by hour of the day" svgRef={hs} />}
       <ShareButton svg={hs} title="Injury collisions by hour of day" sub={sub} file="roadteller-hours.png" />
       <p className="when-days">
-        {DAY_NAMES[most]}s had the most collisions ({fmt(days[most])}) and {DAY_NAMES[least]}s the fewest ({fmt(days[least])}).
+        {days[most] === days[least] ? 'Collisions were spread evenly over the days of the week.' : <>{DAY_NAMES[most]}s had the most collisions ({word(days[most])}) and {DAY_NAMES[least]}s the fewest ({days[least] === 0 ? 'none' : word(days[least])}).</>}
       </p>
       {w > 0 && <DayBars days={days} w={w} label="Collisions by day of the week" svgRef={ds} />}
       <ShareButton svg={ds} title="Injury collisions by day of the week" sub={sub} file="roadteller-days.png" />

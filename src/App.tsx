@@ -1,9 +1,8 @@
-// Stage 2 (PLAN.md): choosing a place, and a plain list of the figures behind it, to prove the look-ups work. The agreed design
-// (option B, SPEC §6 and §7) replaces the lists in stages 3 and 4. All wording here is draft.
+// The page: choosing a place (stage 2), then a council area (SPEC §6) or a circle (SPEC §7) in the agreed design, option B.
 import { Component, useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { getPlaces, PlaceBox } from './components/PlaceBox.tsx';
 import { ThemeSwitch } from './components/ThemeSwitch.tsx';
-import { CircleFigures } from './components/Figures.tsx';
+import { CircleView } from './components/CircleView.tsx';
 import { CouncilView } from './components/CouncilView.tsx';
 import { loadIndex, type PageIndex } from './lib/data.ts';
 import { findPlace, looksLikePostcode, namesakes, placeAt, placeLabel, type NamedPlace } from './lib/places.ts';
@@ -168,7 +167,7 @@ export default function App() {
           {(start || changing) && <Chooser start={start} index={index} />}
           {!start && !changing && (
             <div className="strip" data-noprint>
-              <span className="muted">Showing {target?.kind === 'council' ? 'a council area' : 'a circle'}.</span>
+              <span className="muted">Showing {target?.kind === 'council' ? 'a council area' : 'a circle round a postcode or place'}.</span>
               <button type="button" className="btn btn-secondary" onClick={() => setChanging(true)}>
                 Change
               </button>
@@ -181,7 +180,11 @@ export default function App() {
           </p>
         )}
         <SafetyNet key={target ? hashOf(target) : ''}>
-          {index && target?.kind === 'circle' && <CircleFigures index={index} target={target} />}
+          {index && target?.kind === 'circle' && (
+            <div className="view">
+              <CircleView index={index} target={target} />
+            </div>
+          )}
           {target?.kind === 'council' && (
             <div className="view">
               <CouncilView code={target.code} />

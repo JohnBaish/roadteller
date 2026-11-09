@@ -377,18 +377,8 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 }
 @media print { .cmp-controls, .cmp-addbox, .cmp-add, .cmp-x, .avg-share, .share-wrap, .cmp-way { display: none !important; } }
 
-/* Stage 2's plain figures (replaced in stages 3 and 4). */
 .chooser .search + .search { margin-top: var(--space-3); }
 .chooser select.input { max-width: 100%; }
-.plain h3 { font-size: 24px; margin: var(--space-4) 0 var(--space-2); }
-.plain h4 { margin: var(--space-4) 0 var(--space-2); }
-.plain-list { display: grid; grid-template-columns: minmax(0, 18em) minmax(0, 1fr); gap: 6px var(--space-4); margin: 0; }
-.plain-list dt { color: var(--color-neutral-700); }
-.plain-list dd { margin: 0; }
-.plain-years { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
-.plain-ul { margin: 0; padding-left: 1.2em; }
-.radius-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-@media (max-width: 600px) { .plain-list { grid-template-columns: 1fr; } .plain-list dd { margin-bottom: 8px; } }
 
 /* Stage 3: the council area view (the agreed option B, design/mockups/options.src.html). */
 .view .card { display: block; padding: var(--space-6); border-radius: calc(var(--radius-lg) * 1.15); min-width: 0; }
@@ -449,3 +439,12 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .strip { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
 @media print { .share-row, .strip .btn { display: none !important; } .view .card { break-inside: avoid; } }
 .view-head { padding-top: 0; }
+
+/* Stage 4: the circle view */
+.radius-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); margin-top: var(--space-3); }
+.chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; font-size: 13px; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-divider); padding: 6px 12px; border-radius: 999px; min-height: 36px; }
+.chip[aria-current="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+@media (pointer: coarse) { .chip { min-height: 44px; } }
+.hero-people { font-size: 17px; margin-top: var(--space-3) !important; }
+.view .notes { color: var(--color-neutral-700); font-size: 14px; }

@@ -207,3 +207,32 @@ export function Lines({ series, w, max: maxIn, label, selected, onSelect, svgRef
     </Svg>
   );
 }
+
+/** Collisions a year as bars, each year a button (for circles with too few collisions for a fair index) */
+export function YearBars({ years, w, label, selected, onSelect, svgRef }: {
+  years: [number, number][]; w: number; label: string; selected: number | null; onSelect?: (y: number) => void; svgRef?: RefObject<SVGSVGElement | null>;
+}) {
+  const h = 170, padL = 28, padB = 22, padT = 10, top = niceMax(Math.max(4, ...years.map((p) => p[1]))), bw = (w - padL) / years.length;
+  const Y = (v: number) => padT + (h - padT - padB) * (1 - v / top);
+  const step = years.length > 30 ? 10 : 5;
+  return (
+    <Svg w={w} h={h} label={label} svgRef={svgRef}>
+      {ticks(top).map((t) => (
+        <g key={t}>
+          <line className="grid" x1={padL} x2={w} y1={Y(t)} y2={Y(t)} />
+          <text x={padL - 5} y={Y(t) + 4} textAnchor="end">{t}</text>
+        </g>
+      ))}
+      {years.map(([y, v], i) => (
+        <g key={y}>
+          <rect className={`bar me${y === selected ? '' : ' soft'}`} x={padL + i * bw + 1} y={Y(v)} width={Math.max(1, bw - 2)} height={Y(0) - Y(v)} />
+          {y % step === 0 && <text x={padL + i * bw + bw / 2} y={h - 5} textAnchor="middle">{y}</text>}
+          {onSelect && (
+            <rect className="hit" data-noshare x={padL + i * bw} y={padT} width={bw} height={h - padT - padB} tabIndex={0} role="button" aria-label={`${y}: ${v}`}
+              onClick={() => onSelect(y)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(y); } }} />
+          )}
+        </g>
+      ))}
+    </Svg>
+  );
+}

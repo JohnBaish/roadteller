@@ -71,6 +71,22 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — stage 3 merged; stage 4: the circle view (branch `stage-4-circle`, not merged)
+
+**John:** merge stage 3 (done; "Delete merged branches" run); the note under Which roads (item 4) needs work, to come back to.
+**What:** `src/components/CircleView.tsx`, from option B round 5 (SPEC §7): the half-mile, one-mile and two-mile buttons
+and "See all of [council]"; the big count with people hurt and the previous five years, and the council area's rate beside
+it; "Better or worse than before?" as counts indexed to 2000 against Great Britain, with "Show from 1989"; who was hurt
+and when (shared with the council view); the A-road and motorway stretches through the circle by DfT's junction names (ten,
+then "Show all"). `Figures.tsx` (stage 2's plain list) removed. **Drafts for John:** a circle with fewer than 10 collisions
+in its first year shows yearly counts as bars instead of an index ("Too few collisions here in 2000 for a fair comparison
+with Great Britain, so these are the yearly counts."); "No injury collisions"; "Show all 248 stretches"; DfT's junction
+names in capitals tidied ("Pinchington Lane").
+
+**Checked:** typecheck, lint, `npm run check`, build. Chromium at 1200px, 390px and 844 by 390 with touch, light and dark:
+RG14 (and half, two miles, from 1989), RG4 7HN, Caversham, IV27 (none), EC2V two miles (9,926), QQ1, and four small rural
+circles (bars); no errors, no sideways scrolling; years chosen and cleared. **Not checked:** a real phone.
+
 ### 2026-11-09 — stage 3: the council area view (branch `stage-3-council`, not merged)
 
 **John:** merge stage 2 (done; "Delete merged branches" run) and build stage 3. **What:** `src/components/CouncilView.tsx`
