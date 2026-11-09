@@ -3,7 +3,7 @@
 python3 -I build/areas.py <DL> <WORK> <data folder>
 
 Every collision with a position, and every DfT count point, is placed in today's
-council area (highway authority) by where it is, so trends back to 1983 (counts)
+council area (highway authority) by where it is, so trends back to 1989 (counts)
 and 2000 (rates) use today's boundaries throughout. Collisions whose position lies
 outside their police force's area are left out (garbled positions). Writes data/areas.json and a
 report in WORK/areas-report.json.

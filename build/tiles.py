@@ -17,7 +17,7 @@ roughly which part of the country is being looked at. For each square:
             [year, 100 m cells (as differences of easting × 1000 + northing),
             collisions in each cell]
     stretches: A-road and motorway stretches crossing the square
-  <sx>-<sy>-old.json  the same history for 1983 to 1999, loaded only when asked
+  <sx>-<sy>-old.json  the same history for 1989 to 1999, loaded only when asked
 
 Collisions outside their police force's area (garbled positions) are left out.
 """

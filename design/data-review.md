@@ -50,10 +50,10 @@ straight line may have placed on the wrong stretch:
 
 ## 2. Council areas
 
-206 council areas (highway authorities as they are today). Every collision with a position, and every DfT count point, is placed in the council area it lies in.
+207 council areas (highway authorities as they are today). Every collision with a position, and every DfT count point, is placed in the council area it lies in.
 
-- 207,458 of 8,106,417 collisions since 1979 couldn't be placed: nearly all are from 1979 to 1988 with garbled positions (see §4).
-- In the five years, 7,571 of 513,801 collisions (1.5%) are placed in a different council area from the one the police gave, mostly on roads along a boundary.
+- 6,728 of 6,630,778 collisions since 1989 have no usable position and are left out of council areas and circles (see §4).
+- In the five years, 7,562 of 513,801 collisions (1.5%) are placed in a different council area from the one the police gave, mostly on roads along a boundary.
 - 91 of DfT's count points lie in a different council area from the one DfT gives.
 
 Great Britain, A-roads and motorways: one injury collision for every 4.4 million miles.
@@ -89,11 +89,11 @@ Most collisions for the traffic:
 | City of London | 463 | 0.5 | 684% |
 | Wandsworth | 3,025 | 0.5 | 680% |
 
-Council areas with fewer than 10 collisions on A-roads and motorways (no rate shown): none
+Council areas with fewer than 10 collisions on A-roads and motorways (no rate shown): Isles of Scilly
 
 ## 3. The files for circles
 
-154 squares of 50 km. The biggest files (compressed): 10-3 1038 KB, 8-8 293 KB, 8-5 274 KB, 7-7 258 KB, 7-8 247 KB.
+153 squares of 50 km. The biggest files (compressed): 10-3 1038 KB, 8-8 293 KB, 8-5 274 KB, 7-7 258 KB, 7-8 247 KB.
 
 ## 4. Positions before 2000
 
@@ -102,12 +102,6 @@ outside its police force's area (a garbled position). Great Britain's own totals
 
 | Year | Collisions in Great Britain | Left out |
 |---|---|---|
-| 1983 | 242,876 | 3.8% |
-| 1984 | 253,183 | 3.7% |
-| 1985 | 245,645 | 4.2% |
-| 1986 | 247,878 | 14.9% |
-| 1987 | 239,063 | 5.1% |
-| 1988 | 246,994 | 3.8% |
 | 1989 | 260,759 | 0.3% |
 | 1990 | 258,441 | 0.3% |
 | 1991 | 235,889 | 0.2% |
@@ -119,12 +113,13 @@ outside its police force's area (a garbled position). Great Britain's own totals
 | 1997 | 240,287 | 0.1% |
 | 1998 | 238,923 | 0.2% |
 | 1999 | 235,048 | 0.2% |
-| 2000 | 233,729 | 0.2% |
+| 2000 | 233,729 | 0.1% |
 | 2001 | 229,014 | 0.2% |
 | 2002 | 221,751 | 0.2% |
 | 2003 | 214,030 | 0.1% |
 | 2004 | 207,410 | 0.0% |
 | 2005 | 198,735 | 0.0% |
 
-From 1983 to 1988 whole police forces' positions are unusable in some years: Strathclyde every year,
-West Midlands and Humberside in 1986, Northumbria in 1987, and about half of the City of London's in 1986.
+Counts start in 1989 (John, November 9th 2026). From 1983 to 1988, 4% to 15% of collisions a year would be
+left out: whole police forces' positions are unusable in some years (Strathclyde every year, West Midlands and
+Humberside in 1986, Northumbria in 1987, about half of the City of London's in 1986); before 1983 it's worse.

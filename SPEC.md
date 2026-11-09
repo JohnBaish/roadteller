@@ -169,14 +169,15 @@ following the device):
    designed (§13).
 2. **Provisional January to June figures are included each November**, marked
    as provisional.
-3. **Counts go back to 1983, rates to 2000** (John, November 9th 2026). Before
-   1983 about one collision in seven has a garbled location that lands outside
-   its police force's area. In every year, a collision whose location falls
-   outside its police force's area is left out of councils and circles (about
-   1.5% a year before 2000, almost none since 2001); Great Britain's own totals
-   keep every collision. Older locations are also rougher (many rounded to 100
-   metres), which is why the files for circles use 100-metre cells before the
-   latest five years.
+3. **Counts go back to 1989, rates to 2000** (John, November 9th 2026). Before
+   1989 too many locations are unusable: from 1983 to 1988, 4% to 15% of
+   collisions a year (whole police forces in some years, Strathclyde in every
+   one), and more before. In every year, a collision whose location can't be
+   placed, or lands more than 20 km outside its police force's area, is left out
+   of councils and circles (0.3% a year or less from 1989, almost none since
+   2003); Great Britain's own totals keep every collision. Older locations are
+   also rougher (many rounded to 100 metres), which is why the files for circles
+   use 100-metre cells before the latest five years.
 
 ## 9. How it works (Proposed)
 
@@ -245,7 +246,8 @@ targets 44px; boxes 16px on touch screens; dark mode following the device.
    a link to the whole council area: yes.
 3. **The longer trend:** yes, a circle also offers counts back to 1979 (rates
    still from 2000). Then, after stage 1 showed garbled early locations: start
-   in 1983 (§8.3).
+   in 1983; then, after a correction (more were unusable than first said),
+   1989 (§8.3).
 4. **The map of shaded squares:** try 250 metres for a circle and one kilometre
    for a council area, and see; options in stage 5.
 5. **Provisional half-years:** yes, five-year figures on complete years only;

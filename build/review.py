@@ -66,8 +66,9 @@ p()
 p(f'{len(C)} council areas (highway authorities as they are today). Every collision with a position, and',
   f'every DfT count point, is placed in the council area it lies in.')
 p()
-p(f'- {f(AR["collisions_no_position"])} of {f(AR["collisions"])} collisions since 1979 couldn\'t be placed:',
-  'nearly all are from 1979 to 1988 with garbled positions (see §4).')
+tot = sum(gb['trend'][y][0] for y in gb['trend']); placed = sum(c['trend'][y][0] for c in C.values() for y in c['trend'])
+p(f'- {f(tot - placed)} of {f(tot)} collisions since {min(map(int, gb["trend"]))} have no usable position and are',
+  'left out of council areas and circles (see §4).')
 p(f'- In the five years, {f(AR["recent_police_code_differs"])} of {f(AR["recent"])} collisions',
   f'({round(100 * AR["recent_police_code_differs"] / AR["recent"], 1)}%) are placed in a different council area from the one',
   'the police gave, mostly on roads along a boundary.')
@@ -115,7 +116,8 @@ for y in sorted(gbt, key=int):
     placed = sum(c['trend'][y][0] for c in C.values())
     p(f'| {y} | {f(gbt[y][0])} | {round(100 * (1 - placed / gbt[y][0]), 1)}% |')
 p()
-p('From 1983 to 1988 whole police forces\' positions are unusable in some years: Strathclyde every year,')
-p('West Midlands and Humberside in 1986, Northumbria in 1987, and about half of the City of London\'s in 1986.')
+p('Counts start in 1989 (John, November 9th 2026). From 1983 to 1988, 4% to 15% of collisions a year would be')
+p('left out: whole police forces\' positions are unusable in some years (Strathclyde every year, West Midlands and')
+p('Humberside in 1986, Northumbria in 1987, about half of the City of London\'s in 1986); before 1983 it\'s worse.')
 open(MD, 'w').write('\n'.join(L) + '\n')
 print('\n'.join(L))

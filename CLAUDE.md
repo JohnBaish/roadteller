@@ -68,6 +68,23 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — stage 1: counts from 1989; data committed (branch `stage-1-data`)
+
+**John:** start from 1989 (after the correction below). `FIRST_YEAR` 1989; SPEC
+§8.3 reworded. From 1989, 0.3% a year or less of collisions are left out of
+councils and circles (7,068 of 6.6 million).
+
+**Fixed:** the Isles of Scilly had dropped out: their collisions are a tiny share
+of Devon and Cornwall Police's and lie more than 20 km from the mainland, so the
+force-area rule left them all out. A council now counts as a force's area if it
+holds at least 0.1%, or at least 20, of the force's collisions since 2000.
+
+**Checked:** 103 checks pass (new: all 207 councils, Scilly has collisions). Every
+council's 2021 to 2025 count is within 5% of the police's own council codes, apart
+from Cumberland and Westmorland and Furness (the police coded 2021 and 2022 as
+Cumbria; the build places collisions by where they are). Data committed: 43 MB
+(`data/areas.json` and 305 files in `data/squares/`, 10.4 MB compressed).
+
 ### 2026-11-09 — stage 1: John's answers; a correction (branch `stage-1-data`)
 
 **John:** counts start in 1983; 50 km squares; where the data lives left to

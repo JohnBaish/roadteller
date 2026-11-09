@@ -12,7 +12,7 @@ import shapely
 import shapefile
 
 MILES_PER_KM = 0.621371
-FIRST_YEAR = 1983          # STATS19 starts in 1979, but many positions before 1983 are garbled (John, November 9th 2026)
+FIRST_YEAR = 1989          # STATS19 starts in 1979, but many positions before 1989 are unusable (John, November 9th 2026)
 RATE_FROM = 2000           # DfT's count-point traffic starts in 2000
 LATEST = int(os.environ.get('RT_LATEST', 2025))   # last complete year of collisions
 FIVE = list(range(LATEST - 4, LATEST + 1))
@@ -138,8 +138,9 @@ class Councils:
 
 def in_force_area(force, council, year, x, y, councils, km=20):
     """True where a collision lies in, or within `km` of, an area its police force
-    covers. A force's areas are the council areas holding at least 0.1% of its
-    collisions from 2000 on, when positions are reliable. The 20 km allows for
+    covers. A force's areas are the council areas holding at least 0.1%, or at
+    least 20, of its collisions from 2000 on, when positions are reliable (the
+    count keeps small, distant places such as the Isles of Scilly). The 20 km allows for
     forces whose boundaries moved (the Metropolitan Police covered parts of
     Surrey, Hertfordshire and Essex until 2000). Garbled positions, often hundreds
     of kilometres out, and positions that couldn't be placed at all, are left out."""
@@ -149,7 +150,7 @@ def in_force_area(force, council, year, x, y, councils, km=20):
     pairs = pd.Series(1, index=pd.MultiIndex.from_arrays([force[recent], council[recent]])).groupby(level=[0, 1]).size()
     share = pairs / pairs.groupby(level=0).transform('sum')
     usual = defaultdict(set)
-    for f, c in share[share >= 0.001].index:
+    for f, c in share[(share >= 0.001) | (pairs >= 20)].index:
         usual[f].add(c)
     ok = np.array([c in usual.get(f, ()) for f, c in zip(force, council)])
     check = np.where(~ok & (council != ''))[0]

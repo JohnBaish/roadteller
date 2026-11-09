@@ -34,13 +34,14 @@ check('West Berkshire traffic near 7,138 million miles', abs(wb['am_mvm'] - 7138
 check('West Berkshire one for every 14.0 million miles',
       round(100 / wb['rate'], 1) in (13.9, 14.0, 14.1), round(100 / wb['rate'], 2))
 check('West Berkshire about 46% of expected', 0.43 <= wb['ratio'] <= 0.49, wb['ratio'])
-check('no year before 1983', min(map(int, gb['trend'])) == FIRST_YEAR == 1983)
+check('no year before 1989', min(map(int, gb['trend'])) == FIRST_YEAR == 1989)
 check('West Berkshire previous five years near 1,122', abs(wb['prev_all'] - 1122) <= 15, wb['prev_all'])
 # Great Britain: the rate for A-roads and motorways near one for every 4.3 million miles
 check('Great Britain one for every 4.3 million miles', round(100 / gb['five']['rate'], 1) in (4.2, 4.3, 4.4),
       round(100 / gb['five']['rate'], 2))
 check('Great Britain ratio is 1', abs(gb['five']['ratio'] - 1) < 1e-6, gb['five']['ratio'])
-check('205 or more council areas', len(C) >= 205, len(C))
+check('every council area there', len(C) == 207, len(C))
+check('Isles of Scilly has collisions', C.get('E06000053', {}).get('five', {}).get('all', 0) > 0)
 check('people hurt by group add up', sum(gb['five']['who'].values()) == gb['five']['hurt'])
 # stretches
 S = pickle.load(open(f'{WORK}/stretches.pkl', 'rb'))
