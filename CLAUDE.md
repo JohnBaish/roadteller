@@ -72,7 +72,7 @@ Data notes:
 
 **John:** start from 1989 (after the correction below). `FIRST_YEAR` 1989; SPEC
 §8.3 reworded. From 1989, 0.3% a year or less of collisions are left out of
-councils and circles (7,068 of 6.6 million).
+councils and circles (6,728 of 6.6 million).
 
 **Fixed:** the Isles of Scilly had dropped out: their collisions are a tiny share
 of Devon and Cornwall Police's and lie more than 20 km from the mainland, so the
