@@ -60,10 +60,33 @@ Data notes:
 - STATS19's `local_authority_highway` matches the traffic file's council
   areas (highway authorities: 205 in Great Britain with traffic for every year
   2021 to 2025). The districts (`local_authority_ons_district`) don't.
-- Rates are per 100 million vehicle miles in the mock-ups; the unit is one of
-  John's open questions.
+- A rate is shown as "one for every 8.6 million miles driven", with the share
+  of the Great Britain rate in words and % (John, November 9th 2026).
 
 ## Log
+
+### 2026-11-09 — John's round 1 answers; option B worked up (local, not yet pushed)
+
+**John decided:** option B; the rate as "one for every 8.6 million miles
+driven", with "about a third of the Great Britain rate" and the % in
+brackets; similar places by demo 3 (Great Britain's rate for each kind of
+road applied to the area's own traffic); no rates over time for a circle
+(counts only); single years only by clicking a year on the "Better or worse
+than before?" chart; a days-of-the-week chart under "When". He also noted that
+"2021 to 2025" can read as four years (question 1 of batch 2).
+
+**What:** the options page reworked as option B only (A and C remain in the
+source, unused): the share in words (`shareWords`, nearest of a quarter, a
+third, half … three times), an "Allowing for the mix of roads" card with
+bars and a table by kind of road, clickable and keyboard-usable years on the
+trend chart with a line beneath, days of the week (Monday first). The circle's
+year line compares with the year before rather than with Great Britain's
+total. Round 1 pictures kept in `design/mockups/previews/round-1/`.
+
+**Checked:** Chromium at 1200px and 390px with touch, light and dark: no
+errors, no sideways scrolling; clicking, tapping and Enter on a year all
+change the line; 2010's figures checked by hand (18.0 per 100 million
+vehicle miles, one for every 5.6 million).
 
 ### 2026-11-09 — repo started; West Berkshire test; options A, B and C (local, not yet pushed)
 
