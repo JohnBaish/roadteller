@@ -65,6 +65,36 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — round 3 of option B (local, not yet pushed)
+
+**John (round 2):** a bold lead line above the big figure, about half its size;
+"44% higher than the rate for Great Britain's A-roads" rather than "about half
+as much again"; try "2021 to 2025 inclusive"; keep the table of kinds of road;
+the year line shows 2025 until a year is clicked, and clicking anywhere else
+clears it; Great Britain's bars beside "Who was hurt"; share buttons on every
+chart, as in Refueller; a note beginning "The one-mile circle's rates …".
+
+**Correction:** the circle's big figure said "2.2 million miles driven on the A4
+through the middle". That stretch (DfT count point 78260) runs from the A339
+junction to Pipers Way, Thatcham; at its closest it is 876 m from the middle
+of RG14, and only about 1.1 of its 6 km is inside the circle. Its rate covers
+the whole stretch, including collisions outside the circle. Now a circle leads
+with its count (129 injury collisions), with West Berkshire's rate beside it,
+and its main roads are listed by DfT's junction names with how much of each
+lies inside (straight-line lengths, so "about").
+
+**Built:** `compareText` (below Great Britain "about a third of … (37%)", above
+it "44% higher than …", from about twice "about twice … (204%)"); `pairBars`
+and `svgBars` (SVG, so they can be shared); share buttons making the picture
+Refueller's way (light colours, heading, place and dates, credit), shown in an
+overlay here because the preview page can't copy or share; tap or click away
+clears the year; stretch cards on phones.
+
+**Checked:** 1200px and 390px with touch, light and dark: no errors, no
+sideways scrolling; a year marked by click or tap, cleared by clicking
+elsewhere; every share button makes a picture (2,000 by 1,044 pixels); fonts
+in the pictures checked by eye.
+
 ### 2026-11-09 — John's round 1 answers; option B worked up (local, not yet pushed)
 
 **John decided:** option B; the rate as "one for every 8.6 million miles
