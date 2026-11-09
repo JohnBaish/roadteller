@@ -76,7 +76,7 @@ of those on numbered roads; median 3.9 m from their stretch); `areas.py` places
 every collision since 1979 and every count point in today's council areas
 (OS Boundary-Line, downloaded today, checksum matched OS's) and works out each
 council's, region's and Great Britain's figures; `tiles.py` makes the files for
-circles (50 km squares; 25 km tried too); `check.py` (112 checks); `review.py`
+circles (50 km squares; 25 km tried too); `check.py` (101 checks, all passing); `review.py`
 writes `design/data-review.md`. Placing points by 1 km squares first cut the
 time from about an hour to seconds (the first run was stopped at the time limit).
 
