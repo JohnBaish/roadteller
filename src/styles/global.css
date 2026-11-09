@@ -1,0 +1,391 @@
+/* Refueller's page styles, on top of organic.css (from clockwheel by way of Hindcaster, HOUSE-STYLE §1). The layout is
+   the approved mock-ups (design/mock/mock-results.html, round 4, John, 30 October). */
+
+.mono { font-variant-numeric: tabular-nums; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); }
+a { color: var(--color-accent-700); }
+
+.nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-6); background: var(--color-surface); }
+.nav-brand { color: inherit; text-decoration: none; }
+.col { max-width: 1100px; margin: 0 auto; padding: 0 var(--space-6) var(--space-6); }
+.page-head { padding: var(--space-6) 0 var(--space-4); }
+.page-head h2 { margin: 2px 0 0; font-size: 32px; line-height: 1.15; }
+/* The journey page's way back to the last postcode or place (John, November 4th 2026). */
+.back-link { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0 6px; color: var(--color-accent-700); font-size: 15px; font-weight: 600; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.lead { color: var(--color-neutral-700); margin: 6px 0 0; max-width: 640px; }
+.muted { color: var(--color-neutral-700); }
+
+.search { display: flex; gap: var(--space-2); align-items: center; margin-top: var(--space-4); flex-wrap: wrap; }
+.search .input { font-size: 15px; width: 240px; padding: 10px 14px; }
+.hint { font-size: 12.5px; color: var(--color-neutral-700); margin: 6px 0 0; }
+.problem { margin: var(--space-2) 0 0; color: var(--color-accent-700); font-weight: 600; }
+
+.results-head h3 { font-size: 22px; margin: var(--space-4) 0 0; }
+.notes { font-size: 12.5px; color: var(--color-neutral-700); margin: 6px 0 var(--space-3); }
+
+.table-box { background: var(--color-surface); border-radius: 20px; padding: var(--space-2) var(--space-3); }
+.stations { width: 100%; table-layout: fixed; }
+.stations tbody tr:last-child td { border-bottom: 0; }
+.stations td { vertical-align: top; padding: 12px 8px; }
+.stations .c { text-align: center; }
+.stations col.station { width: 34%; }
+.brand { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
+.sname { font-weight: 600; }
+.addr { font-size: 12.5px; color: var(--color-neutral-700); }
+/* "Find stations near this one" (John, 30 October): a small link under the station, like the "More" button. */
+.centre-link { display: inline-block; margin-top: 4px; font-size: 12.5px; color: var(--color-accent-700); text-underline-offset: 3px; }
+.pcard .centre-link { margin-top: 10px; }
+.row-links { display: flex; flex-wrap: wrap; column-gap: 14px; }
+.link-btn { background: none; border: 0; padding: 0; font: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+
+/* "Worth driving here?" (PLAN Stage 7): the calculator's panel under a station, as in the mock-ups (design/previews/calc-*). */
+.calc { background: var(--color-bg); border: 1px solid var(--color-divider); border-radius: 16px; padding: var(--space-3) var(--space-4); margin: 4px 0 8px; text-align: left; }
+.pcard .calc { margin-top: 10px; padding: var(--space-3); }
+.calc { scroll-margin-top: 12px; }
+.calc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.calc-head h4 { margin: 0; font-size: 18px; }
+.calc-say { font-size: 13px; color: var(--color-neutral-700); margin: 4px 0 var(--space-2); }
+.fuel-btns { display: flex; gap: 8px; margin-bottom: var(--space-3); }
+.fuel-btn { font: inherit; font-weight: 600; font-size: 14px; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--color-divider); background: var(--color-surface); color: var(--color-text); cursor: pointer; }
+.fuel-btn[aria-pressed="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+.fuel-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.calc-fields { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-8); align-items: flex-start; }
+.calc-field { display: flex; flex-direction: column; gap: 4px; }
+.calc-lbl { font-size: 12.5px; color: var(--color-neutral-700); }
+.calc-box { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+.calc-box .input { width: 76px; padding: 8px 12px; font-size: 15px; }
+.calc-hint { font-size: 11.5px; color: var(--color-neutral-700); max-width: 220px; }
+.calc-verdict { margin: var(--space-3) 0 4px; font-size: 15px; }
+.calc-line { margin: 0 0 4px; font-size: 15px; }
+.calc-small { font-size: 12.5px; color: var(--color-neutral-700); margin: 4px 0 0; }
+
+/* "Price history" (31 October): the 14-day graph, in the calculator's panel. Line colours checked with the dataviz validator
+   (light and dark); the average is grey on purpose, and dashed so it isn't told apart by colour alone. */
+:root { --g-me: #c05a14; --g-avg: #5f5a52; }
+.hist-svg { display: block; overflow: visible; }
+.hist .g-grid { stroke: var(--color-divider); stroke-width: 1; }
+.hist .g-axl { stroke: var(--color-neutral-500); stroke-width: 1; }
+.hist .g-ax { font: 11px Figtree, sans-serif; fill: var(--color-neutral-700); }
+.hist .g-me { fill: none; stroke: var(--g-me); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.hist .g-avg { fill: none; stroke: var(--g-avg); stroke-width: 2; stroke-dasharray: 5 4; stroke-linejoin: round; }
+.hist .g-dot { fill: var(--g-me); stroke: var(--color-bg); stroke-width: 2; }
+.hist .g-hit { fill: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.hist-svg { -webkit-tap-highlight-color: transparent; }
+.hist .g-hatch { stroke: var(--color-neutral-400); stroke-width: 1.2; opacity: 0.6; }
+.hist .g-unk-t, .hist .g-lab { font: 600 12px Figtree, sans-serif; fill: var(--color-neutral-700); }
+.hist .g-lab-me { fill: var(--color-text); }
+.hist .g-cross { stroke: var(--color-neutral-500); stroke-width: 1; }
+.hist .g-tip rect { fill: var(--color-surface); stroke: var(--color-divider); }
+.hist .g-tip text { font: 12px Figtree, sans-serif; fill: var(--color-neutral-700); }
+.hist .g-tip .g-tip-b { font-weight: 600; fill: var(--color-text); }
+.hist-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--color-neutral-700); margin: 2px 0 6px; }
+.hist-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.hist-legend i { display: inline-block; width: 22px; height: 0; border-top: 2.5px solid var(--g-me); }
+.hist-legend i.avg { border-top: 2px dashed var(--g-avg); }
+.hist-say { font-size: 14px; margin: 8px 0 4px; }
+.dist { font-weight: 600; white-space: nowrap; }
+.price { font-size: 17px; font-weight: 600; white-space: nowrap; }
+.upd { font-size: 11.5px; color: var(--color-neutral-700); }
+/* Notes, not faults: a price set more than 45 days ago, and an unusual price. In blue, as orange marks the cheapest (John,
+   30 October). */
+:root { --color-note: #3f5f8a; }
+.upd.old { color: var(--color-note); }
+/* Where the price sits among the stations shown (31 October): grey bars, this station's in the graph's terracotta. */
+.rank { margin-top: 4px; }
+.rank-bars { display: block; margin: 0 auto; overflow: visible; }
+.rank-bars rect { fill: var(--color-neutral-400); }
+.rank-bars rect.me { fill: var(--g-me); }
+.rank-t { font-size: 11px; color: var(--color-neutral-700); margin-top: 2px; }
+.pcard .rank-bars { margin-left: 0; }
+.cheap-tag { display: inline-block; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--color-accent); color: var(--color-bg); border-radius: 999px; padding: 1px 8px; margin: 2px 0; font-weight: 600; }
+/* In the computer table the price column is narrow, so "(Members only)" goes on a second line inside the badge. */
+.stations .members-part { display: block; }
+.stations .cheap-tag.members-tag { border-radius: 10px; padding: 2px 10px; }
+.cheap-tag.members-tag { background: transparent; color: var(--color-accent-700); box-shadow: inset 0 0 0 1.5px var(--color-accent); }
+.members { font-size: 11.5px; font-weight: 600; color: var(--color-note); margin-top: 1px; }
+.unusual { font-size: 11.5px; color: var(--color-note); }
+.more-btn { background: none; border: 0; padding: 2px 4px; font: inherit; font-size: 12.5px; color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.more-text { font-size: 12.5px; color: var(--color-neutral-700); text-align: left; margin: 4px 0 0; }
+.none { color: var(--color-neutral-700); font-size: 13px; }
+.closed-tag { display: inline-block; font-size: 12px; background: var(--color-neutral-100); color: var(--color-neutral-800); border-radius: 999px; padding: 2px 10px; }
+tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 0.7; }
+
+.cards { display: flex; flex-direction: column; gap: var(--space-3); }
+.pcard { background: var(--color-surface); border-radius: 20px; padding: var(--space-3) var(--space-4); }
+.pcard-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.pcard .grid { display: grid; grid-template-columns: 84px 1fr; row-gap: 8px; column-gap: 10px; margin-top: 10px; }
+.pcard .lbl { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); padding-top: 4px; }
+
+.about { margin-top: var(--space-8); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.about h3 { font-size: 20px; margin: 0 0 var(--space-2); }
+.about p { margin: 0 0 var(--space-2); font-size: 14px; }
+.about ul { margin: 0 0 var(--space-2); padding-left: 20px; font-size: 14px; }
+.about li { margin-bottom: 4px; }
+
+.message { margin-top: var(--space-4); }
+.message .btn { margin-top: var(--space-2); }
+
+.footer-notice { margin-top: 64px; padding-top: var(--space-3); border-top: 1px solid var(--color-divider); font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); text-align: center; }
+.footer-notice p { margin: 0 0 6px; }
+
+.nav-right { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.theme-switch { display: inline-flex; align-items: center; gap: 8px; flex: none; background: none; border: 0; padding: 4px 0; cursor: pointer; color: var(--color-neutral-700); font: inherit; }
+.theme-switch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 999px; }
+.theme-switch-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.theme-switch-track { position: relative; width: 46px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 18%, transparent); transition: background 0.2s; }
+.theme-switch-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-bg); box-shadow: 0 1px 3px #0004; display: grid; place-items: center; color: var(--color-accent); transition: transform 0.2s; }
+.theme-switch[aria-checked="true"] .theme-switch-track { background: var(--color-accent); }
+.theme-switch[aria-checked="true"] .theme-switch-knob { transform: translateX(20px); }
+.theme-switch svg { width: 12px; height: 12px; display: block; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-track, .theme-switch-knob { transition: none; }
+}
+
+@media (max-width: 720px) {
+  .nav { padding: var(--space-3) var(--space-4); }
+  .col { padding: 0 var(--space-4) var(--space-6); }
+  .page-head h2 { font-size: 28px; }
+  .search .input { font-size: 16px; flex: 1; min-width: 0; }
+  .search:not(.journey) .jf { flex: 1; min-width: 0; }
+  .search:not(.journey) .input { width: 100%; }
+  .search .btn { min-height: 44px; }
+  .theme-switch { min-height: 44px; }
+  .more-btn { min-height: 44px; min-width: 44px; }
+  .centre-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .pcard .centre-link { margin-top: 2px; }
+  .fuel-btn { min-height: 44px; }
+  .calc-fields { flex-direction: column; row-gap: var(--space-4); }
+  .calc-box .input { font-size: 16px; min-height: 44px; } /* 44px tap target (fresh look 5.4) */
+  .theme-switch-label { display: none; }
+}
+/* Any touch screen, whatever its width (an iPad gets the computer layout): 16px boxes, so iPhone and iPad don't zoom. */
+/* A phone held sideways: a chart is never taller than the screen. Its box narrows, keeping its shape (--ar, its
+   width over height, is set on the chart), so the labels shown on a tap still land in the right place. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .avg-svg, .hist-svg { max-width: calc((100svh - 40px) * var(--ar, 2)); margin-inline: auto; }
+}
+
+@media (pointer: coarse) {
+  /* Any touch screen, including a phone held sideways (wider than 720px) and iPads:
+     the boxes' own sizes above (.search .input, .calc-box .input) would otherwise win
+     and the iPhone zooms in on a box under 16px. */
+  .input, .search .input, .calc-box .input { font-size: 16px; }
+}
+
+@media print {
+  [data-noprint] { display: none !important; }
+  tr, .pcard { break-inside: avoid; }
+  .calc, .calc-row, .row-links { display: none !important; }
+  /* The search boxes aren't printed (fresh look 2.4); the footer's source and credit lines are. */
+  .search-form { display: none !important; }
+  .footer-notice { margin-top: 24px; }
+}
+
+/* Dark mode: Hindcaster's agreed colours (HOUSE-STYLE §2), following the device unless the visitor switches
+   (src/lib/theme.ts). Screen only, so a printed page is always light. */
+@media screen {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-note: #9fb8dc;
+    --g-me: #cf7a3f;
+    --g-avg: #7a7266;
+    --g-area: #5f97dc;
+    --color-bg: #2a2723;
+    --color-surface: #37332e;
+    --color-text: #e8dfcf;
+    --color-accent: #dd8a56;
+    --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+    --color-neutral-100: #423d36;
+    --color-neutral-700: #b0a593;
+    --color-neutral-800: #e3d9c7;
+    --color-accent-100: #4a2a14;
+    --color-accent-300: #b2622d;
+    --color-accent-600: #e8935d;
+    --color-accent-700: #f2a573;
+    --color-accent-800: #ffc6a5;
+    --color-accent-2-100: #2f3a20;
+    --color-accent-2-800: #d4e4b8;
+    --shadow-sm: 0 0 0 1px color-mix(in srgb, #e8dfcf 6%, transparent), 0 1px 2px #0006;
+    --shadow-md: 0 0 0 1px color-mix(in srgb, #e8dfcf 7%, transparent), 0 3px 10px #0008;
+    --shadow-lg: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 12px 32px #000a;
+  }
+  /* Finer text smoothing in dark mode (HOUSE-STYLE §2): Macs draw light text on a dark page heavier; others ignore it. */
+  :root[data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  :root[data-theme="dark"] .hist .g-hatch { opacity: 0.35; }
+}
+
+/* "Find cheaper fuel near the route" (31 October): the three boxes, the way in at the bottom, and the extra miles on a phone. */
+.journey { align-items: flex-end; }
+.jf { display: flex; flex-direction: column; gap: 4px; position: relative; }
+.jl { font-size: 12px; font-weight: 600; color: var(--color-neutral-700); }
+.search.journey .input { width: 230px; text-transform: none; }
+/* Place suggestions under a box as you type (John, 1 November). */
+.suggest { position: absolute; top: 100%; left: 0; z-index: 20; min-width: 100%; width: max-content; max-width: min(360px, 90vw); margin: 4px 0 0; padding: 4px 0; list-style: none; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12); max-height: 320px; overflow-y: auto; }
+.suggest li { display: flex; align-items: baseline; gap: 8px; padding: 9px 14px; cursor: pointer; font-size: 14px; }
+.suggest li.on, .suggest li:hover { background: var(--color-neutral-100); }
+.sg-name { font-weight: 600; }
+.sg-area { color: var(--color-neutral-700); font-size: 12.5px; }
+.route-fuel { margin-top: 10px; margin-bottom: 0; }
+.journey-link { margin: 40px 0 0; padding-top: 16px; border-top: 1px solid var(--color-divider); font-size: 14px; color: var(--color-neutral-700); }
+.journey-link a { color: var(--color-accent-700); font-weight: 600; }
+@media (max-width: 720px) {
+  .search.journey .jf { flex: 1 1 100%; }
+  .search.journey .input { width: 100%; }
+  .suggest { width: 100%; max-width: none; }
+  .suggest li { min-height: 44px; align-items: center; }
+  .search.journey .btn { flex: 1 1 100%; }
+  .journey-link a { display: inline-block; min-height: 44px; line-height: 44px; }
+}
+@media print { .journey-link { display: none; } }
+/* The journey planner open at the bottom of the main page (John, 1 November: to try). */
+.journey-front { margin-top: var(--space-8); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.journey-front h3 { font-size: 20px; margin: 0 0 var(--space-2); }
+.journey-front .lead { font-size: 14px; margin: 0; }
+@media print { .journey-front { display: none; } }
+/* "Average prices" (John, 1 November): two charts, unleaded and diesel, under the list. The eight in the graph's terracotta, the
+   postcode area in blue (#2a64a8, dark #5f97dc: checked with the dataviz validator against the terracotta), Great Britain grey and
+   dashed. */
+:root { --g-area: #2a64a8; }
+.avg-sec { margin-top: var(--space-8); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.avg-sec h3 { font-size: 20px; margin: 0 0 var(--space-2); }
+.avg-sec > p { font-size: 14px; margin: 0 0 8px; }
+.avg-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+.avg-ch h4 { font: 700 15px Figtree, sans-serif; margin: 4px 0 2px; }
+.avg-svg { display: block; overflow: visible; -webkit-tap-highlight-color: transparent; }
+.avg-none { font-size: 14px; color: var(--color-neutral-700); }
+.hist .a-eight { fill: none; stroke: var(--g-me); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.hist .a-area { fill: none; stroke: var(--g-area); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.hist .a-gb { fill: none; stroke: var(--g-avg); stroke-width: 2; stroke-dasharray: 5 4; stroke-linejoin: round; }
+.hist .a-dot { stroke: var(--color-bg); stroke-width: 2; }
+.hist .a-dot-eight { fill: var(--g-me); }
+.hist .a-dot-area { fill: var(--g-area); }
+.hist .a-dot-gb { fill: var(--g-avg); }
+.hist-legend i.a-key-eight { border-top: 2.5px solid var(--g-me); }
+.hist-legend i.a-key-area { border-top: 2px solid var(--g-area); }
+.hist-legend i.a-key-gb { border-top: 2px dashed var(--g-avg); }
+@media (max-width: 720px) { .avg-charts { grid-template-columns: 1fr; } }
+@media print { .avg-sec { display: none; } }
+/* The journey list's three groups: the cheapest near the start, on the way, the cheapest near the end. */
+.grp { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-neutral-700); margin: 14px 0 6px; }
+.table .grp-row td { padding-bottom: 0; border-bottom: 0; }
+.cards > div > .grp { margin-top: 18px; }
+
+/* Sorting the list (John, November 1st 2026): column headings on a computer, a "Sort by" strip on a phone; the active one in ink. */
+.stations th.sortable { padding: 0; }
+.stations th.sortable button { all: inherit; display: block; width: 100%; box-sizing: border-box; padding: var(--space-2); border: 0; cursor: pointer; white-space: nowrap; text-align: center; }
+.stations th.sortable button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; border-radius: 6px; }
+.stations th.sortable .sort-mark { display: inline-block; margin-left: 4px; font-size: 12px; letter-spacing: 0; opacity: 0.55; }
+.stations th.sortable.on { color: var(--color-text); }
+.stations th.sortable.on .sort-mark { opacity: 1; color: var(--color-accent); }
+@media (hover: hover) { .stations th.sortable:not(.on) button:hover { color: var(--color-accent-700); } }
+.sort-note { font-weight: 600; color: var(--color-text); }
+.sort-strip { display: flex; flex-wrap: wrap; align-items: center; column-gap: 4px; margin: 0 0 var(--space-3); font-size: 14px; }
+.sort-strip .sort-lab { color: var(--color-neutral-700); margin-right: 4px; }
+.sort-strip button { background: none; border: 0; font: inherit; color: var(--color-accent-700); padding: 0 7px; min-height: 44px; cursor: pointer; }
+.sort-strip button.on { color: var(--color-text); font-weight: 700; }
+@media print { .sort-strip, .stations th.sortable .sort-mark { display: none; } }
+@media (max-width: 360px) { .sort-strip { font-size: 13.5px; column-gap: 0; } .sort-strip .sort-lab { margin-right: 0; } .sort-strip button { padding: 0 5px; } }
+/* The journey list sorted as one list (John, November 1st 2026, option B): the end stations tagged. */
+.end-tag { display: inline-block; margin: 2px 0 3px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-note); border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; }
+
+/* "The wider picture": the averages at every level (src/lib/levels.ts; John, November 1st, option B), under the charts, as their key.
+   On a computer, the prices in two columns; on a phone, under the name. The fact beneath, in the notes' grey. */
+.lv-box { background: var(--color-surface); border-radius: var(--radius-lg, 14px); padding: 4px 18px; margin: 18px 0 0; }
+.lv-row { display: grid; grid-template-columns: 1fr 92px 92px; column-gap: 12px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--color-divider); }
+.lv-row:first-child { border-top: 0; }
+.lv-head { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-neutral-700); padding: 10px 0 2px; }
+.lv-head .lv-p { font-size: 12px; font-weight: 400; }
+.lv-name { font-weight: 700; font-size: 15px; }
+.lv-name i { display: inline-block; width: 20px; height: 0; vertical-align: middle; margin-right: 8px; }
+.lv-name i.a-key-eight { border-top: 2.5px solid var(--g-me); }
+.lv-name i.a-key-gb { border-top: 2px dashed var(--g-avg); }
+.lv-p { text-align: center; font-weight: 700; font-size: 16px; }
+.lv-fact { grid-column: 1 / -1; font-size: 13.5px; color: var(--color-neutral-700); margin-top: 2px; }
+.lv-small { display: none; }
+@media (max-width: 720px) {
+  .lv-box { padding: 2px 14px; }
+  .lv-row { grid-template-columns: 1fr; row-gap: 2px; }
+  .lv-head, .lv-row > .lv-p { display: none; }
+  .lv-small { display: block; font-size: 15px; }
+  .lv-small b { font-weight: 700; }
+}
+/* The short key above "The wider picture"'s charts: a line of its own on a computer, beside each heading on a phone. */
+.avg-key { display: flex; margin: 4px 0 4px; }
+.avg-key-inline { display: inline-flex; margin: 0 0 0 14px; font-weight: 400; vertical-align: middle; }
+
+/* "Compare areas over time" (John, November 9th 2026; src/components/Compare.tsx). Each area keeps its colour in the order chosen
+   (terracotta, blue, green, plum), Great Britain grey; checked with the dataviz validator next to each other in light (on the card
+   colour) and dark. Terracotta and green are close for some colour-blind readers, so every line is also named at its end (computer)
+   and in the table beneath. */
+:root { --k0: #c05a14; --k1: #2a64a8; --k2: #3d7a3a; --k3: #8a3f7f; --k4: #8a6a00; }
+@media screen { :root[data-theme="dark"] { --k0: #cf7a3f; --k1: #5f97dc; --k2: #5c9a56; --k3: #b36aa8; --k4: #ad8a2a; } }
+.cmp-way { display: flex; width: 100%; min-height: 52px; margin-top: 18px; font-size: 17px; gap: 10px; }
+.avg-share { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 12px; margin-top: 12px; font-size: 14px; color: var(--color-neutral-700); }
+.cmp-box { background: var(--color-surface); border-radius: 20px; padding: 14px 18px; }
+.cmp-h { font: 700 13px Figtree, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--color-neutral-700); margin: 0 0 8px; }
+.cmp-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cmp-chip { display: inline-flex; align-items: center; min-height: 40px; border-radius: 999px; background: var(--color-bg); border: 1px solid var(--color-divider); font-size: 15px; font-weight: 600; max-width: 100%; }
+.cmp-chip-main { display: inline-flex; align-items: center; gap: 8px; padding: 4px 4px 4px 12px; font: inherit; color: inherit; background: none; border: 0; min-width: 0; text-align: left; }
+.cmp-chip small { font-weight: 400; color: var(--color-neutral-700); font-size: 12.5px; }
+.cmp-chip.off { opacity: .55; border-style: dashed; }
+.cmp-chip.off .cmp-chip-main { cursor: pointer; }
+.cmp-x { width: 36px; height: 36px; flex: none; border-radius: 50%; border: 0; background: none; color: var(--color-neutral-700); font-size: 17px; cursor: pointer; }
+.cmp-x:hover, .cmp-chip.off .cmp-chip-main:hover { color: var(--color-accent-700); }
+.cmp-sw { display: inline-block; width: 20px; height: 0; border-top: 3px solid; flex: none; }
+.cmp-sw.dot { border-top-style: dotted; border-top-width: 3.5px; }
+.cmp-add { min-height: 40px; border-radius: 999px; border: 1px dashed var(--color-accent); color: var(--color-accent-700); font: 600 15px Figtree, sans-serif; padding: 4px 14px; background: transparent; cursor: pointer; }
+.cmp-addbox { margin-top: 10px; max-width: 440px; }
+.cmp-note { font-size: 13.5px; color: var(--color-neutral-700); margin: 8px 0 0; }
+.cmp-empty { margin: 22px 0; }
+.cmp-controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 22px 0 4px; }
+.cmp-controls .fuel-btns { margin: 0; }
+.cmp-pills { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.cmp-pills button { font: inherit; font-size: 14px; color: var(--color-text); background: transparent; border: 1px solid var(--color-divider); padding: 5px 13px; border-radius: 999px; min-height: 36px; cursor: pointer; }
+.cmp-pills button[aria-pressed="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+.cmp-pills button:focus-visible, .cmp-share:focus-visible, .cmp-x:focus-visible, .cmp-add:focus-visible, .cmp-chip-main:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.cmp-share { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-accent-700); font: 600 14px Figtree, sans-serif; cursor: pointer; }
+.share-wrap { display: inline-flex; flex-direction: column; align-items: center; }
+.share-status { min-height: 18px; margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--color-neutral-700); }
+.share-status:empty { visibility: hidden; }
+.cmp-controls .share-wrap { margin-left: auto; }
+.cmp-share:disabled { opacity: .5; cursor: default; }
+.cmp-key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; margin: 10px 0 0; align-items: center; }
+.cmp-key span { display: inline-flex; gap: 8px; align-items: center; }
+.cmp-key .cmp-key-sep { width: 1px; height: 16px; background: var(--color-divider); }
+.cmp-chart { margin-top: 6px; }
+.hist .cmp-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.hist .cmp-line.dot { stroke-dasharray: 0.1 5.5; stroke-width: 3.5; }
+.hist .cmp-end { stroke: var(--color-bg); stroke-width: 2; }
+.hist .cmp-zero { stroke: var(--color-neutral-700); stroke-opacity: .6; }
+.cmp-table { background: var(--color-surface); border-radius: 16px; padding: 4px 16px; margin-top: 14px; font-variant-numeric: tabular-nums; }
+.cmp-row { display: grid; grid-template-columns: 1fr 86px 150px; gap: 10px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--color-divider); font-size: 15px; }
+.cmp-row:first-child { border-top: 0; }
+.cmp-head { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-neutral-700); padding-bottom: 2px; }
+.cmp-n { font-weight: 700; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cmp-p { text-align: center; font-weight: 700; }
+.cmp-head .cmp-p { font-weight: 400; }
+.cmp-c { text-align: center; color: var(--color-neutral-700); }
+.back-big { display: flex; width: 100%; min-height: 52px; margin: 34px 0 10px; font-size: 17px; }
+@media (max-width: 720px) {
+  .cmp-row { grid-template-columns: 1fr 70px 96px; font-size: 14px; }
+  .cmp-controls .share-wrap { margin-left: 0; }
+}
+@media (pointer: coarse) {
+  .cmp-pills button, .cmp-share, .cmp-add, .cmp-chip { min-height: 44px; }
+  .cmp-x { width: 44px; height: 44px; }
+}
+@media print { .cmp-controls, .cmp-addbox, .cmp-add, .cmp-x, .avg-share, .share-wrap, .cmp-way { display: none !important; } }
+
+/* Stage 2's plain figures (replaced in stages 3 and 4). */
+.chooser .search + .search { margin-top: var(--space-3); }
+.chooser select.input { max-width: 100%; }
+.plain h3 { font-size: 24px; margin: var(--space-4) 0 var(--space-2); }
+.plain h4 { margin: var(--space-4) 0 var(--space-2); }
+.plain-list { display: grid; grid-template-columns: minmax(0, 18em) minmax(0, 1fr); gap: 6px var(--space-4); margin: 0; }
+.plain-list dt { color: var(--color-neutral-700); }
+.plain-list dd { margin: 0; }
+.plain-years { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.plain-ul { margin: 0; padding-left: 1.2em; }
+.radius-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 600px) { .plain-list { grid-template-columns: 1fr; } .plain-list dd { margin-bottom: 8px; } }

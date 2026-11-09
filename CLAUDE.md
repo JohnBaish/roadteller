@@ -29,6 +29,9 @@ Read these first, in this order:
    the master copies; if they change, re-copy them and note it here.
 6. The baish.net overview, `design/overview/` in clockwheel.
 
+**The page:** `npm ci`, then `npm run dev` / `npm run build` / `npm run check`
+(Node 22). The data build is in `build/` (`build/README.md`).
+
 **`SPEC.md` and `PLAN.md`** (agreed by John on November 9th 2026, with his
 answers in SPEC §13). Read them before anything else; work stage by stage.
 
@@ -67,6 +70,33 @@ Data notes:
   of the Great Britain rate in words and % (John, November 9th 2026).
 
 ## Log
+
+### 2026-11-09 — stage 1 merged; stage 2: choosing a place (branch `stage-2-place`, not merged)
+
+**John:** merge stage 1 and go ahead with stage 2. Stage 1 merged (fast-forward);
+"Delete merged branches" run (trial, then real; only `main` left). The "Rebuild
+data" workflow's first real run started on `main`.
+
+**What (stage 2):** the page, set up as Refueller's (Vite, React, TypeScript; its
+place box, place and postcode code and styles copied, `data/os/` its OS Open Names
+files, unchanged). `build/lookup.py` adds each postcode's, district's and place's
+council area (`data/councils-of.json`). `scripts/pageData.ts` makes `public/data`
+at each build. `src/lib/circle.ts` counts a circle on the device from the 50 km
+squares; `src/lib/where.ts` reads the address after "#" (`#RG4-7HN`, `#RG4`,
+`#@Caversham`, `#council/E06000037`, a circle's size as `/half` or `/two`) and
+remembers the last choice (`roadteller.choice`). A plain list of figures stands in
+for the design (stages 3 and 4); wording all draft.
+
+**Checked:** `npm run check` (10): RG14 one mile 129 collisions, as agreed; 125 in
+2016 to 2020 against the mock-up's 126, as years before the five are kept in
+100 m cells, so one at the circle's edge can fall either side. RG4 7HN one mile:
+51, the same as counting DfT's file directly. Chromium at 1200px, 390px and
+844 by 390 with touch, light and dark: postcode, place (with suggestions),
+radius, long view, "See all of", the council list, Northern Ireland, reload; no
+errors (bar Vercel's statistics script, local only), no sideways scrolling, no
+outside requests, nothing typed in any request. **Fixed on the way:** the long
+view briefly showed zeros while loading; Refueller's favicon came with the copy
+(removed until stage 6).
 
 ### 2026-11-09 — stage 1: counts from 1989; data committed (branch `stage-1-data`)
 

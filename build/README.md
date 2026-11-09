@@ -8,8 +8,10 @@ Run from the repo, with a download folder (DL) and a work folder (WORK) outside 
 2. `python3 -I build/areas.py DL WORK data`: council areas, regions and Great
    Britain (about 5 minutes); needs step 1 for each council's roads.
 3. `python3 -I build/tiles.py DL WORK data`: the files for circles (about 2 minutes).
-4. `python3 -I build/check.py data WORK`: the checks.
-5. `python3 -I build/review.py data WORK design/data-review.md`: the review list.
+4. `python3 -I build/lookup.py DL data`: which council area each postcode,
+   postcode district and place (`data/os/`, copied from Refueller) is in.
+5. `python3 -I build/check.py data WORK` and `node scripts/check-page.ts`: the checks.
+6. `python3 -I build/review.py data WORK design/data-review.md`: the review list.
 
 The download folder holds (not kept in the repo):
 

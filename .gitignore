@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 __pycache__/
+node_modules/
+dist/
+public/data/
+*.tsbuildinfo

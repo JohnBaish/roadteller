@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r build/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Download the sources
         run: build/download.sh "$RUNNER_TEMP/dl" "$RT_MRDB"
       - name: Build
@@ -36,16 +39,19 @@ jobs:
           python3 -I -u build/stretches.py "$RUNNER_TEMP/dl" "$W"
           python3 -I -u build/areas.py "$RUNNER_TEMP/dl" "$W" data
           python3 -I -u build/tiles.py "$RUNNER_TEMP/dl" "$W" data
+          python3 -I -u build/lookup.py "$RUNNER_TEMP/dl" data
           python3 -I build/review.py data "$W" design/data-review.md
       - name: Check
-        run: python3 -I build/check.py data "$RUNNER_TEMP/work"
+        run: |
+          python3 -I build/check.py data "$RUNNER_TEMP/work"
+          node scripts/check-page.ts
       - name: Save on a new branch
         run: |
           B="data-$(date -u +%Y-%m-%d-%H%M)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$B"
-          git add data design/data-review.md
+          git add data/areas.json data/squares data/councils-of.json design/data-review.md
           git commit -m "Data rebuilt: collisions to $RT_LATEST, roads database $RT_MRDB"
           git push origin "$B"
           echo "Saved on branch $B" >> "$GITHUB_STEP_SUMMARY"
