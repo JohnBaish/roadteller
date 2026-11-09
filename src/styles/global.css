@@ -389,3 +389,63 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .plain-ul { margin: 0; padding-left: 1.2em; }
 .radius-btns { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 600px) { .plain-list { grid-template-columns: 1fr; } .plain-list dd { margin-bottom: 8px; } }
+
+/* Stage 3: the council area view (the agreed option B, design/mockups/options.src.html). */
+.view .card { display: block; padding: var(--space-6); border-radius: calc(var(--radius-lg) * 1.15); min-width: 0; }
+.view .card h3 { font-size: 21px; margin: 0 0 var(--space-2); }
+.view .card p { margin: 0 0 var(--space-3); }
+.view .card-kicker { color: var(--color-accent-700); font-weight: 600; margin: 0 0 4px; }
+.note { font-size: 12.5px; color: var(--color-neutral-700); margin: 4px 0 0 !important; }
+.stack { display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+@media (max-width: 720px) { .grid2 { grid-template-columns: minmax(0, 1fr); } .view .card { padding: var(--space-4); } }
+.view .table { width: 100%; }
+.view .table th { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--color-divider); }
+.view .table td { padding: 7px 8px; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent); vertical-align: top; }
+.view .table td.r, .view .table th.r { text-align: right; }
+.tablewrap { overflow-x: auto; margin-top: var(--space-3); }
+.num { font-variant-numeric: tabular-nums; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--color-neutral-700); }
+.chart .lbl { fill: var(--color-text); font-weight: 600; font-size: 12px; }
+.chart .key { fill: var(--color-text); font-size: 12px; }
+.chart .grid { stroke: var(--color-divider); stroke-width: 1; }
+.chart .me { stroke: var(--color-accent); fill: var(--color-accent); }
+.chart .gb { stroke: var(--color-neutral-500); fill: var(--color-neutral-500); }
+.chart .reg { stroke: var(--color-accent-2); fill: var(--color-accent-2); }
+.chart .line { fill: none; stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.chart .dash { stroke-dasharray: 5 4; }
+.chart .bar { stroke: none; }
+.chart .bar.soft { opacity: 0.45; }
+.chart .ring { fill: var(--color-surface); stroke-width: 2; }
+.chart .hit { fill: transparent; stroke: none; cursor: pointer; }
+.chart .hit:focus-visible { outline: none; stroke: var(--color-accent); stroke-width: 2; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--color-neutral-700); margin-top: 6px; }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.legend i.l { height: 0; border-top: 2.5px solid; border-radius: 0; vertical-align: 3px; }
+.legend i.d { border-top-style: dashed; }
+.k-me { background: var(--color-accent); border-color: var(--color-accent) !important; }
+.k-gb { background: var(--color-neutral-500); border-color: var(--color-neutral-500) !important; }
+.big { font-family: var(--font-heading); font-size: 44px; line-height: 1; margin: 0 0 6px !important; }
+.big-lead { font-family: var(--font-body); font-weight: 700; font-size: 22px; line-height: 1.2; margin: 0 0 4px !important; color: var(--color-accent-700); }
+.big-lead .small { font-size: 16px; }
+.b-hero { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--space-6); align-items: center; }
+.b-hero .pair { display: flex; flex-direction: column; gap: var(--space-3); }
+.b-hero .pair div { border-top: 1px solid var(--color-divider); padding-top: var(--space-2); }
+.hero-text { margin-bottom: 0 !important; }
+@media (max-width: 720px) { .b-hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); } .big { font-size: 34px; } .big-lead { font-size: 19px; } }
+.year-line { margin: var(--space-3) 0 0 !important; padding: var(--space-2) var(--space-3); border-radius: 12px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.trend-chart { touch-action: manipulation; }
+.when-days { margin-top: var(--space-4) !important; }
+.share-row { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-accent-700); font: 600 14px var(--font-body); cursor: pointer; }
+.share-btn:hover { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+@media (pointer: coarse) { .share-btn { min-height: 44px; } }
+.road-cards { display: flex; flex-direction: column; }
+.road-card { padding: var(--space-3) 0; border-top: 1px solid var(--color-divider); }
+.road-card dl { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 2px 10px; margin: 6px 0 0; font-size: 14px; }
+.road-card dt { color: var(--color-neutral-700); }
+.road-card dd { margin: 0; }
+.strip { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
+@media print { .share-row, .strip .btn { display: none !important; } .view .card { break-inside: avoid; } }
+.view-head { padding-top: 0; }

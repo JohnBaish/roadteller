@@ -3,7 +3,8 @@
 import { Component, useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { getPlaces, PlaceBox } from './components/PlaceBox.tsx';
 import { ThemeSwitch } from './components/ThemeSwitch.tsx';
-import { CircleFigures, CouncilFigures } from './components/Figures.tsx';
+import { CircleFigures } from './components/Figures.tsx';
+import { CouncilView } from './components/CouncilView.tsx';
 import { loadIndex, type PageIndex } from './lib/data.ts';
 import { findPlace, looksLikePostcode, namesakes, placeAt, placeLabel, type NamedPlace } from './lib/places.ts';
 import { hashOf, placeHash, placeOf, POSTCODE_PROBLEMS, readHash, readPostcode, type Target } from './lib/where.ts';
@@ -130,12 +131,14 @@ export default function App() {
   const [target, setTarget] = useState<Target | null>(() => readHash(location.hash) ?? remembered());
   const [index, setIndex] = useState<PageIndex | null>(null);
   const [loadProblem, setLoadProblem] = useState(false);
+  const [changing, setChanging] = useState(false);
   useEffect(() => {
     loadIndex().then(setIndex, () => setLoadProblem(true));
     const onHash = () => {
       const t = readHash(location.hash);
       setTarget(t);
       remember(t);
+      setChanging(false);
       window.scrollTo(0, 0);
     };
     window.addEventListener('hashchange', onHash);
@@ -160,9 +163,17 @@ export default function App() {
       <main className="col">
         <div className="page-head">
           <div className="card-kicker">Road safety measured against traffic levels</div>
-          <h2>{start ? 'How safe are the roads near you?' : 'Roadteller'}</h2>
+          {start && <h2>How safe are the roads near you?</h2>}
           {start && <p className="lead">Enter a postcode or a place to see how many people were hurt on the roads nearby, and how that compares with the traffic.</p>}
-          <Chooser start={start} index={index} />
+          {(start || changing) && <Chooser start={start} index={index} />}
+          {!start && !changing && (
+            <div className="strip" data-noprint>
+              <span className="muted">Showing {target?.kind === 'council' ? 'a council area' : 'a circle'}.</span>
+              <button type="button" className="btn btn-secondary" onClick={() => setChanging(true)}>
+                Change
+              </button>
+            </div>
+          )}
         </div>
         {loadProblem && (
           <p className="problem" role="alert">
@@ -171,7 +182,11 @@ export default function App() {
         )}
         <SafetyNet key={target ? hashOf(target) : ''}>
           {index && target?.kind === 'circle' && <CircleFigures index={index} target={target} />}
-          {index && target?.kind === 'council' && <CouncilFigures index={index} code={target.code} />}
+          {target?.kind === 'council' && (
+            <div className="view">
+              <CouncilView code={target.code} />
+            </div>
+          )}
         </SafetyNet>
         <footer className="footer-notice">
           {!start && (

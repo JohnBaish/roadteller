@@ -71,6 +71,22 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — stage 3: the council area view (branch `stage-3-council`, not merged)
+
+**John:** merge stage 2 (done; "Delete merged branches" run) and build stage 3. **What:** `src/components/CouncilView.tsx`
+from the agreed option B (round 5): the big figure (A-roads and motorways only) with Great Britain and the region beside
+it and the comparison with the previous five years; "Allowing for the mix of roads" (bars and table); "Better or worse
+than before?" from 2000, a year chosen by click, tap or keyboard and cleared by tapping elsewhere; who was hurt; when (hours
+and days); which roads (cards on a phone). `src/components/charts.tsx` (SVG charts), `src/lib/words.ts`, and share buttons
+(`ShareButton.tsx`, `shareImage.ts`, from Refueller). Once a place is shown, the chooser sits behind a Change button. The
+10-collision rule applies to the big figure and to the trend: the Isles of Scilly (five A-road collisions) get no rate, and
+five councils (Scilly, Clackmannanshire, the Western Isles, Orkney, Shetland) no year-by-year chart. Draft wording for John:
+the "too few" sentences, "as motorways usually do", the junction note, "Showing a council area."
+
+**Checked:** typecheck, lint, `npm run check`, build. Chromium at 1200px, 390px and 844 by 390 with touch, light and dark:
+West Berkshire, Reading, Islington and the Isles of Scilly; no errors, no sideways scrolling; a year chosen and cleared.
+**Not checked:** sharing on a real phone, copying on a real computer.
+
 ### 2026-11-09 — stage 1 merged; stage 2: choosing a place (branch `stage-2-place`, not merged)
 
 **John:** merge stage 1 and go ahead with stage 2. Stage 1 merged (fast-forward);
