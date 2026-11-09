@@ -1,0 +1,4 @@
+pyshp
+shapely>=2
+numpy
+pandas

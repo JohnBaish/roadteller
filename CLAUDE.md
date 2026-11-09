@@ -68,6 +68,30 @@ Data notes:
 
 ## Log
 
+### 2026-11-09 — stage 1: the data build (branch `stage-1-data`, not merged)
+
+**What:** `build/` (Python): `stretches.py` rebuilds all 17,941 of DfT's stretches
+along OS Open Roads (84% rebuilt) and matches the five years' collisions (98.7%
+of those on numbered roads; median 3.9 m from their stretch); `areas.py` places
+every collision since 1979 and every count point in today's council areas
+(OS Boundary-Line, downloaded today, checksum matched OS's) and works out each
+council's, region's and Great Britain's figures; `tiles.py` makes the files for
+circles (50 km squares; 25 km tried too); `check.py` (112 checks); `review.py`
+writes `design/data-review.md`. Placing points by 1 km squares first cut the
+time from about an hour to seconds (the first run was stopped at the time limit).
+
+**Results:** West Berkshire 509 collisions on A-roads and motorways over 7,151
+million miles, one for every 14.0 million (the test had 510 and 7,138); 45% of
+what national averages give. Great Britain one for every 4.36 million miles,
+so "4.4" (the mock-up's 4.3 left out councils whose boundaries changed).
+Reading's A329 Norcot Road to Prospect Street: 86 over 29.4 (hand check 88 over
+29.3). Central London's A-roads have far more collisions for their traffic than
+anywhere (Islington one for every 0.3 million miles); checked, it's real.
+
+**For John:** positions before 1983 are often garbled (about 15% land outside
+their police force's area); the square size (central London's file is about
+1 MB at 50 km, 0.5 MB at 25 km). Data not yet committed.
+
 ### 2026-11-09 — spec and plan agreed
 
 **John:** all eight questions answered (SPEC §13): the 10-collision rule; one
