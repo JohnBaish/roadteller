@@ -71,6 +71,19 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — road map files shrunk (branch `shrink-roads`, not merged)
+
+**Why:** the built site was 189 MB, and Vercel's free plan has 10 GB of Deployment Storage shared by every site's kept
+copies (Riverwatcher already uses a lot; John's November 7th thread). **What (John: look at it):** `build/roads.py`
+writes each road line as text (numbers zigzagged, five bits a character; read by `src/lib/roadText.ts`), and leaves OS's
+"Restricted Local Access Road" and "Secondary Access Road" (driveways, tracks, car parks) out of the background map.
+Positions and simplification unchanged. Measured first on square SU: text alone 6.7 to 3.0 MB, private roads 6.7 to
+4.8 MB; coarser lines or 2 m steps saved little more. Road files: every road 113 to 53 MB, main roads 15 to 11 MB; the
+built site 189 to 129 MB. **Checked:** checks 12 (two new: the text read back, the files hold text), typecheck, lint,
+build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark (RG14 half and one mile, EC2V two miles, West
+Berkshire): no errors, no sideways scrolling; before and after pictures compared: a few short spurs gone, nothing else.
+**Could go further:** the circles' squares (43 MB) could get the same text form.
+
 ### 2026-11-10 — stage 6 begun: "About these figures", credits and footer drafted (notes only)
 
 **John:** start stage 6 item 1. **What:** draft wording, 19 numbered items, at https://claude.ai/artifact/HdBXKu4iLz5HFYz7jsj9Ht

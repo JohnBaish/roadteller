@@ -1,6 +1,7 @@
 // Checks on the page's rules, run with the real data: `npm run check`.
 import { readFileSync, existsSync } from 'node:fs';
 import { count, RADII, squaresFor, stretchesIn } from '../src/lib/circle.ts';
+import { unpack } from '../src/lib/roadText.ts';
 import { toBritishGrid } from '../src/lib/grid.ts';
 import type { OldFile, SquareFile } from '../src/lib/data.ts';
 
@@ -45,6 +46,11 @@ check('two miles holds more than one', two.c.n > rg.c.n, [two.c.n, rg.c.n]);
 // The whole of the City of London: within 2 miles of Bank, more than a thousand collisions
 const city = circle(51.5134, -0.0890, RADII.two);
 check('central London: more than 1,000 collisions within two miles of Bank', city.c.n > 1000, city.c.n);
+
+// Road lines are written as text by build/roads.py; this string is what it writes for these numbers.
+check('road text read back', JSON.stringify(unpack("7.4[=8PCDEcb#D$DADBD3AD2AD#'4J")) === JSON.stringify([402106, 7005, 0, -1, 1, -16, 15, 16, -17, 31, -32, 1000, -1000, 123456]), unpack("7.4[=8PCDEcb#D$DADBD3AD2AD#'4J"));
+const rl = JSON.parse(readFileSync('data/roads-local/47-16.json', 'utf8'));
+check('road files hold text', typeof rl.l[0] === 'string' && unpack(rl.l[0]).length % 2 === 0, rl.l[0]);
 
 console.log(`${passed} passed, ${fails.length} failed`);
 for (const f of fails) console.log('  FAIL', f);
