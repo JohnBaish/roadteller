@@ -71,6 +71,17 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — choosing a year clears properly; the share button beside the year's figures (branch `stage-6-icons`, not merged)
+
+**John:** "click anywhere else to clear it" didn't seem to work; and the share button took a row of its own under the
+trend chart. **Found:** the chosen year was only cleared by clicks outside the whole card, so clicking the heading, the
+text or the note kept it. **What:** `useTapAway` now watches the chart itself, so any click or tap off the chart clears
+the year, except the share button (a shared picture keeps the chosen year); both trend charts (circle and council). On a
+computer the shaded line of the year's figures and the share button now share one row (`.year-row`); on a phone the
+button sits just under the shaded line. **Checked:** checks 16, typecheck, lint, build; Chromium at 1200px, 390px and 844
+by 390 with touch, light and dark, RG14 and West Berkshire: a year chosen (2007), cleared by the heading, the note and the
+page, kept by the share button; no errors, no sideways scrolling.
+
 ### 2026-11-10 — villages by size, two on phones; the 1989 button back up (branch `stage-6-icons`, not merged)
 
 **John:** yes to ranking villages by size and to one or two villages on phone circle maps; and "Show from 1989" was only

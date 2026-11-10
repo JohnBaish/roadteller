@@ -187,13 +187,13 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
   const max = Math.max(120, ...ser.flatMap((s) => s.pts.map((p) => p[1] * 1.05)));
   const label = `Injury collisions a year ${within.toLowerCase()}`;
   return (
-    <div className="card" ref={box}>
+    <div className="card">
       <h3>Better or worse than before?</h3>
       <p>
         There {n(from) === 1 ? 'was' : 'were'} {n(from) === 0 ? 'no' : word(n(from))} collision{n(from) === 1 ? '' : 's'} here in {from} and {n(latest) === 0 ? 'none' : word(n(latest))} in {latest}
         {n(from) > 0 ? `, ${down(n(from), n(latest))}` : ''}. Across Great Britain they {fell(g(from), g(latest))}.{indexed ? ` Both lines start at 100 in ${from}.` : ''}
       </p>
-      <div className="trend-chart">
+      <div className="trend-chart" ref={box}>
         {w > 0 &&
           (indexed ? (
             <Lines series={ser} w={w} max={max} label={label} selected={sel} onSelect={setSel} svgRef={svg} />
@@ -216,10 +216,19 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
       ) : (
         <p className="note">Too few collisions here in {from} for a fair comparison with Great Britain, so these are the yearly counts.</p>
       )}
-      <p className="year-line">
-        <b>{shown}:</b> {n(shown) === 0 ? 'no' : word(n(shown))} injury collision{n(shown) === 1 ? '' : 's'} {lower1(within)}
-        {shown > first ? `, against ${n(shown - 1) === 0 ? 'none' : word(n(shown - 1))} the year before` : ''}.
-      </p>
+      {/* The year's figures and the share button on one row on a computer (John, November 10th 2026). */}
+      <div className="year-row">
+        <p className="year-line">
+          <b>{shown}:</b> {n(shown) === 0 ? 'no' : word(n(shown))} injury collision{n(shown) === 1 ? '' : 's'} {lower1(within)}
+          {shown > first ? `, against ${n(shown - 1) === 0 ? 'none' : word(n(shown - 1))} the year before` : ''}.
+        </p>
+        <ShareButton
+          svg={svg}
+          title="Better or worse than before?"
+          sub={indexed ? `Injury collisions ${lower1(within)} and across Great Britain, ${from} = 100` : `Injury collisions a year ${lower1(within)}`}
+          file="roadteller-trend.png"
+        />
+      </div>
       <p className="note">
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
       </p>
@@ -229,12 +238,6 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
           {long ? 'Show from 2000' : `Show from ${first}`}
         </button>
       </p>
-      <ShareButton
-        svg={svg}
-        title="Better or worse than before?"
-        sub={indexed ? `Injury collisions ${lower1(within)} and across Great Britain, ${from} = 100` : `Injury collisions a year ${lower1(within)}`}
-        file="roadteller-trend.png"
-      />
     </div>
   );
 }

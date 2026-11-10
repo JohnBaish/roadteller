@@ -427,6 +427,10 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .b-hero .pair div { border-top: 1px solid var(--color-divider); padding-top: var(--space-2); }
 .hero-text { margin-bottom: 0 !important; }
 @media (max-width: 720px) { .b-hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); } .big { font-size: 34px; } .big-lead { font-size: 19px; } }
+.year-row { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
+.year-row .year-line { flex: 1; margin: 0 !important; }
+.year-row .share-row { margin: 0; flex: none; }
+@media (max-width: 720px) { .year-row { flex-direction: column; align-items: stretch; gap: var(--space-2); } .year-row .share-row { justify-content: flex-end; } }
 .year-line { margin: var(--space-3) 0 0 !important; padding: var(--space-2) var(--space-3); border-radius: 12px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
 .trend-chart { touch-action: manipulation; }
 .when-days { margin-top: var(--space-4) !important; }

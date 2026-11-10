@@ -216,14 +216,14 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
   const fallBy = (a: number, b: number) => (b <= a ? `fallen by ${fall(a, b)}%` : `risen by ${-fall(a, b)}%`);
   const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
   return (
-    <div className="card" ref={box}>
+    <div className="card">
       <h3>Better or worse than before?</h3>
       <p>
         Since {years[0]}, collisions per mile driven on A-roads and motorways have {fallBy(pts[0][1], pts[pts.length - 1][1])} in {f.name} and{' '}
         {(pts[pts.length - 1][1] <= pts[0][1]) === (gbp[gbp.length - 1][1] <= gbp[0][1]) ? fallBy(gbp[0][1], gbp[gbp.length - 1][1]).replace(/^\S+ /, '') : fallBy(gbp[0][1], gbp[gbp.length - 1][1])} across Great
         Britain. Both lines start at 100 in {years[0]}.
       </p>
-      <div className="trend-chart">{w > 0 && <Lines series={ser} w={w} max={max} label="Collisions per mile driven since 2000" selected={sel} onSelect={setSel} svgRef={svg} />}</div>
+      <div className="trend-chart" ref={box}>{w > 0 && <Lines series={ser} w={w} max={max} label="Collisions per mile driven since 2000" selected={sel} onSelect={setSel} svgRef={svg} />}</div>
       <div className="legend">
         <span>
           <i className="l k-me" />
@@ -235,14 +235,17 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
         </span>
         <span>Rate in {years[0]} = 100</span>
       </div>
-      <p className="year-line">
-        <b>{shown}:</b> {fmt(row[1])} injury collisions on A-roads and motorways
-        {row[2] > 0 && row[1] > 0 ? `, one for every ${perMiles((100 * row[1]) / row[2])} driven` : ''} (Great Britain: one for every {perMiles((100 * g[1]) / g[2])}).
-      </p>
+      {/* The year's figures and the share button on one row on a computer (John, November 10th 2026). */}
+      <div className="year-row">
+        <p className="year-line">
+          <b>{shown}:</b> {fmt(row[1])} injury collisions on A-roads and motorways
+          {row[2] > 0 && row[1] > 0 ? `, one for every ${perMiles((100 * row[1]) / row[2])} driven` : ''} (Great Britain: one for every {perMiles((100 * g[1]) / g[2])}).
+        </p>
+        <ShareButton svg={svg} title="Better or worse than before?" sub={`Injury collisions per mile driven on A-roads and motorways, ${f.name} and Great Britain, ${years[0]} = 100`} file="roadteller-trend.png" />
+      </div>
       <p className="note">
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
       </p>
-      <ShareButton svg={svg} title="Better or worse than before?" sub={`Injury collisions per mile driven on A-roads and motorways, ${f.name} and Great Britain, ${years[0]} = 100`} file="roadteller-trend.png" />
     </div>
   );
 }
