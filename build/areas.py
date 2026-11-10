@@ -164,6 +164,32 @@ if os.path.exists(f'{WORK}/stretches.pkl'):
                                        for rd, v in rs.items()], key=sortkey)
     log('roads added')
 
+# ---- maps of shaded squares (SPEC §8.1): each council's collisions in the latest five years in one-kilometre squares,
+# and its outline (simplified to 25 metres), for council-maps/<code>.json
+os.makedirs(f'{OUT}/council-maps', exist_ok=True)
+for f_ in os.listdir(f'{OUT}/council-maps'):
+    os.remove(f'{OUT}/council-maps/{f_}')
+r5 = col[col.collision_year.isin(FIVE) & (col.council != '') & col.e.notna() & col.n.notna()]
+cells_ = r5.assign(cx=(r5.e // 1000).astype(int), cy=(r5.n // 1000).astype(int)).groupby(['council', 'cx', 'cy']).size()
+by_council = defaultdict(list)
+for (code_, cx_, cy_), n_ in cells_.items():
+    by_council[code_].append([int(cx_), int(cy_), int(n_)])
+for g_, code_ in zip(C.geoms, C.codes):
+    simple = g_.simplify(25)
+    rings = []
+    for poly in getattr(simple, 'geoms', [simple]):
+        if poly.area < 20_000:          # leave out tiny islets and slivers
+            continue
+        pts = [(round(x_), round(y_)) for x_, y_ in poly.exterior.coords]
+        enc = [pts[0][0], pts[0][1]]
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            enc += [bx - ax, by - ay]
+        rings.append(enc)
+    b = [round(v) for v in g_.bounds]
+    dump(dict(code=code_, bbox=b, outline=rings, cells=sorted(by_council.get(code_, []))), f'{OUT}/council-maps/{code_}.json')
+report['council_map_squares'] = int(len(cells_))
+log('council maps', len(C.codes))
+
 report['councils_without_dft_name'] = [c for c in C.codes if c not in names]
 dump(dict(latest=LATEST, five=FIVE, prev_five=PREV_FIVE, gb=gb, regions=regions, councils=councils),
      f'{OUT}/areas.json')

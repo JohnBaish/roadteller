@@ -6,6 +6,10 @@
 //   squares-<v>/<sx>-<sy>.json the collisions for circles (data/squares, build/tiles.py)
 //   places-<v>.json            place names (data/os/places.json) with each place's council area added
 //   postcodes-<v>/<area>.json  every postcode's position (data/os/postcodes) and those outside their district's council area
+//   roads-local-<v>/<sx>-<sy>.json  every road in one 50 km square, as its 10 km pieces (data/roads-local, build/roads.py)
+//   roads-main-<v>/<sx>-<sy>.json   motorways, A-roads and B-roads in one 50 km square (data/roads-main)
+//   council-maps-<v>/<group>.json   council areas' outlines and squares (data/council-maps), one file per English region,
+//                                   Scotland and Wales, so choosing a council area tells the website no more than its region
 // <v> is a short fingerprint of the data, so a browser never mixes old and new files.
 import { createHash } from 'node:crypto';
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -60,6 +64,43 @@ export function writePageData(root: string) {
     writeFileSync(join(out, `postcodes-${vPost}`, f), JSON.stringify({ districts, council }));
   }
 
+  // roads, grouped by 50 km square like the collisions
+  const roadSquares: Record<'local' | 'main', string[]> = { local: [], main: [] };
+  const roadFiles: Record<'local' | 'main', string> = { local: '', main: '' };
+  for (const layer of ['local', 'main'] as const) {
+    const src = d(`roads-${layer}`);
+    const names = readdirSync(src).filter((f) => f.endsWith('.json')).sort();
+    const v = fingerprint(...names.map((f) => join(src, f)));
+    const folder = `roads-${layer}-${v}`;
+    mkdirSync(join(out, folder));
+    const groups = new Map<string, string[]>();
+    for (const f of names) {
+      const [sx, sy] = f.replace('.json', '').split('-').map(Number);
+      const per = layer === 'local' ? 5 : 1; // 10 km pieces in a 50 km square
+      const key = `${Math.floor(sx / per)}-${Math.floor(sy / per)}`;
+      groups.set(key, [...(groups.get(key) ?? []), readFileSync(join(src, f), 'utf8')]);
+    }
+    for (const [key, parts] of groups) writeFileSync(join(out, folder, `${key}.json`), `[${parts.join(',')}]`);
+    roadSquares[layer] = [...groups.keys()];
+    roadFiles[layer] = folder;
+  }
+  // council maps, one file per region (England), Scotland and Wales
+  const cm = d('council-maps');
+  const cmNames = readdirSync(cm).filter((f) => f.endsWith('.json')).sort();
+  const vMaps = fingerprint(...cmNames.map((f) => join(cm, f)));
+  const mapsFolder = `council-maps-${vMaps}`;
+  mkdirSync(join(out, mapsFolder));
+  const groupOf = (code: string) => (code[0] === 'S' ? 'scotland' : code[0] === 'W' ? 'wales' : (areas.councils[code]?.region ?? 'other'));
+  const mapGroups = new Map<string, string[]>();
+  const councilMapGroup: Record<string, string> = {};
+  for (const f of cmNames) {
+    const code = f.replace('.json', '');
+    const g = groupOf(code);
+    councilMapGroup[code] = g;
+    mapGroups.set(g, [...(mapGroups.get(g) ?? []), `${JSON.stringify(code)}:${readFileSync(join(cm, f), 'utf8')}`]);
+  }
+  for (const [g, parts] of mapGroups) writeFileSync(join(out, mapsFolder, `${g}.json`), `{${parts.join(',')}}`);
+
   const index = {
     latest: areas.latest,
     five: areas.five,
@@ -70,9 +111,11 @@ export function writePageData(root: string) {
       .sort((a, b) => a[1].localeCompare(b[1], 'en-GB')),
     regions: Object.fromEntries(Object.entries(areas.regions).map(([code, r]) => [code, r.name])),
     outcodes: Object.fromEntries(Object.entries(outcodes).map(([k, [lat, lon, place]]) => [k, [lat, lon, place, of.districts[k] ?? -1]])),
-    files: { areas: `areas-${vAreas}.json`, squares: `squares-${vSquares}`, places: `places-${vPlaces}.json`, postcodes: `postcodes-${vPost}` },
+    files: { areas: `areas-${vAreas}.json`, squares: `squares-${vSquares}`, places: `places-${vPlaces}.json`, postcodes: `postcodes-${vPost}`, roads: roadFiles, councilMaps: mapsFolder },
     squareSize: squares.size,
     squares: Object.keys(squares.squares),
+    roadSquares,
+    councilMapGroup,
   };
   writeFileSync(join(out, 'index.json'), JSON.stringify(index));
   return index;

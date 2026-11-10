@@ -1,20 +1,21 @@
 // A circle (SPEC §7, the agreed option B, round 5): counted on the device from the 50 km squares it touches. A circle has no
 // traffic figure of its own, so its big figure is a count; beside it, its council area's rate. Wording is John's where he gave
 // it; the rest, draft.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Lines, useWidth, YearBars, type Series } from './charts.tsx';
 import { ShareButton } from './ShareButton.tsx';
 import { When, Who, whoSentence } from './CouncilView.tsx';
 import { getPlaces } from './PlaceBox.tsx';
 import { count, RADII, squaresFor, stretchesIn, type CircleCount, type Radius } from '../lib/circle.ts';
-import { loadAreas, loadOld, loadSquare, type AreasFile, type PageIndex, type Stretch } from '../lib/data.ts';
+import { loadAreas, loadOld, loadSquare, type AreasFile, type PageIndex, type SquareFile, type Stretch } from '../lib/data.ts';
+import { SquaresMap, type MapInput } from './SquaresMap.tsx';
 import { toBritishGrid } from '../lib/grid.ts';
 import { useTapAway } from '../lib/tapAway.ts';
 import { hashOf, locate, type Located, type Target } from '../lib/where.ts';
 import { cap1, compareText, fall, fmt, perMiles, word } from '../lib/words.ts';
 
 type CircleTarget = Extract<Target, { kind: 'circle' }>;
-type Result = { c: CircleCount; s: (Stretch & { insideKm: number })[]; long: boolean };
+type Result = { c: CircleCount; s: (Stretch & { insideKm: number })[]; long: boolean; files: SquareFile[]; e: number; n: number };
 const RADIUS_WORDS: Record<Radius, string> = { half: 'half a mile', one: 'a mile', two: 'two miles' };
 const RADIUS_BUTTONS: [Radius, string][] = [['half', 'Half a mile'], ['one', 'One mile'], ['two', 'Two miles']];
 const lower1 = (t: string) => t[0].toLowerCase() + t.slice(1);
@@ -43,7 +44,7 @@ export function CircleView({ index, target }: { index: PageIndex; target: Circle
     const { easting: e, northing: n } = toBritishGrid(where.lat, where.lon);
     const names = squaresFor(e, n, r, index.squareSize, new Set(index.squares));
     Promise.all([Promise.all(names.map(loadSquare)), long ? Promise.all(names.map(loadOld)) : Promise.resolve([])]).then(
-      ([files, olds]) => live && setResult({ c: count(e, n, r, files, index.five[0], olds), s: stretchesIn(e, n, r, files), long }),
+      ([files, olds]) => live && setResult({ c: count(e, n, r, files, index.five[0], olds), s: stretchesIn(e, n, r, files), long, files, e, n }),
       () => live && setProblem('Sorry, the collisions couldn’t be loaded. Check your connection and try again.'),
     );
     return () => {
@@ -68,6 +69,7 @@ function Circle({ index, target, where, areas, result, onLong }: { index: PageIn
   const [full, fw] = useWidth<HTMLDivElement>();
   const [half, hw] = useWidth<HTMLDivElement>();
   const sub = `${within}, ${yearsText}`;
+  const mapInput = useMemo<MapInput>(() => ({ kind: 'circle', e: result.e, n: result.n, r: RADII[target.radius], files: result.files, where: lower1(within), years: yearsText }), [result, target.radius, within, yearsText]);
   const short = target.where.kind === 'postcode' ? (target.where.inward ? `${target.where.outcode} ${target.where.inward}` : target.where.outcode) : where.label.split(',')[0];
 
   return (
@@ -134,6 +136,9 @@ function Circle({ index, target, where, areas, result, onLong }: { index: PageIn
             <div className="card">
               <When hours={c.hours} days={c.days} w={hw} sub={sub} />
             </div>
+          </div>
+          <div className="card">
+            <SquaresMap input={mapInput} />
           </div>
           <div className="card">
             <Roads c={c} s={result.s} gb={areas.gb} radius={target.radius} narrow={fw > 0 && fw < 560} />

@@ -1,8 +1,9 @@
 // A council area (SPEC §6, the agreed option B, round 5). Its rate covers A-roads and motorways only (DfT's minor-road traffic
 // is only estimated); the counts (people hurt, who, when) cover all roads. Wording is John's where he gave it; the rest, draft.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Bars, DayBars, HourBars, Lines, PairBars, useWidth, type Series } from './charts.tsx';
 import { ShareButton } from './ShareButton.tsx';
+import { SquaresMap, type MapInput } from './SquaresMap.tsx';
 import { loadAreas, type AreaFigures, type AreasFile } from '../lib/data.ts';
 import { useTapAway } from '../lib/tapAway.ts';
 import { cap1, compareText, DAY_NAMES, fall, fmt, hourText, pct, perMiles, shareWords, word, USER_WORDS } from '../lib/words.ts';
@@ -31,13 +32,14 @@ export function CouncilView({ code }: { code: string }) {
   if (!areas) return <p className="muted">Loading…</p>;
   const f = areas.councils[code];
   if (!f) return <p className="problem" role="alert">There’s no council area with that code.</p>;
-  return <Council areas={areas} f={f} />;
+  return <Council areas={areas} f={f} code={code} />;
 }
 
-function Council({ areas, f }: { areas: AreasFile; f: AreaFigures }) {
+function Council({ areas, f, code }: { areas: AreasFile; f: AreaFigures; code: string }) {
   const gb = areas.gb, region = areas.regions[f.region!];
   const v = f.five, name = f.name!, five = areas.five, latest = five[five.length - 1];
   const sub = `${name}, ${yearsText(five)}`;
+  const mapInput = useMemo<MapInput>(() => ({ kind: 'council', code, where: `in ${name}`, years: yearsText(five) }), [code, name, five]);
   const [full, fw] = useWidth<HTMLDivElement>();
   const [half, hw] = useWidth<HTMLDivElement>();
   const roads = roadsOf(f);
@@ -108,6 +110,9 @@ function Council({ areas, f }: { areas: AreasFile; f: AreaFigures }) {
           <div className="card">
             <When hours={v.hours} days={v.days} w={hw} sub={sub} />
           </div>
+        </div>
+        <div className="card">
+          <SquaresMap input={mapInput} />
         </div>
         <div className="card">
           <Roads f={f} gb={gb} narrow={fw > 0 && fw < 560} />
