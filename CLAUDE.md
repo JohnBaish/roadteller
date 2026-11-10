@@ -71,6 +71,11 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — search set-up merged; fresh-look prompt
+
+**John:** merge. `stage-6-search` merged to `main` (fast-forward; checks and build first); "Delete merged branches": trial,
+then the real run; only `main` left. The prompt for the fresh look is in `design/prompt-fresh-look-2026-11-10.md`.
+
 ### 2026-11-10 — search set-up (branch `stage-6-search`, not merged)
 
 **John:** title "Roadteller – free road collision figures for any postcode" (57 characters); description A, "Free road
