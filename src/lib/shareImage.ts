@@ -44,8 +44,9 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, width: number): strin
 }
 
 /** The picture: heading, place and years, the chart, the credit. */
-export async function makePicture(svg: SVGSVGElement, title: string, sub: string): Promise<HTMLCanvasElement> {
-  const cw = 904;
+// One chart, or several one under another with a small heading each (the "When" charts, John, November 10th 2026).
+export type Part = { svg: SVGSVGElement; caption?: string };
+async function chartImage(svg: SVGSVGElement, cw: number) {
   const vb = svg.viewBox.baseVal;
   const ch = (vb.height * cw) / vb.width;
   const clone = svg.cloneNode(true) as SVGSVGElement;
@@ -62,6 +63,13 @@ export async function makePicture(svg: SVGSVGElement, title: string, sub: string
     img.onerror = () => rej(new Error('picture'));
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(clone))}`;
   });
+  return { img, ch };
+}
+
+export async function makePicture(svg: SVGSVGElement | Part[], title: string, sub: string): Promise<HTMLCanvasElement> {
+  const cw = 904;
+  const parts: Part[] = Array.isArray(svg) ? svg : [{ svg }];
+  const imgs = await Promise.all(parts.map((p) => chartImage(p.svg, cw)));
   await document.fonts.ready;
   const W = 1000, pad = 48, sc = 2;
   const cv = document.createElement('canvas');
@@ -70,7 +78,8 @@ export async function makePicture(svg: SVGSVGElement, title: string, sub: string
   const credit = wrap(x, CREDIT, W - 2 * pad);
   x.font = '400 17px Figtree';
   const subLines = wrap(x, sub, W - 2 * pad);
-  const H = pad + 22 + 44 + subLines.length * 24 + 20 + ch + 24 + credit.length * 20 + pad;
+  const charts = imgs.reduce((t, im, i) => t + im.ch + (parts[i].caption ? 30 : 0) + (i ? 28 : 0), 0);
+  const H = pad + 22 + 44 + subLines.length * 24 + 20 + charts + 24 + credit.length * 20 + pad;
   cv.width = W * sc;
   cv.height = H * sc;
   x.scale(sc, sc);
@@ -91,8 +100,20 @@ export async function makePicture(svg: SVGSVGElement, title: string, sub: string
     x.fillText(l, pad, y);
   }
   y += 20;
-  x.drawImage(img, pad, y, cw, ch);
-  y += ch + 30;
+  imgs.forEach((im, i) => {
+    if (i) y += 28;
+    const cap = parts[i].caption;
+    if (cap) {
+      x.fillStyle = '#201e1d';
+      x.font = '600 18px Figtree';
+      x.fillText(cap, pad, y + 18);
+      y += 30;
+    }
+    x.drawImage(im.img, pad, y, cw, im.ch);
+    y += im.ch;
+  });
+  y += 30;
+  x.fillStyle = '#645c50';
   x.font = '400 14px Figtree';
   for (const l of credit) {
     x.fillText(l, pad, y);

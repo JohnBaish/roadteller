@@ -23,12 +23,14 @@ export function shareWords(r: number): string {
   return [...opts].sort((a, b) => Math.abs(Math.log(a[0] / r)) - Math.abs(Math.log(b[0] / r)))[0][1];
 }
 
-/** John's comparison wording (round 3): "About a third of … (37%)", "44% higher than …", "About twice … (204%)" */
+/** John's comparison wording (round 3): "About a third of … (37%)", "9% lower than …", "44% higher than …", "About twice … (204%)" */
 export function compareText(r: number, what: string): string {
   const p = Math.round(r * 100);
   if (r >= 1.95) return `${cap1(shareWords(r))} ${what} (${p}%)`;
   if (r >= 1.05) return `${p - 100}% higher than ${what}`;
   if (r > 0.95) return `About the same as ${what} (${p}%)`;
+  // Below, the same as above down to 70% (John, November 10th 2026): "9% lower than …"; less than that, words.
+  if (r >= 0.695) return `${100 - p}% lower than ${what}`;
   return `${cap1(shareWords(r))} ${what} (${p}%)`;
 }
 

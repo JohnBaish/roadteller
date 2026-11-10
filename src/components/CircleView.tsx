@@ -56,10 +56,10 @@ export function CircleView({ index, target, onChange }: { index: PageIndex; targ
   if (problem) return <p className="problem" role="alert">{problem}</p>;
   if (where === 'none') return <p className="problem" role="alert">We can’t find that place. Try a postcode.</p>;
   if (!where || !areas || !result || result.long !== long) return <p className="muted">Counting…</p>;
-  return <Circle index={index} target={target} where={where} areas={areas} result={result} onLong={() => setLong(true)} onChange={onChange} />;
+  return <Circle index={index} target={target} where={where} areas={areas} result={result} onLong={setLong} onChange={onChange} />;
 }
 
-function Circle({ index, target, where, areas, result, onLong, onChange }: { index: PageIndex; target: CircleTarget; where: Located; areas: AreasFile; result: Result; onLong: () => void; onChange: () => void }) {
+function Circle({ index, target, where, areas, result, onLong, onChange }: { index: PageIndex; target: CircleTarget; where: Located; areas: AreasFile; result: Result; onLong: (long: boolean) => void; onChange: () => void }) {
   const c = result.c, gb = areas.gb, five = index.five;
   const middle = !(target.where.kind === 'postcode' && target.where.inward && !where.note);
   const within = `Within ${RADIUS_WORDS[target.radius]} of ${middle ? 'the middle of ' : ''}${where.label}`;
@@ -160,7 +160,7 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
 }
 
 function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
-  c: CircleCount; gb: AreasFile; w: number; within: string; short: string; long: boolean; first: number; latest: number; onLong: () => void;
+  c: CircleCount; gb: AreasFile; w: number; within: string; short: string; long: boolean; first: number; latest: number; onLong: (long: boolean) => void;
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -223,19 +223,18 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
       <p className="note">
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
       </p>
-      {!long && (
-        <p data-noprint>
-          <button type="button" className="btn btn-secondary" onClick={onLong}>
-            Show from {first}
-          </button>
-        </p>
-      )}
       <ShareButton
         svg={svg}
         title="Better or worse than before?"
         sub={indexed ? `Injury collisions ${lower1(within)} and across Great Britain, ${from} = 100` : `Injury collisions a year ${lower1(within)}`}
         file="roadteller-trend.png"
       />
+      {/* Below the share button, and back again once pressed (John, November 10th 2026). */}
+      <p className="trend-range" data-noprint>
+        <button type="button" className="btn btn-secondary" onClick={() => onLong(!long)}>
+          {long ? 'Show from 2000' : `Show from ${first}`}
+        </button>
+      </p>
     </div>
   );
 }

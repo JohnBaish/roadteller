@@ -71,6 +71,19 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — "9% lower than", the 1989/2000 button, one button for "When" (branch `stage-6-icons`, not merged)
+
+**John:** below Great Britain's rate, say the exact difference down to 70% ("9% lower than the Great Britain rate", as
+Surrey), as above it; less than 70% keeps the words ("about two thirds of … (66%)"); `compareText` in `src/lib/words.ts`,
+with a check. "Show from 1989" moved below the share button, and once pressed it becomes "Show from 2000" to go back.
+The two "When" charts share one button, "Copy charts" / "Share charts", making one picture with both ("When injury
+collisions happened", each chart with its own small heading; `makePicture` takes several charts). The other sites say
+"Copy chart" / "Share chart" (and Refueller "Copy charts" for its two-chart picture), so the words were kept. **Checked:**
+checks 14, typecheck, lint, build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark: the button both
+ways (RG14 from 1989: 105 in 1989; back from 2000: 70), Surrey and GU1 "9% lower than", one When button, the picture
+made on touch screens (saved, as the test browser can't share); no errors, no sideways scrolling. **Not checked:** copying
+on a real computer (the test browser's clipboard).
+
 ### 2026-11-10 — tagline, opening screen and link-preview tags (branch `stage-6-icons`, not merged)
 
 **John:** the tagline is "Collisions on nearby roads, compared with traffic levels." ("levels", not "flows"; plain

@@ -270,12 +270,20 @@ export function When({ hours, days, w, sub }: { hours: number[]; days: number[];
         The busiest hour was {hourText(bh)}, with {word(hours[bh])} collision{hours[bh] === 1 ? '' : 's'} in five years.
       </p>
       {w > 0 && <HourBars hours={hours} w={w} label="Collisions by hour of the day" svgRef={hs} />}
-      <ShareButton svg={hs} title="Injury collisions by hour of day" sub={sub} file="roadteller-hours.png" />
       <p className="when-days">
         {days[most] === days[least] ? 'Collisions were spread evenly over the days of the week.' : <>{DAY_NAMES[most]}s had the most collisions ({word(days[most])}) and {DAY_NAMES[least]}s the fewest ({days[least] === 0 ? 'none' : word(days[least])}).</>}
       </p>
       {w > 0 && <DayBars days={days} w={w} label="Collisions by day of the week" svgRef={ds} />}
-      <ShareButton svg={ds} title="Injury collisions by day of the week" sub={sub} file="roadteller-days.png" />
+      {/* One button for both charts (John, November 10th 2026). */}
+      <ShareButton
+        svg={[
+          { svg: hs, caption: 'By hour of the day' },
+          { svg: ds, caption: 'By day of the week' },
+        ]}
+        title="When injury collisions happened"
+        sub={sub}
+        file="roadteller-when.png"
+      />
     </>
   );
 }

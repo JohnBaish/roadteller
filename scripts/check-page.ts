@@ -2,6 +2,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { count, RADII, squaresFor, stretchesIn } from '../src/lib/circle.ts';
 import { unpack, unpackSquare } from '../src/lib/packed.ts';
+import { compareText } from '../src/lib/words.ts';
 import { toBritishGrid } from '../src/lib/grid.ts';
 import type { OldFile, SquareFile } from '../src/lib/data.ts';
 
@@ -53,6 +54,9 @@ const rl = JSON.parse(readFileSync('data/roads-local/47-16.json', 'utf8'));
 check('circle files hold text', typeof JSON.parse(readFileSync('data/squares/8-3.json', 'utf8')).recent[0] === 'string');
 check('road files hold text', typeof rl.l[0] === 'string' && unpack(rl.l[0]).length % 2 === 0, rl.l[0]);
 
+// Comparison wording (John, November 10th 2026): exact "lower than" from 70% to 95%, as above Great Britain's rate.
+const cmp = [0.912, 0.7, 0.69, 0.96, 1.44, 0.37].map((r) => compareText(r, 'x'));
+check('comparison wording', JSON.stringify(cmp) === JSON.stringify(['9% lower than x', '30% lower than x', 'About two thirds of x (69%)', 'About the same as x (96%)', '44% higher than x', 'About a third of x (37%)']), cmp);
 console.log(`${passed} passed, ${fails.length} failed`);
 for (const f of fails) console.log('  FAIL', f);
 console.log('RG14 one mile:', rg.c.n, 'collisions,', rg.c.hurt, 'hurt,', rg.c.killed, 'killed; 2016 to 2020:', prev, '; squares', rg.names);

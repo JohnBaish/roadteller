@@ -431,6 +431,7 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .trend-chart { touch-action: manipulation; }
 .when-days { margin-top: var(--space-4) !important; }
 .share-row { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+.trend-range { margin: var(--space-4) 0 0; }
 .share-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-accent-700); font: 600 14px var(--font-body); cursor: pointer; }
 .share-btn:hover { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
 @media (pointer: coarse) { .share-btn { min-height: 44px; } }
