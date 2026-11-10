@@ -6,7 +6,7 @@
 //   squares-<v>/<sx>-<sy>.json the collisions for circles (data/squares, build/tiles.py)
 //   places-<v>.json            place names (data/os/places.json) with each place's council area added
 //   postcodes-<v>/<area>.json  every postcode's position (data/os/postcodes) and those outside their district's council area
-//   roads-local-<v>/<sx>-<sy>.json  every road in one 50 km square, as its 10 km pieces (data/roads-local, build/roads.py)
+//   roads-local-<v>/<sx>-<sy>.json  every road in one 20 km square, as its 10 km pieces (data/roads-local, build/roads.py)
 //   roads-main-<v>/<sx>-<sy>.json   motorways, A-roads and B-roads in one 50 km square (data/roads-main)
 //   council-maps-<v>/<group>.json   council areas' outlines and squares (data/council-maps), one file per English region,
 //                                   Scotland and Wales, so choosing a council area tells the website no more than its region
@@ -64,7 +64,7 @@ export function writePageData(root: string) {
     writeFileSync(join(out, `postcodes-${vPost}`, f), JSON.stringify({ districts, council }));
   }
 
-  // roads, grouped by 50 km square like the collisions
+  // roads: every road by 20 km square (at most about 0.5 MB compressed, in central London); main roads by 50 km square
   const roadSquares: Record<'local' | 'main', string[]> = { local: [], main: [] };
   const roadFiles: Record<'local' | 'main', string> = { local: '', main: '' };
   for (const layer of ['local', 'main'] as const) {
@@ -76,7 +76,7 @@ export function writePageData(root: string) {
     const groups = new Map<string, string[]>();
     for (const f of names) {
       const [sx, sy] = f.replace('.json', '').split('-').map(Number);
-      const per = layer === 'local' ? 5 : 1; // 10 km pieces in a 50 km square
+      const per = layer === 'local' ? 2 : 1; // 10 km pieces in a 20 km square (a 50 km square of every road in London is 2 MB)
       const key = `${Math.floor(sx / per)}-${Math.floor(sy / per)}`;
       groups.set(key, [...(groups.get(key) ?? []), readFileSync(join(src, f), 'utf8')]);
     }

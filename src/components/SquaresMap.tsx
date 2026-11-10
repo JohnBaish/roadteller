@@ -73,11 +73,11 @@ function inRing([x, y]: [number, number], pts: [number, number][]) {
   return c;
 }
 
-// The 50 km squares (the grouping of every data file) that a box touches.
-const squaresOf = (b: [number, number, number, number], have: Set<string>) => {
+// The squares of the road files (20 km for every road, 50 km for main roads) that a box touches.
+const squaresOf = (b: [number, number, number, number], have: Set<string>, size: number) => {
   const out: string[] = [];
-  for (let sx = Math.floor(b[0] / 50000); sx <= Math.floor(b[2] / 50000); sx++)
-    for (let sy = Math.floor(b[1] / 50000); sy <= Math.floor(b[3] / 50000); sy++) if (have.has(`${sx}-${sy}`)) out.push(`${sx}-${sy}`);
+  for (let sx = Math.floor(b[0] / size); sx <= Math.floor(b[2] / size); sx++)
+    for (let sy = Math.floor(b[1] / size); sy <= Math.floor(b[3] / size); sy++) if (have.has(`${sx}-${sy}`)) out.push(`${sx}-${sy}`);
   return out;
 };
 
@@ -123,7 +123,7 @@ export function SquaresMap({ input }: { input: MapInput }) {
             const nx = Math.max(i * size, Math.min(e, (i + 1) * size)), ny = Math.max(j * size, Math.min(n, (j + 1) * size));
             if ((nx - e) ** 2 + (ny - n) ** 2 < r2) possible++;
           }
-        const groups = await Promise.all(squaresOf(bbox, new Set(ix.roadSquares.local)).map((s) => loadRoads('local', s)));
+        const groups = await Promise.all(squaresOf(bbox, new Set(ix.roadSquares.local), 20000).map((s) => loadRoads('local', s)));
         const roads = roadsIn(groups.flat(), bbox);
         const places = await placesIn(placesP, bbox, (x, y) => (x - e) ** 2 + (y - n) ** 2 < (r * 0.93) ** 2, false);
         if (live) setDrawn({ size, bbox, cells, total: cells.reduce((s, c) => s + c.n, 0), possible, roads, outline: null, circle: { e, n, r }, places });
@@ -138,7 +138,7 @@ export function SquaresMap({ input }: { input: MapInput }) {
         for (let i = Math.floor(m.bbox[0] / size); i <= Math.floor(m.bbox[2] / size); i++)
           for (let j = Math.floor(m.bbox[1] / size); j <= Math.floor(m.bbox[3] / size); j++)
             if (outline.some((ring) => inRing([i * size + 500, j * size + 500], ring))) possible++;
-        const groups = await Promise.all(squaresOf(m.bbox, new Set(ix.roadSquares.main)).map((s) => loadRoads('main', s)));
+        const groups = await Promise.all(squaresOf(m.bbox, new Set(ix.roadSquares.main), 50000).map((s) => loadRoads('main', s)));
         const roads = roadsIn(groups.flat(), m.bbox);
         const places = await placesIn(placesP, m.bbox, (x, y) => outline.some((ring) => inRing([x, y], ring)), true);
         if (live) setDrawn({ size, bbox: m.bbox, cells, total: cells.reduce((s, c) => s + c.n, 0), possible, roads, outline, circle: null, places });
