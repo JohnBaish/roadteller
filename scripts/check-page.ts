@@ -1,6 +1,7 @@
 // Checks on the page's rules, run with the real data: `npm run check`.
 import { readFileSync, existsSync } from 'node:fs';
 import { count, RADII, squaresFor, stretchesIn } from '../src/lib/circle.ts';
+import { unpack, unpackSquare } from '../src/lib/packed.ts';
 import { toBritishGrid } from '../src/lib/grid.ts';
 import type { OldFile, SquareFile } from '../src/lib/data.ts';
 
@@ -13,8 +14,8 @@ const have = new Set(Object.keys(ix.squares));
 const outcodes = JSON.parse(readFileSync('data/os/outcodes.json', 'utf8')).outcodes as Record<string, [number, number, string]>;
 const areas = JSON.parse(readFileSync('data/areas.json', 'utf8'));
 const FIRST = areas.five[0] as number;
-const load = (n: string) => JSON.parse(readFileSync(`data/squares/${n}.json`, 'utf8')) as SquareFile;
-const loadOld = (n: string) => (existsSync(`data/squares/${n}-old.json`) ? (JSON.parse(readFileSync(`data/squares/${n}-old.json`, 'utf8')) as OldFile) : null);
+const load = (n: string) => unpackSquare(JSON.parse(readFileSync(`data/squares/${n}.json`, 'utf8')) as SquareFile);
+const loadOld = (n: string) => (existsSync(`data/squares/${n}-old.json`) ? unpackSquare(JSON.parse(readFileSync(`data/squares/${n}-old.json`, 'utf8')) as OldFile) : null);
 
 function circle(lat: number, lon: number, r: number, old = false) {
   const { easting: e, northing: n } = toBritishGrid(lat, lon);
@@ -45,6 +46,12 @@ check('two miles holds more than one', two.c.n > rg.c.n, [two.c.n, rg.c.n]);
 // The whole of the City of London: within 2 miles of Bank, more than a thousand collisions
 const city = circle(51.5134, -0.0890, RADII.two);
 check('central London: more than 1,000 collisions within two miles of Bank', city.c.n > 1000, city.c.n);
+
+// Road lines are written as text by build/roads.py; this string is what it writes for these numbers.
+check('road text read back', JSON.stringify(unpack("7.4[=8PCDEcb#D$DADBD3AD2AD#'4J")) === JSON.stringify([402106, 7005, 0, -1, 1, -16, 15, 16, -17, 31, -32, 1000, -1000, 123456]), unpack("7.4[=8PCDEcb#D$DADBD3AD2AD#'4J"));
+const rl = JSON.parse(readFileSync('data/roads-local/47-16.json', 'utf8'));
+check('circle files hold text', typeof JSON.parse(readFileSync('data/squares/8-3.json', 'utf8')).recent[0] === 'string');
+check('road files hold text', typeof rl.l[0] === 'string' && unpack(rl.l[0]).length % 2 === 0, rl.l[0]);
 
 console.log(`${passed} passed, ${fails.length} failed`);
 for (const f of fails) console.log('  FAIL', f);

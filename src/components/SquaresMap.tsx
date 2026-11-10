@@ -3,6 +3,7 @@
 // with the A-roads and motorways in white on top. A council area: one-kilometre squares inside its outline (empty squares
 // faint), the motorways, A-roads and B-roads over them, and each square's count written in it where there's room.
 // Everything is drawn on the page from Ordnance Survey's open data; a square's count shows when it's pointed at or tapped.
+import { unpack } from '../lib/packed';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getPlaces } from './PlaceBox.tsx';
 import { useWidth } from './charts.tsx';
@@ -57,7 +58,8 @@ function useDark() {
   return dark;
 }
 
-const decode = (l: number[], ox: number, oy: number) => {
+const decode = (l: number[] | string, ox: number, oy: number) => {
+  if (typeof l === 'string') l = unpack(l);
   const pts: [number, number][] = [[ox + l[0], oy + l[1]]];
   for (let i = 2; i < l.length; i += 2) {
     const [x, y] = pts[pts.length - 1];

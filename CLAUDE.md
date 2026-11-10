@@ -71,6 +71,25 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — road map and circle files shrunk (branch `shrink-roads`, merged the same day at John's word)
+
+**Why:** the built site was 189 MB, and Vercel's free plan has 10 GB of Deployment Storage shared by every site's kept
+copies (Riverwatcher already uses a lot; John's November 7th thread). **What (John: look at it):** `build/roads.py`
+writes each road line as text (numbers zigzagged, five bits a character; read by `src/lib/roadText.ts`), and leaves OS's
+"Restricted Local Access Road" and "Secondary Access Road" (driveways, tracks, car parks) out of the background map.
+Positions and simplification unchanged. Measured first on square SU: text alone 6.7 to 3.0 MB, private roads 6.7 to
+4.8 MB; coarser lines or 2 m steps saved little more. Road files: every road 113 to 53 MB, main roads 15 to 11 MB; the
+built site 189 to 129 MB. **Checked:** checks 12 (two new: the text read back, the files hold text), typecheck, lint,
+build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark (RG14 half and one mile, EC2V two miles, West
+Berkshire): no errors, no sideways scrolling; before and after pictures compared: a few short spurs gone, nothing else.
+**Then (John: try the squares too):** the circle files' lists written the same way (`pack_square` in
+`build/common.py`, used by `tiles.py`; the existing files packed in place, their index sizes updated; read back by
+`unpackSquare` in `src/lib/packed.ts`). Squares 43 to 25 MB; the built site 129 to 110 MB. **Checked:** checks 13
+(new: circle files hold text), typecheck, lint, build; the same browser runs; every map picture pixel-identical to the
+road-only change, and the circle page's text identical before and after (RG14, RG14 two miles, EC2V half a mile, IV27,
+each from 1989). **Not run:** `tiles.py` itself (the data build's earlier stages aren't kept here); the next "Rebuild
+data" run will exercise it.
+
 ### 2026-11-10 — credits in italic with a line beneath; stage 6 wording merged
 
 **John:** a line between the credits and the "free-to-use" lines, the credits in a different style; then merge. The two
@@ -90,7 +109,6 @@ Statistics line in OS's own form; the "not connected with or endorsed by" line a
 middle sentence says the same. **Checked:** typecheck, lint, checks, build; Chromium at 1200px, 390px and 844 by 390 with
 touch, light and dark: start screen, RG14 and West Berkshire; no errors, no sideways scrolling.
 **Preview:** the branch was pushed before John created the Vercel project, so it got no build; pushed again to start one.
-
 ### 2026-11-10 — stage 6 begun: "About these figures", credits and footer drafted (notes only)
 
 **John:** start stage 6 item 1. **What:** draft wording, 19 numbered items, at https://claude.ai/artifact/HdBXKu4iLz5HFYz7jsj9Ht

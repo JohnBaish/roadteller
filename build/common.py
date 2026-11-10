@@ -173,3 +173,31 @@ def dump(obj, path):
 
 def r(v, n=2):
     return None if v is None or (isinstance(v, float) and math.isnan(v)) else round(float(v), n)
+
+
+# Lists of whole numbers written as text, about half the size of JSON numbers (read by src/lib/packed.ts): each number
+# zigzagged (0, -1, 1, -2 ... as 0, 1, 2, 3 ...) and written five bits to a character, low bits first; the first 32
+# characters of CODE carry on to the next, the last 32 end the number. The same code is in build/roads.py.
+CODE = ''.join(chr(c) for c in range(35, 127) if chr(c) != '\\')[:64]
+
+
+def text(nums):
+    out = []
+    for d in nums:
+        d = int(d)
+        z = d * 2 if d >= 0 else -d * 2 - 1
+        while z >= 32:
+            out.append(CODE[z & 31])
+            z >>= 5
+        out.append(CODE[32 + z])
+    return ''.join(out)
+
+
+def pack_square(obj):
+    """A circle file (build/tiles.py) with its lists of numbers written as text."""
+    if 'recent' in obj:
+        obj['recent'] = [text(c) for c in obj['recent']]
+    obj['history'] = [[y, text(k), text(c)] for y, k, c in obj['history']]
+    for s in obj.get('stretches', []):
+        s['line'] = text(s['line'])
+    return obj

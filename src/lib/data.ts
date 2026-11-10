@@ -1,4 +1,5 @@
 // The page's data (scripts/pageData.ts): types, and loading each file once per visit.
+import { unpackSquare } from './packed.ts';
 
 export type PageIndex = {
   latest: number;
@@ -27,6 +28,7 @@ export type AreaFigures = { name?: string; region?: string; trend: Record<string
 export type AreasFile = { latest: number; five: number[]; prev_five: number[]; gb: AreaFigures & { kind_rate: Record<string, number> }; regions: Record<string, AreaFigures>; councils: Record<string, AreaFigures> };
 
 export type Stretch = { cp: number; road: string; start: string | null; end: string | null; km: number; n: number; mvm: number; rate: number | null; rebuilt: boolean; line: number[] };
+
 export type SquareFile = { sq: [number, number]; size: number; recent: number[][]; history: [number, number[], number[]][]; stretches: Stretch[] };
 export type OldFile = { sq: [number, number]; size: number; history: [number, number[], number[]][] };
 export type PostcodeFile = { districts: Record<string, string>; council: Record<string, Record<string, number>> };
@@ -50,14 +52,19 @@ export function json<T>(url: string): Promise<T> {
 
 export const loadIndex = () => json<PageIndex>('/data/index.json');
 export const loadAreas = async () => json<AreasFile>(`/data/${(await loadIndex()).files.areas}`);
-export const loadSquare = async (name: string) => json<SquareFile>(`/data/${(await loadIndex()).files.squares}/${name}.json`);
-export const loadOld = async (name: string) => json<OldFile>(`/data/${(await loadIndex()).files.squares}/${name}-old.json`);
+const unpacked = new Map<string, Promise<unknown>>();
+const loadUnpacked = <T>(url: string) => {
+  if (!unpacked.has(url)) unpacked.set(url, json<T>(url).then((f) => unpackSquare(f)));
+  return unpacked.get(url) as Promise<T>;
+};
+export const loadSquare = async (name: string) => loadUnpacked<SquareFile>(`/data/${(await loadIndex()).files.squares}/${name}.json`);
+export const loadOld = async (name: string) => loadUnpacked<OldFile>(`/data/${(await loadIndex()).files.squares}/${name}-old.json`);
 export const loadPostcodeArea = async (area: string) => json<PostcodeFile>(`/data/${(await loadIndex()).files.postcodes}/${encodeURIComponent(area)}.json`);
 
 // The map of shaded squares (SPEC §8.1, build/roads.py and build/areas.py).
 // A road file: one letter per line (m motorway, a A-road, b B-road, n other) and each line's start and steps in metres
 // from the square's corner; "no" gives motorways' and A-roads' numbers by line.
-export type RoadFile = { sq: [number, number]; size: number; k: string; l: number[][]; no: Record<string, string> };
+export type RoadFile = { sq: [number, number]; size: number; k: string; l: (number[] | string)[]; no: Record<string, string> };
 // A council area's outline (start and steps in metres, one list per part) and its collisions in the latest five years by
 // one-kilometre square: [easting / 1000, northing / 1000, count].
 export type CouncilMap = { code: string; bbox: [number, number, number, number]; outline: number[][]; cells: [number, number, number][] };
