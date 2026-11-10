@@ -130,7 +130,7 @@ shutil.rmtree(f'{OUT}/squares', ignore_errors=True)
 os.makedirs(f'{OUT}/squares', exist_ok=True)
 index = {}; total = 0
 def write(obj, path):
-    dump(obj, path)
+    dump(pack_square(obj), path)
     return len(gzip.compress(open(path, 'rb').read(), 9))
 for (sx, sy), grp in col.groupby(['sx', 'sy']):
     name = f'{sx}-{sy}'

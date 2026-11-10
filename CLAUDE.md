@@ -82,7 +82,13 @@ Positions and simplification unchanged. Measured first on square SU: text alone 
 built site 189 to 129 MB. **Checked:** checks 12 (two new: the text read back, the files hold text), typecheck, lint,
 build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark (RG14 half and one mile, EC2V two miles, West
 Berkshire): no errors, no sideways scrolling; before and after pictures compared: a few short spurs gone, nothing else.
-**Could go further:** the circles' squares (43 MB) could get the same text form.
+**Then (John: try the squares too):** the circle files' lists written the same way (`pack_square` in
+`build/common.py`, used by `tiles.py`; the existing files packed in place, their index sizes updated; read back by
+`unpackSquare` in `src/lib/packed.ts`). Squares 43 to 25 MB; the built site 129 to 110 MB. **Checked:** checks 13
+(new: circle files hold text), typecheck, lint, build; the same browser runs; every map picture pixel-identical to the
+road-only change, and the circle page's text identical before and after (RG14, RG14 two miles, EC2V half a mile, IV27,
+each from 1989). **Not run:** `tiles.py` itself (the data build's earlier stages aren't kept here); the next "Rebuild
+data" run will exercise it.
 
 ### 2026-11-10 — stage 6 begun: "About these figures", credits and footer drafted (notes only)
 
