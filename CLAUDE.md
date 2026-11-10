@@ -71,6 +71,24 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — stage 4 merged; stage 5: the map options (branch `stage-5-map`, design only)
+
+**John:** merge stage 4 (done; "Delete merged branches" run) and carry on. **What:** options A, B and C for the map of
+shaded squares, from real data for 2021 to 2025: 250-metre squares within a mile of RG14 (129 collisions, 51 of 158
+squares with any, busiest 12) and one-kilometre squares in West Berkshire (1,014, 296 of 796, busiest 46).
+`design/mockups/map/make-data.py` (OS Open Roads, Boundary-Line and Refueller's place names), `map.src.html`,
+`build-map.mjs`; pictures in `previews/`. Private page: https://claude.ai/artifact/6dG7NzpN2bcy8L2GVcd8jp. A: every
+square, faint where there were none, main roads over them; B: squares only where there were collisions, slightly
+see-through over a full road map; C: counts written in the squares (too small on a phone for West Berkshire, where
+numbering only the busiest was tried and overlapped in Newbury and Thatcham, so dropped). Five shading steps of one
+terracotta, checked with the dataviz validator in light and dark (the lightest step first failed to stand out from the
+card; darkened). Five questions for John on the page.
+
+**Checked:** Chromium at 1200px and 390px with touch, light and dark, all six maps: no errors, no sideways scrolling, a
+square's count shown by pointing and by tapping. **Not checked:** a real phone; 844 by 390 (not yet a page).
+**Also:** the Rebuild data workflow's first run built and checked everything on GitHub and made exactly the same data
+as on `main`; it now says so instead of failing.
+
 ### 2026-11-09 — stage 3 merged; stage 4: the circle view (branch `stage-4-circle`, not merged)
 
 **John:** merge stage 3 (done; "Delete merged branches" run); the note under Which roads (item 4) needs work, to come back to.

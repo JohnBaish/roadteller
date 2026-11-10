@@ -1,0 +1,214 @@
+<title>Roadteller map options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*FONTS*/
+/* Layout: the baish.net page (one column, 1100px, cards on the cream ground). Tokens are
+   Hindcaster's (organic.css and its agreed dark values). Chart colours: this place in
+   terracotta, comparisons in grey (dashed) and olive. */
+:root {
+  --color-bg: #f5ead8; --color-surface: #ebddc5; --color-text: #201e1d; --color-accent: #c67139;
+  --color-accent-2: #6c7a50;
+  --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
+  --color-neutral-100: #f9f4ed; --color-neutral-300: #dcd3c4; --color-neutral-400: #c0b6a5;
+  --color-neutral-500: #8d8476; --color-neutral-700: #645c50; --color-neutral-800: #474238;
+  --color-accent-100: #fff2eb; --color-accent-700: #8c491a;
+  --font-heading: "Caprasimo", Georgia, serif; --font-body: "Figtree", system-ui, sans-serif;
+  --space-1: 4.4px; --space-2: 8.8px; --space-3: 13.2px; --space-4: 17.6px; --space-6: 26.4px; --space-8: 35.2px;
+  --radius-md: 16px; --radius-lg: 28px;
+  --mock-bg: #2e2b25; --mock-fg: #f5ead8;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --color-bg: #2a2723; --color-surface: #37332e; --color-text: #e8dfcf; --color-accent: #dd8a56; --color-accent-2: #a9bb86;
+  --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+  --color-neutral-100: #423d36; --color-neutral-300: #5a544b; --color-neutral-400: #6a6358; --color-neutral-500: #8f8677;
+  --color-neutral-700: #b0a593; --color-neutral-800: #e3d9c7;
+  --color-accent-100: #4a2a14; --color-accent-700: #f2a573;
+  --mock-bg: #14120f; --mock-fg: #e8dfcf;
+} }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #2a2723; --color-surface: #37332e; --color-text: #e8dfcf; --color-accent: #dd8a56; --color-accent-2: #a9bb86;
+  --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+  --color-neutral-100: #423d36; --color-neutral-300: #5a544b; --color-neutral-400: #6a6358; --color-neutral-500: #8f8677;
+  --color-neutral-700: #b0a593; --color-neutral-800: #e3d9c7;
+  --color-accent-100: #4a2a14; --color-accent-700: #f2a573;
+  --mock-bg: #14120f; --mock-fg: #e8dfcf;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } }
+:root[data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; line-height: 1.12; letter-spacing: -0.015em; margin: 0 0 var(--space-2); text-wrap: balance; }
+h2 { font-size: 32px; } h3 { font-size: 21px; } h4 { font-size: 17px; }
+p { margin: 0 0 var(--space-3); }
+a { color: var(--color-accent-700); text-underline-offset: 3px; }
+button { font: inherit; color: inherit; }
+:focus { outline: none; } :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.mono, .num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--color-neutral-700); }
+.note { font-size: 12.5px; color: var(--color-neutral-700); margin: 4px 0 0; }
+.card { padding: var(--space-6); border-radius: calc(var(--radius-lg) * 1.15); background: var(--color-surface); min-width: 0; }
+.card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin: 0 0 4px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 721px) { .gutter { padding-left: max(var(--space-6), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-6), env(safe-area-inset-right, 0px)); } }
+.col { max-width: 1100px; margin: 0 auto; }
+.mock { background: var(--mock-bg); color: var(--mock-fg); font-size: 13px; padding-block: 8px; position: sticky; top: 0; z-index: 5; }
+.mock .col { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+.mock b { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; }
+.mock-group { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.mock button { color: var(--mock-fg); background: none; padding: 4px 11px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--mock-fg) 30%, transparent); cursor: pointer; font: inherit; }
+.mock button[aria-pressed="true"] { background: var(--mock-fg); color: var(--mock-bg); }
+.intro { padding-block: var(--space-6) 0; } .intro p { max-width: 72ch; }
+.page { padding-block: var(--space-4) var(--space-8); }
+h3 { font-size: 21px; }
+.mapwrap { position: relative; width: fit-content; max-width: 100%; margin-top: var(--space-3); touch-action: manipulation; }
+.map { display: block; width: 100%; height: auto; }
+.map .road { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.map .r-m { stroke: var(--color-text); stroke-width: 3; }
+.map .r-a { stroke: var(--color-text); stroke-width: 1.8; }
+.map .r-b { stroke: var(--color-neutral-700); stroke-width: 1; }
+.map .r-minor { stroke: var(--color-neutral-500); stroke-width: 0.6; opacity: 0.8; }
+.map .bg-a { stroke: var(--color-neutral-500); stroke-width: 1.8; }
+.map .bg-m { stroke: var(--color-neutral-500); stroke-width: 3; }
+.map .edge { fill: none; stroke: var(--color-text); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.map .grid0 { fill: none; stroke: color-mix(in srgb, var(--color-text) 9%, transparent); stroke-width: 0.6; }
+.map .cell { stroke: var(--color-surface); stroke-width: 1; }
+.map .cell.on { stroke: var(--color-text); stroke-width: 2; }
+.map .num { font: 600 11px var(--font-body); fill: #fff; text-anchor: middle; pointer-events: none; }
+.map .num.dk { fill: #201e1d; }
+.map .place { font: 600 12px var(--font-body); fill: var(--color-text); paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.map .place.t { font-size: 13.5px; font-weight: 700; }
+.map .mid { fill: var(--color-text); }
+.map .rno { font: 700 10px var(--font-body); fill: var(--color-text); paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 12px; color: var(--color-neutral-700); margin-top: 8px; }
+.legend i { display: inline-block; width: 16px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.legend i.e { border: 1px solid var(--color-divider); }
+.tip { position: absolute; z-index: 3; pointer-events: none; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-divider); border-radius: 10px; padding: 6px 10px; font-size: 13px; box-shadow: 0 2px 8px #0003; max-width: 230px; }
+.year-line { margin: var(--space-3) 0 0; padding: var(--space-2) var(--space-3); border-radius: 12px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.qs ol { padding-left: 22px; max-width: 75ch; } .qs li { margin-bottom: 8px; }
+.opt-note { font-size: 14px; color: var(--color-neutral-700); max-width: 75ch; }
+</style>
+<div class="mock gutter" data-noprint><div class="col">
+  <span class="mock-group"><b>Area</b><button data-area="circle">One mile round RG14</button><button data-area="council">West Berkshire</button></span>
+  <span class="mock-group"><b>Option</b><button data-opt="A">A</button><button data-opt="B">B</button><button data-opt="C">C</button></span>
+</div></div>
+<div class="gutter intro"><div class="col">
+  <p class="card-kicker">Design · stage 5 · November 10th 2026</p>
+  <h2>Roadteller: the map of shaded squares</h2>
+  <p>Three ways to draw where the injury collisions were, with real figures for 2021 to 2025: 250-metre squares within a mile of the middle of RG14 (Newbury), and one-kilometre squares across West Berkshire. Counts only, no rates. Use the dark bar to switch between them. Point at a square, or tap it, for its count. Everything is drawn on the page from Ordnance Survey's open data, with no outside map service.</p>
+</div></div>
+<div class="gutter page"><div class="col"><div class="card" id="card"></div>
+<div class="qs" id="qs"></div></div></div>
+<script>
+const D = /*DATA*/null;
+const LIGHT = ['#d18b61', '#bb6c40', '#a0532a', '#7c3c1b', '#552610'];
+const DARK = ['#9a5532', '#b9693b', '#d6824f', '#eba477', '#fbd2b4'];
+const BINS = { circle: [[1, 1], [2, 3], [4, 5], [6, 8], [9, Infinity]], council: [[1, 2], [3, 5], [6, 10], [11, 20], [21, Infinity]] };
+const W = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+const word = n => n < 10 ? W[n] : n.toLocaleString('en-GB');
+const state = { area: 'circle', opt: 'A' };
+const dark = () => matchMedia('(prefers-color-scheme: dark)').matches;
+const pal = () => dark() ? DARK : LIGHT;
+const bin = (a, n) => BINS[a].findIndex(([lo, hi]) => n >= lo && n <= hi);
+const rangeText = ([lo, hi]) => hi === Infinity ? `${lo} or more` : lo === hi ? `${lo}` : `${lo} to ${hi}`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const VILLAGES = ['Theale', 'Pangbourne', 'Lambourn', 'Hermitage', 'Burghfield Common', 'Kintbury', 'Compton', 'Mortimer', 'Chieveley', 'Aldermaston'];
+const VILLAGES_PHONE = ['Theale', 'Pangbourne', 'Lambourn'];
+
+function inPoly([x, y], pts) {
+  let c = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [xi, yi] = pts[i], [xj, yj] = pts[j];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c;
+  }
+  return c;
+}
+function draw() {
+  const a = D[state.area], card = document.getElementById('card');
+  const w = Math.min(state.area === 'circle' ? 600 : 900, Math.floor(card.clientWidth - 2 * parseFloat(getComputedStyle(card).paddingLeft)));
+  const narrow = w < 560;
+  const [x0, y0, x1, y1] = a.bbox, k = w / (x1 - x0), h = Math.round((y1 - y0) * k);
+  const X = x => ((x - x0) * k).toFixed(1), Y = y => ((y1 - y) * k).toFixed(1);
+  const path = pts => pts.map((p, i) => `${i ? 'L' : 'M'}${X(p[0])} ${Y(p[1])}`).join('');
+  const sz = a.size * k, P = pal();
+  const isCircle = state.area === 'circle';
+  let clip = isCircle ? `<circle cx="${X(a.cx)}" cy="${Y(a.cy)}" r="${(a.r * k).toFixed(1)}"/>` : a.outline.map(r => `<path d="${path(r)}Z"/>`).join('');
+  let s = `<svg class="map" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Injury collisions in each ${isCircle ? '250-metre' : 'one-kilometre'} square, 2021 to 2025"><defs><clipPath id="clip">${clip}</clipPath></defs>`;
+  // B: a road map underneath, beyond the edge too
+  if (state.opt === 'B') s += a.roads.map(r => `<path class="road ${r.k === 'minor' ? 'r-minor' : r.k === 'b' ? 'r-b' : 'bg-' + r.k}" d="${path(r.pts)}"/>`).join('');
+  s += `<g clip-path="url(#clip)">`;
+  if (state.opt === 'A') s += a.grid.map(([x, y]) => `<rect class="grid0" x="${X(x)}" y="${Y(y + a.size)}" width="${sz.toFixed(1)}" height="${sz.toFixed(1)}"/>`).join('');
+  const op = state.opt === 'B' ? ' fill-opacity="0.82"' : '';
+  s += a.cells.map((c, i) => `<rect class="cell" data-i="${i}" x="${X(c.x)}" y="${Y(c.y + a.size)}" width="${sz.toFixed(1)}" height="${sz.toFixed(1)}" fill="${P[bin(state.area, c.n)]}"${op}/>`).join('');
+  s += `</g>`;
+  // A and C: only the main roads over the squares
+  if (state.opt !== 'B') s += `<g clip-path="url(#clip)">` + a.roads.filter(r => r.k === 'm' || r.k === 'a' || (isCircle && r.k === 'b')).map(r => `<path class="road r-${r.k}" d="${path(r.pts)}" opacity="0.75"/>`).join('') + `</g>`;
+  s += isCircle ? `<circle class="edge" cx="${X(a.cx)}" cy="${Y(a.cy)}" r="${(a.r * k).toFixed(1)}"/><circle class="mid" cx="${X(a.cx)}" cy="${Y(a.cy)}" r="4"/>` : a.outline.map(r => `<path class="edge" d="${path(r)}Z"/>`).join('');
+  // C: numbers in the squares where they fit, otherwise on the ten busiest
+  if (state.opt === 'C') {
+    const fits = sz >= 20;
+    a.cells.forEach((c, i) => {
+      if (!fits) return;
+      const cx = (c.mx - x0) * k, cy = (y1 - c.my) * k, b = bin(state.area, c.n);
+      const lightText = dark() ? b < 3 : b >= 2;
+      if (fits) s += `<text class="num ${lightText ? '' : 'dk'}" x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}">${c.n}</text>`;
+    });
+  }
+  // road numbers on the main roads, once each
+  const seen = new Set();
+  for (const r of a.roads) {
+    if (!(r.k === 'm' || r.k === 'a') || !r.no || seen.has(r.no) || r.pts.length < 2) continue;
+    const m = r.pts[Math.floor(r.pts.length / 2)];
+    const inside = isCircle ? Math.hypot(m[0] - a.cx, m[1] - a.cy) < a.r * 0.85 : a.outline.some(rg => inPoly(m, rg));
+    if (!inside || m[0] < x0 + 300 || m[0] > x1 - 300) continue;
+    seen.add(r.no); s += `<text class="rno" x="${X(m[0])}" y="${Y(m[1])}">${esc(r.no)}</text>`;
+  }
+  const pl = a.places.filter(p => p.kind === 't' || p.kind === 'c' || (isCircle && !narrow) || (!isCircle && (narrow ? VILLAGES_PHONE : VILLAGES).includes(p.name)));
+  s += pl.map(p => `<text class="place ${p.kind === 't' || p.kind === 'c' ? 't' : ''}" x="${X(p.x)}" y="${Y(p.y)}" text-anchor="middle">${esc(p.name)}</text>`).join('');
+  s += `</svg>`;
+  const legend = `<div class="legend"><span>Injury collisions in each square:</span>${state.opt === 'A' ? '<span><i class="e"></i>none</span>' : ''}${BINS[state.area].map((r, i) => `<span><i style="background:${P[i]}"></i>${rangeText(r)}</span>`).join('')}</div>`;
+  const busiest = [...a.cells].sort((p, q) => q.n - p.n)[0];
+  const lead = isCircle
+    ? `<p>The ${word(a.n)} injury collisions within a mile of the middle of RG14 (Newbury), from 2021 to 2025 inclusive, in 250-metre squares. ${word(a.cells.length)[0].toUpperCase() + word(a.cells.length).slice(1)} of the ${a.grid.length} squares had at least one; the busiest had ${word(busiest.n)}.</p>`
+    : `<p>The ${a.n.toLocaleString('en-GB')} injury collisions in West Berkshire, from 2021 to 2025 inclusive, in one-kilometre squares. ${a.cells.length} of the ${a.grid.length} squares had at least one; the busiest had ${busiest.n}.</p>`;
+  const notes = {
+    A: 'A: the squares on a plain ground, with every square drawn (faint outlines where there were none), and the main roads over them.',
+    B: 'B: the squares, only where there were collisions, slightly see-through over a road map that carries on beyond the edge' + (isCircle ? ', minor roads included.' : '.'),
+    C: 'C: as A without the empty squares, with each square\'s count written in it' + (sz >= 20 ? '.' : ': here the squares are too small for numbers (numbering only the busiest was tried, but they sit on top of each other in Newbury and Thatcham), so it looks like A without the empty squares. Tap a square for its count.'),
+  };
+  card.innerHTML = `<h3>Where they happened</h3>${lead}<div class="mapwrap">${s}<div class="tip" hidden></div></div>${legend}<p class="note">Squares are drawn from Ordnance Survey's grid. A collision is placed where the police recorded it. Point at a square, or tap it, for its count.</p><p class="opt-note" style="margin-top:var(--space-3)">${notes[state.opt]}</p>`;
+  const wrap = card.querySelector('.mapwrap'), tip = wrap.querySelector('.tip');
+  const show = (el, ev) => {
+    wrap.querySelectorAll('.cell.on').forEach(e => e.classList.remove('on'));
+    if (!el) { tip.hidden = true; return; }
+    const c = a.cells[+el.dataset.i]; el.classList.add('on');
+    tip.innerHTML = `<b>${c.n === 1 ? 'One injury collision' : `${word(c.n)[0].toUpperCase() + word(c.n).slice(1)} injury collisions`}</b><br>in this ${isCircle ? '250-metre' : 'one-kilometre'} square${c.whole ? '' : ' (the part inside the ' + (isCircle ? 'circle' : 'council area') + ')'}, 2021 to 2025`;
+    tip.hidden = false;
+    const r = wrap.getBoundingClientRect(), b = el.getBoundingClientRect();
+    let left = b.left - r.left + b.width / 2 - tip.offsetWidth / 2; left = Math.max(0, Math.min(r.width - tip.offsetWidth, left));
+    let top = b.top - r.top - tip.offsetHeight - 8; if (top < 0) top = b.bottom - r.top + 8;
+    tip.style.left = left + 'px'; tip.style.top = top + 'px';
+  };
+  wrap.addEventListener('pointerover', e => { if (e.pointerType === 'mouse') show(e.target.closest('.cell'), e); });
+  wrap.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') show(null); });
+  wrap.addEventListener('click', e => show(e.target.closest('.cell'), e));
+  document.querySelectorAll('[data-area]').forEach(b => b.setAttribute('aria-pressed', b.dataset.area === state.area));
+  document.querySelectorAll('[data-opt]').forEach(b => b.setAttribute('aria-pressed', b.dataset.opt === state.opt));
+  document.getElementById('qs').innerHTML = `<h3 style="margin-top:var(--space-8)">Questions for John</h3><ol>
+    <li>Which option: A (every square, plain ground), B (squares over a road map) or C (counts written in the squares)?</li>
+    <li>Square sizes: 250 metres for a circle and one kilometre for a council area, as agreed to try. Half a mile and two miles would use the same 250-metre squares. Keep both sizes?</li>
+    <li>The five shading steps: for a circle 1, 2 to 3, 4 to 5, 6 to 8, 9 or more; for a council area 1 to 2, 3 to 5, 6 to 10, 11 to 20, 21 or more. Fixed steps like these, or steps worked out from each place's own figures (so a quiet village still shows its busiest square darkest)?</li>
+    <li>Where on the page: straight after the big figure, or after "Which roads"?</li>
+    <li>Squares are counts, not rates: a busy junction shows dark because lots of traffic goes through it. Say so under the map? (Draft: "Busy roads have more collisions because more people use them: these squares count collisions, they don't allow for traffic.")</li>
+  </ol>`;
+}
+document.querySelectorAll('[data-area]').forEach(b => b.onclick = () => { state.area = b.dataset.area; draw(); });
+document.querySelectorAll('[data-opt]').forEach(b => b.onclick = () => { state.opt = b.dataset.opt; draw(); });
+document.addEventListener('click', e => { if (!e.target.closest('.mapwrap')) document.querySelectorAll('.tip').forEach(t => t.hidden = true), document.querySelectorAll('.cell.on').forEach(c => c.classList.remove('on')); });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 120); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+const q = new URLSearchParams(location.search); if (q.get('area')) state.area = q.get('area'); if (q.get('opt')) state.opt = q.get('opt');
+draw();
+</script>
