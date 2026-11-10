@@ -71,6 +71,11 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — stage 5 merged
+
+**John:** merge; five-kilometre squares for the 17 largest council areas are right (SPEC §8.1 updated). Merged to `main`
+(fast-forward); "Delete merged branches" run afterwards.
+
 ### 2026-11-10 — stage 5: the map built (branch `stage-5-map`, not merged)
 
 **John:** the map just before the road lists, as suggested. **What:** `src/components/SquaresMap.tsx`, "Where they

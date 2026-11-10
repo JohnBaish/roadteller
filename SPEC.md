@@ -173,7 +173,7 @@ following the device):
    - A council area: one-kilometre squares inside its outline (every square drawn, faint where there were
      none), with motorways, A-roads and B-roads over them, and each square's count written in it where there's
      room (a computer, usually). The 17 council areas more than 100 km across (Highland, Cornwall, Norfolk and
-     so on) use five-kilometre squares, as one-kilometre squares would be dots (proposed by Claude, for John).
+     so on) use five-kilometre squares, as one-kilometre squares would be dots (agreed by John, November 10th 2026).
    - Shading: five steps of one colour, worked out from the place's own busiest square, each about the same
      factor bigger than the one before; where the busiest square has five or fewer, each count is its own step
      from the lightest (the floor).
