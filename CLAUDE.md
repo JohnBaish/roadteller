@@ -71,6 +71,15 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — credits in italic with a line beneath; stage 6 wording merged
+
+**John:** a line between the credits and the "free-to-use" lines, the credits in a different style; then merge. The two
+credit lines are now in Figtree italic (the real italic, `@fontsource/figtree/400-italic`, now loaded), with a dividing
+line beneath them (`.footer-notice .credits`; not printed). None of the other sites puts its credits in another font:
+Hindcaster and Riverwatcher use smaller grey type. **Checked:** checks 10, typecheck, lint, build; Chromium at 1200px,
+390px and 844 by 390 with touch, light and dark: italic face loaded, no errors, no sideways scrolling. Merged
+`stage-6-about` to `main` (fast-forward) at John's word.
+
 ### 2026-11-10 — "About these figures", credits and footer built (branch `stage-6-about`, not merged)
 
 **John:** items 1 to 11 with his rewording, 13 to 19 agreed (13 as option B), 12 to be rewritten. **What:**

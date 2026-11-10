@@ -194,16 +194,17 @@ export default function App() {
         </SafetyNet>
         {target && <About />}
         <footer className="footer-notice">
+          {/* The credits in italic, with a line below them before the project lines (John, November 10th 2026). */}
           {!start && (
-            <p>
-              Collisions and traffic: Department for Transport. Contains public sector information licensed under the Open Government Licence v3.0.
-            </p>
-          )}
-          {!start && (
-            <p>
-              Roads, boundaries, postcodes and places: Contains OS data © Crown copyright and database right 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026.
-              Contains National Statistics data © Crown copyright and database right 2026.
-            </p>
+            <div className="credits">
+              <p>
+                Collisions and traffic: Department for Transport. Contains public sector information licensed under the Open Government Licence v3.0.
+              </p>
+              <p>
+                Roads, boundaries, postcodes and places: Contains OS data © Crown copyright and database right 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026.
+                Contains National Statistics data © Crown copyright and database right 2026.
+              </p>
+            </div>
           )}
           <p data-noprint>
             Roadteller is a free-to-use personal project by John Baish. We don’t record anything you do here, apart from anonymous visit statistics (no cookies, no personal data), showing us how

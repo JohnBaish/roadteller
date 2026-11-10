@@ -1,3 +1,4 @@
+@import '@fontsource/figtree/400-italic.css';
 /* Refueller's page styles, on top of organic.css (from clockwheel by way of Hindcaster, HOUSE-STYLE §1). The layout is
    the approved mock-ups (design/mock/mock-results.html, round 4, John, 30 October). */
 
@@ -128,6 +129,8 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 
 .footer-notice { margin-top: 64px; padding-top: var(--space-3); border-top: 1px solid var(--color-divider); font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); text-align: center; }
 .footer-notice p { margin: 0 0 6px; }
+.footer-notice .credits { font-style: italic; padding-bottom: var(--space-3); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-divider); }
+.footer-notice .credits p:last-child { margin-bottom: 0; }
 
 .nav-right { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
 .theme-switch { display: inline-flex; align-items: center; gap: 8px; flex: none; background: none; border: 0; padding: 4px 0; cursor: pointer; color: var(--color-neutral-700); font: inherit; }
@@ -472,3 +475,4 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .map .rno { font: 700 10px var(--font-body); fill: var(--color-text); paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; pointer-events: none; }
 .map-tip { position: absolute; z-index: 3; width: 220px; pointer-events: none; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-divider); border-radius: 10px; padding: 6px 10px; font-size: 13px; box-shadow: 0 2px 8px #0003; }
 .map-key i { display: inline-block; width: 16px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+@media print { .footer-notice .credits { border-bottom: 0; } }
