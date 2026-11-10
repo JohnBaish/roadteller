@@ -2,9 +2,9 @@
 // suburbs and villages from OS Open Names; Roadteller adds each place's council area (build/lookup.py). It is searched on
 // the visitor's device, so nothing typed leaves it.
 
-export type PlaceRow = [string, string, string, number, number, string, string, number];
+export type PlaceRow = [string, string, string, number, number, string, string, number, number?];
 export type PlaceFile = { credit: string; made: string; places: PlaceRow[] };
-export type NamedPlace = { name: string; other: string; area: string; lat: number; lon: number; kind: string; district: string; council: number; shared?: boolean; clash?: boolean; twin?: boolean };
+export type NamedPlace = { name: string; other: string; area: string; lat: number; lon: number; kind: string; district: string; council: number; size: number; shared?: boolean; clash?: boolean; twin?: boolean };
 
 const KIND_ORDER: Record<string, number> = { c: 0, t: 1, s: 2, v: 3 };
 
@@ -26,7 +26,7 @@ export const placeLabel = (p: NamedPlace) => (p.shared && p.area ? `${p.name}, $
 
 export type PlaceIndex = { all: NamedPlace[]; keys: { name: string; other: string; label: string }[] };
 export function makePlaceIndex(f: PlaceFile): PlaceIndex {
-  const all: NamedPlace[] = f.places.map(([name, other, area, lat, lon, kind, district, council]) => ({ name, other, area, lat, lon, kind, district, council }));
+  const all: NamedPlace[] = f.places.map(([name, other, area, lat, lon, kind, district, council, size]) => ({ name, other, area, lat, lon, kind, district, council, size: size ?? 0 }));
   const tally = (key: (p: NamedPlace) => string) => {
     const c = new Map<string, number>();
     for (const p of all) c.set(key(p), (c.get(key(p)) ?? 0) + 1);

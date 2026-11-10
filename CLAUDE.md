@@ -71,6 +71,20 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — villages by size, two on phones; the 1989 button back up (branch `stage-6-icons`, not merged)
+
+**John:** yes to ranking villages by size and to one or two villages on phone circle maps; and "Show from 1989" was only
+meant to move a little, not below the share button. **What:** `build/place_sizes.py` (about 15 seconds) counts, for every
+postcode, the nearest city, town, suburb or village, and writes `data/place-sizes.json` (Cranleigh 318, Lambourn 117,
+Pangbourne 114, Abinger Common 24); `scripts/pageData.ts` adds each size to the place file; the map names towns first,
+then the biggest places. Added to the "Rebuild data" job and `build/README.md`. On a phone a circle now names up to two
+villages (no suburbs): KT12 3JD shows Hersham, RG14 Greenham. Surrey's map now names Cranleigh, Byfleet and Hersham, not
+Abinger Common and Albury; West Berkshire on a phone Thatcham, Theale, Lambourn and Burghfield Common, not three
+Aldermastons. The 1989/2000 button is back above the share button, 13px below the line above it (a wider rule for card
+paragraphs had been overriding its spacing, so it sat touching that line). Also fixed: the trend chart's key read "A mile
+of the middle of RG14"; now "Within a mile of the middle of RG14 (Newbury)". **Checked:** checks 16, typecheck, lint,
+build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark, six places: no errors, no sideways scrolling.
+
 ### 2026-11-10 — better road numbers and places on the map (branch `stage-6-icons`, not merged)
 
 **John** (KT12 3JD: the A244 through the middle unnamed, Hersham missing): build both rules. **Road numbers**

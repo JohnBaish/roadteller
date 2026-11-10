@@ -90,7 +90,7 @@ type Drawn = {
   size: number; bbox: [number, number, number, number]; cells: Cell[]; total: number; possible: number;
   roads: { k: string; pts: [number, number][]; no?: string }[];
   outline: [number, number][][] | null; circle: { e: number; n: number; r: number } | null;
-  places: { name: string; big: boolean; x: number; y: number }[];
+  places: { name: string; big: boolean; kind: string; size: number; x: number; y: number }[];
 };
 
 export function SquaresMap({ input }: { input: MapInput }) {
@@ -193,10 +193,11 @@ async function placesIn(p: ReturnType<typeof getPlaces>, b: [number, number, num
     if (council ? pl.kind !== 'c' && pl.kind !== 't' && pl.kind !== 'v' : pl.kind === 'c') continue;
     const { easting: x, northing: y } = toBritishGrid(pl.lat, pl.lon);
     if (x < b[0] || x > b[2] || y < b[1] || y > b[3] || !inside(x, y, pl.kind)) continue;
-    out.push({ name: pl.name, big: pl.kind === 'c' || pl.kind === 't', x, y });
+    out.push({ name: pl.name, big: pl.kind === 'c' || pl.kind === 't', kind: pl.kind, size: pl.size, x, y });
   }
-  // towns first; among villages, those nearest the busiest parts are as good a guess as any, so keep the list order
-  return out.sort((a, c) => Number(c.big) - Number(a.big));
+  // towns first, then the biggest places (postcodes nearer to each than to any other place; build/place_sizes.py), so a
+  // council area's map names its best-known villages rather than the first in the alphabet (John, November 10th 2026)
+  return out.sort((a, c) => Number(c.big) - Number(a.big) || c.size - a.size);
 }
 
 function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
@@ -262,7 +263,8 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
     for (const p of d.places) {
       if (p.big) continue;
       if (!p.big && !isCircle && villages >= (narrow ? 3 : 6)) continue;
-      if (!p.big && isCircle && narrow) continue;
+      // on a phone a circle names at most two villages, the biggest, and no suburbs (John, November 10th 2026)
+      if (!p.big && isCircle && narrow && (p.kind !== 'v' || villages >= 2)) continue;
       place(p);
     }
     // road numbers (src/lib/mapLabels.ts): each road's pieces joined, the number in the middle of its longest stretch on

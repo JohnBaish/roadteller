@@ -15,7 +15,7 @@ import { createHash } from 'node:crypto';
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-export const SOURCES = ['data/areas.json', 'data/squares/index.json', 'data/os/places.json', 'data/os/outcodes.json', 'data/councils-of.json'];
+export const SOURCES = ['data/areas.json', 'data/squares/index.json', 'data/os/places.json', 'data/os/outcodes.json', 'data/councils-of.json', 'data/place-sizes.json'];
 
 type CouncilsOf = { codes: string[]; districts: Record<string, number>; postcodes: Record<string, Record<string, number>>; places: number[] };
 type Areas = {
@@ -49,9 +49,11 @@ export function writePageData(root: string) {
   const vSquares = fingerprint(d('squares/index.json'));
   cpSync(d('squares'), join(out, `squares-${vSquares}`), { recursive: true });
 
-  const vPlaces = fingerprint(d('os/places.json'), d('councils-of.json'));
+  const vPlaces = fingerprint(d('os/places.json'), d('councils-of.json'), d('place-sizes.json'));
   const places = read<{ credit: string; made: string; places: unknown[][] }>(d('os/places.json'));
-  places.places = places.places.map((row, i) => [...row, of.places[i]]);
+  // each place's council area, then its size (postcodes nearer to it than any other place; build/place_sizes.py)
+  const sizes = read<{ sizes: number[] }>(d('place-sizes.json')).sizes;
+  places.places = places.places.map((row, i) => [...row, of.places[i], sizes[i] ?? 0]);
   writeFileSync(join(out, `places-${vPlaces}.json`), JSON.stringify(places));
 
   const vPost = fingerprint(d('councils-of.json'), ...readdirSync(d('os/postcodes')).filter((f) => f.endsWith('.json')).map((f) => d(`os/postcodes/${f}`)));

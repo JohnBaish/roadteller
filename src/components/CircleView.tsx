@@ -205,7 +205,7 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
         <div className="legend">
           <span>
             <i className="l k-me" />
-            {cap1(within.replace(/^Within /, ''))}
+            {within}
           </span>
           <span>
             <i className="l d k-gb" />
@@ -223,18 +223,18 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
       <p className="note">
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
       </p>
+      {/* A little room above it, and back again once pressed (John, November 10th 2026). */}
+      <p className="trend-range" data-noprint>
+        <button type="button" className="btn btn-secondary" onClick={() => onLong(!long)}>
+          {long ? 'Show from 2000' : `Show from ${first}`}
+        </button>
+      </p>
       <ShareButton
         svg={svg}
         title="Better or worse than before?"
         sub={indexed ? `Injury collisions ${lower1(within)} and across Great Britain, ${from} = 100` : `Injury collisions a year ${lower1(within)}`}
         file="roadteller-trend.png"
       />
-      {/* Below the share button, and back again once pressed (John, November 10th 2026). */}
-      <p className="trend-range" data-noprint>
-        <button type="button" className="btn btn-secondary" onClick={() => onLong(!long)}>
-          {long ? 'Show from 2000' : `Show from ${first}`}
-        </button>
-      </p>
     </div>
   );
 }
