@@ -1,0 +1,125 @@
+<title>Roadteller wording draft</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;600;700&display=swap">
+<style>
+/* Layout: one reading column on the baish.net cream ground, each numbered item a quiet block John can reply to. */
+:root {
+  --bg: #f5ead8; --surface: #ebddc5; --text: #201e1d; --muted: #645c50; --accent: #8c491a; --rule: color-mix(in srgb, #201e1d 16%, transparent);
+  --mark: #fff2eb;
+  --head: "Caprasimo", Georgia, serif; --body: "Figtree", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #2a2723; --surface: #37332e; --text: #e8dfcf; --muted: #b0a593; --accent: #f2a573; --rule: color-mix(in srgb, #e8dfcf 16%, transparent); --mark: #4a2a14; color-scheme: dark;
+} }
+:root[data-theme="dark"] { --bg: #2a2723; --surface: #37332e; --text: #e8dfcf; --muted: #b0a593; --accent: #f2a573; --rule: color-mix(in srgb, #e8dfcf 16%, transparent); --mark: #4a2a14; color-scheme: dark; }
+body { background: var(--bg); color: var(--text); font: 16px/1.6 var(--body); margin: 0; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2 { font-family: var(--head); font-weight: 400; line-height: 1.15; text-wrap: balance; }
+h1 { font-size: 32px; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 40px 0 12px; }
+.kicker { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 6px; }
+p { margin: 0 0 12px; }
+.lead { color: var(--muted); }
+ol.items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; counter-reset: n; }
+ol.items > li { background: var(--surface); border-radius: 18px; padding: 14px 18px 14px 58px; position: relative; }
+ol.items > li::before { content: attr(data-n); position: absolute; left: 16px; top: 14px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.say { margin: 0; }
+.why { margin: 8px 0 0; font-size: 13.5px; color: var(--muted); }
+.opt { margin: 6px 0 0; }
+.opt b { color: var(--accent); }
+code { font-size: 14px; }
+</style>
+<div class="wrap">
+  <p class="kicker">Roadteller · stage 6 · November 10th 2026</p>
+  <h1>About these figures, credits and footer</h1>
+  <p class="lead">All draft, for you to edit. Each numbered item is one paragraph or line as it would appear on the page. The smaller grey text under some items says where a fact comes from, or why it's there, and won't appear on the site. Reply by number.</p>
+
+  <h2>About these figures</h2>
+  <ol class="items">
+    <li data-n="1">
+      <p class="say">Roadteller counts collisions on public roads in which someone was injured and which were reported to the police, from the police's records published by the Department for Transport. Collisions in which nobody was hurt aren't included, and some injuries are never reported to the police, so the true numbers are higher.</p>
+    </li>
+    <li data-n="2">
+      <p class="say">The main figures cover the latest five complete years, 2021 to 2025, and compare them with the five years before, 2016 to 2020. The earlier years include 2020, when there was much less traffic during the pandemic.</p>
+    </li>
+    <li data-n="3">
+      <p class="say">A circle counts every collision the police recorded within half a mile, a mile or two miles of the middle of the postcode or place. A council area counts every collision within its present boundaries, whichever council it was recorded under at the time.</p>
+    </li>
+    <li data-n="4">
+      <p class="say">"One injury collision for every 14.0 million miles" compares collisions on a council area's A-roads and motorways with the miles driven on them, from the Department for Transport's traffic figures. Minor roads aren't included, because their traffic is only estimated for whole areas.</p>
+    </li>
+    <li data-n="5">
+      <p class="say">Traffic is measured stretch by stretch, between junctions. Only about a quarter of the yearly figures for A-roads and motorways come from a count on that road in that year; the rest are the Department for Transport's estimates, and about a third of stretches weren't counted at all from 2021 to 2025. The Department says figures for a single road or a small area are less reliable than those for a region or the whole country, so a road's figure is a guide rather than an exact measure.</p>
+      <p class="why">DfT asks anyone publishing its road-by-road traffic figures to note their limits (roadtraffic.dft.gov.uk/about, "Data disclaimer"). Figures from DfT's 2021 to 2025 file, A-roads and motorways: 24% of yearly figures counted; 6,999 of 19,073 count points not counted in any of the five years.</p>
+    </li>
+    <li data-n="6">
+      <p class="say">Each collision on an A-road or motorway is matched to the nearest stretch of the same road, drawn along the real road from Ordnance Survey's map. One that happened within 60 metres of a junction between two stretches counts half to each. About one in seven collisions on these roads falls at a junction like this.</p>
+      <p class="why">The build's figures for 2021 to 2025: 33,746 of 242,499 collisions on A-roads and motorways at a junction between stretches (14%); 1.3% couldn't be matched.</p>
+    </li>
+    <li data-n="7">
+      <p class="say">A rate is only given where at least 10 collisions lie behind it, as fewer are too few to compare fairly.</p>
+    </li>
+    <li data-n="8">
+      <p class="say">"Allowing for the mix of roads" takes the Great Britain rate for motorways and for A-roads, applies each to the miles driven on that kind of road in the area, and compares the result with the collisions there. Motorways have far fewer collisions for their traffic than other roads, so an area with a lot of motorway would otherwise look better than it is.</p>
+    </li>
+    <li data-n="9">
+      <p class="say">"Better or worse than before?" goes back to 2000 for rates. For a circle, counts go back to 1989. Before then, the locations of too many collisions can't be placed on a map. Older locations are also rougher, often to the nearest 100 metres, so a collision near the edge of a circle may fall just inside or just outside it.</p>
+    </li>
+    <li data-n="10">
+      <p class="say">"Serious or fatal" is as the police recorded it. Since some police forces changed how they record injuries, more injuries are recorded as serious than before, so changes over time, or differences between areas, can partly reflect how they were recorded.</p>
+      <p class="why">gov.uk "Road safety open data": "The introduction of injury-based reporting of casualty severity for some police forces appears to have led to a change in the reported severity of road casualties."</p>
+    </li>
+    <li data-n="11">
+      <p class="say">The map's squares count collisions, they don't allow for traffic. Busy roads have more collisions because more people use them, so a busy junction shows darker even where it is no more dangerous than a quiet lane.</p>
+      <p class="why">Your note from the map options, with a sentence added; "dangerous" is used here only to say the map doesn't measure it.</p>
+    </li>
+    <li data-n="12">
+      <p class="say">Roadteller shows totals only. It never lists individual collisions or the people involved.</p>
+    </li>
+  </ol>
+
+  <h2>The note under "Which roads" (you said it needed work)</h2>
+  <ol class="items">
+    <li data-n="13">
+      <p class="say">Now: "A road's collisions are those matched to its stretches in West Berkshire; one at a junction between two stretches counts half to each."</p>
+      <p class="opt"><b>A:</b> "Each road's figures cover its stretches in West Berkshire. A collision at a junction between two stretches counts half to each, so some totals end in a half."</p>
+      <p class="opt"><b>B:</b> "These are the main roads' stretches in West Berkshire, measured between junctions. Collisions at a junction between two stretches count half to each."</p>
+      <p class="opt"><b>C:</b> Drop the note here, as item 6 above explains it.</p>
+      <p class="why">B matches the wording you chose for the circle's note ("Traffic is counted between junctions…"). The page rounds halves to whole numbers today; A would mean showing them, for example 131.5.</p>
+    </li>
+  </ol>
+
+  <h2>Credits</h2>
+  <ol class="items">
+    <li data-n="14">
+      <p class="say">"Collisions and traffic: Department for Transport. Contains public sector information licensed under the Open Government Licence v3.0."</p>
+      <p class="why">Both are published under the Open Government Licence: data.gov.uk lists Road Safety Data as "UK Open Government Licence (OGL)", and the road traffic site says "All content is available under the Open Government Licence v3.0". That sentence is the licence's own attribution wording.</p>
+    </li>
+    <li data-n="15">
+      <p class="say">"Roads, boundaries, postcodes and places: Contains OS data © Crown copyright and database right 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026. Contains National Statistics data © Crown copyright and database right 2026."</p>
+      <p class="why">OS Open Roads' own licence file says "Contains Ordnance Survey data © Crown copyright and database right 2026"; the Royal Mail and National Statistics lines come with the postcode positions (OS Open Names), as on Refueller. The page today says "Crown Copyright and database rights"; this tidies it to OS's own form. OS's licence page couldn't be opened from here, so this rests on the files that came with the data.</p>
+    </li>
+  </ol>
+
+  <h2>Footer</h2>
+  <ol class="items">
+    <li data-n="16">
+      <p class="say">"Roadteller is a free-to-use personal project by John Baish. We don't record anything you do here, apart from anonymous visit statistics (no cookies, no personal data), showing us how the site is used. Your device, rather than the website, stores your last choices (postcode, place or council area, and light or dark mode), so the page opens the same way next time."</p>
+      <p class="why">As on the page now, from the house wording.</p>
+    </li>
+    <li data-n="17">
+      <p class="say">"More free tools at www.baish.net. Contact: workshop@baish.net."</p>
+    </li>
+    <li data-n="18">
+      <p class="say">Add a sentence: "Roadteller is an independent project, not connected with or endorsed by the Department for Transport, the police or Ordnance Survey."</p>
+      <p class="why">Hindcaster carries a line like this for the Met Office and the Environment Agency. Optional.</p>
+    </li>
+  </ol>
+
+  <h2>Not yet included</h2>
+  <ol class="items">
+    <li data-n="19">
+      <p class="say">The provisional January to June figures (agreed for the trend chart, marked "provisional") aren't built yet. The Department for Transport publishes 2026's at the end of November, so I'd add them, and a sentence here, once they're out.</p>
+    </li>
+  </ol>
+</div>

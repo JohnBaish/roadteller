@@ -71,6 +71,19 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — stage 6 begun: "About these figures", credits and footer drafted (notes only)
+
+**John:** start stage 6 item 1. **What:** draft wording, 19 numbered items, at https://claude.ai/artifact/HdBXKu4iLz5HFYz7jsj9Ht
+(copy in `design/wording/about-draft-2026-11-10.html`): about these figures (12 paragraphs), three options for the note
+under "Which roads", the credits, the footer and an optional "not endorsed" line. **Checked against the sources:**
+data.gov.uk lists Road Safety Data under the Open Government Licence; roadtraffic.dft.gov.uk says all its content is under
+the OGL v3.0, and its "Data disclaimer" asks anyone publishing road-by-road traffic figures to note their limits (item 5);
+OS Open Roads' licence file gives "Contains Ordnance Survey data © Crown copyright and database right 2026" (OS's own
+licence page couldn't be opened from here). **Figures in the draft, from the data:** A-roads and motorways 2021 to 2025,
+24% of yearly traffic figures counted and 6,999 of 19,073 count points never counted; 33,746 of 242,499 collisions at a
+junction between stretches (14%), 1.3% unmatched. **Not yet built:** the provisional half-year figures (DfT publishes
+2026's at the end of November).
+
 ### 2026-11-10 — stage 5 merged
 
 **John:** merge; five-kilometre squares for the 17 largest council areas are right (SPEC §8.1 updated). Merged to `main`
