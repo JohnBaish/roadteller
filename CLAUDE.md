@@ -71,7 +71,7 @@ Data notes:
 
 ## Log
 
-### 2026-11-10 — a tidier top to each view (branch `tidy-top`, not merged)
+### 2026-11-10 — a tidier top to each view (branch `tidy-top`, merged the same day at John's word)
 
 **John:** drop "Road safety measured against traffic levels" from the results (kept on the opening screen); "In a circle
 around" in small type between the years and the postcode, in place of "Showing a circle round a postcode or place.";
