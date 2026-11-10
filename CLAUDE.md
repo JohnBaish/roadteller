@@ -71,6 +71,17 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — map options: John's answers; round 2 (branch `stage-5-map`, design only)
+
+**John:** circles get a mix (B's road map, see-through squares, A-roads and motorways in white on top); council areas A
+or C, careful with overlapping labels on phones; 250 m and 1 km squares, yes; shading steps from each place's own figures,
+with a floor (Claude to guide); the "squares don't allow for traffic" note goes in About these figures. Asked for the page
+order to answer where the map goes. **Built on the options page:** the Mix; steps growing by the same factor up to the
+busiest square (busiest^(1/5)), each count its own step from the lightest where the busiest has five or fewer (RG14:
+1 to 2, 3, 4, 5 to 7, 8 to 12; West Berkshire: 1 to 2, 3 to 5, 6 to 10, 11 to 21, 22 to 46); labels placed so none
+overlap (places first, then road numbers; nudged into the map or above or below, else left out). Thatcham is left out
+on a phone (it overlaps Newbury). Checked at 1200px and 390px with touch, light and dark: no errors, no sideways scrolling.
+
 ### 2026-11-10 — stage 4 merged; stage 5: the map options (branch `stage-5-map`, design only)
 
 **John:** merge stage 4 (done; "Delete merged branches" run) and carry on. **What:** options A, B and C for the map of
