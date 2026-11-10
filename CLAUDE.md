@@ -71,6 +71,27 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — stage 5: the map built (branch `stage-5-map`, not merged)
+
+**John:** the map just before the road lists, as suggested. **What:** `src/components/SquaresMap.tsx`, "Where they
+happened" before "Which roads" and "Main roads through the circle" (SPEC §8.1 updated with every choice). Circles: 250 m
+squares counted on the device from the files already loaded, see-through over every road, A-roads and motorways in white
+on top. Council areas: 1 km squares inside the outline, empty ones faint, main roads over them, counts where they fit;
+the 17 council areas more than 100 km across get 5 km squares (Highland's 1 km squares were 2 pixels wide; proposed, for
+John). Labels: towns, then counts, then villages and road numbers, none overlapping. New data: `build/roads.py` (OS Open
+Roads: every road in 10 km pieces, served by 20 km square, at most 0.5 MB compressed, as a 50 km square of London's roads
+was 2.2 MB; main roads by 50 km square; 128 MB in all, 47 MB compressed); `build/areas.py` writes each council's outline
+and squares (`data/council-maps/`, served one file per region, Scotland and Wales, so the website learns no more than the
+region; `data/areas.json` came out identical). Rebuild workflow and `build/README.md` updated. **Fixed on the way:** a tap
+on a road missed the square under it; town names were hidden under the counts. **Small differences from the mock-up:**
+RG14's busiest square 11 and 52 squares with any (the mock-up 12 and 51), as circle files keep positions to 10 metres;
+West Berkshire 702 squares (the mock-up counted squares touching the edge, here those whose middle is inside).
+
+**Checked:** typecheck, lint, `npm run check`, build. Chromium at 1200px, 390px and 844 by 390 with touch, light and
+dark: RG14, RG4 7HN half a mile, EC2V two miles, IV27 (none, no map), West Berkshire, Highland; no errors, no sideways
+scrolling, a square's count by pointing and by tapping. **Not checked:** a real phone; loading speed on a slow
+connection.
+
 ### 2026-11-10 — map options: John's answers; round 2 (branch `stage-5-map`, design only)
 
 **John:** circles get a mix (B's road map, see-through squares, A-roads and motorways in white on top); council areas A

@@ -16,6 +16,8 @@ export type MapInput =
   | { kind: 'circle'; e: number; n: number; r: number; files: SquareFile[]; where: string; years: string }
   | { kind: 'council'; code: string; where: string; years: string };
 
+/** Council areas more than this many kilometres across get five-kilometre squares. */
+export const BIG_COUNCIL_KM = 100;
 const LIGHT = ['#d18b61', '#bb6c40', '#a0532a', '#7c3c1b', '#552610'];
 const DARK = ['#9a5532', '#b9693b', '#d6824f', '#eba477', '#fbd2b4'];
 
@@ -132,12 +134,22 @@ export function SquaresMap({ input }: { input: MapInput }) {
         const m: CouncilMap | undefined = group ? (await loadCouncilMaps(group))[input.code] : undefined;
         if (!m) throw new Error('no map');
         const outline = m.outline.map((l) => decode(l, 0, 0));
-        const size = 1000;
-        const cells = m.cells.map(([cx, cy, c]) => ({ x: cx * size, y: cy * size, n: c }));
+        // one-kilometre squares, or five-kilometre squares for the very largest council areas, where one-kilometre
+        // squares would be dots (Highland, about 200 km across: 2 pixels wide on a computer)
+        const size = Math.max(m.bbox[2] - m.bbox[0], m.bbox[3] - m.bbox[1]) > BIG_COUNCIL_KM * 1000 ? 5000 : 1000;
+        const sum = new Map<string, number>();
+        for (const [cx, cy, c] of m.cells) {
+          const key = `${Math.floor((cx * 1000) / size)},${Math.floor((cy * 1000) / size)}`;
+          sum.set(key, (sum.get(key) ?? 0) + c);
+        }
+        const cells = [...sum].map(([key, c]) => {
+          const [i, j] = key.split(',').map(Number);
+          return { x: i * size, y: j * size, n: c };
+        });
         let possible = 0;
         for (let i = Math.floor(m.bbox[0] / size); i <= Math.floor(m.bbox[2] / size); i++)
           for (let j = Math.floor(m.bbox[1] / size); j <= Math.floor(m.bbox[3] / size); j++)
-            if (outline.some((ring) => inRing([i * size + 500, j * size + 500], ring))) possible++;
+            if (outline.some((ring) => inRing([i * size + size / 2, j * size + size / 2], ring))) possible++;
         const groups = await Promise.all(squaresOf(m.bbox, new Set(ix.roadSquares.main), 50000).map((s) => loadRoads('main', s)));
         const roads = roadsIn(groups.flat(), m.bbox);
         const places = await placesIn(placesP, m.bbox, (x, y) => outline.some((ring) => inRing([x, y], ring)), true);
@@ -206,6 +218,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
   const narrow = w < 560;
   const busiest = useMemo(() => [...d.cells].sort((a, b) => b.n - a.n)[0], [d]);
 
+  const hidden = useMemo(() => new Set<number>(), []);
   const labels = useMemo(() => {
     if (!mw) return [];
     // places first, then road numbers; a label overlapping one already placed, or off the map, is moved above or below, else left out
@@ -224,18 +237,34 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
     const tw = (t: string, px: number) => t.length * px * 0.56;
     if (d.circle) fits(X(d.circle.e), Y(d.circle.n) + 4, 8, 8);
     let villages = 0;
-    for (const p of d.places) {
-      if (!p.big && !isCircle && villages >= (narrow ? 3 : 10)) continue;
-      if (!p.big && isCircle && narrow) continue;
+    const place = (p: Drawn['places'][number]) => {
       const px = p.big ? 13.5 : 12;
       const at = fits(X(p.x), Y(p.y), tw(p.name, px), px);
       if (at) {
         out.push({ t: p.name, x: at[0], y: at[1], cls: p.big ? 'place t' : 'place' });
         if (!p.big) villages++;
       }
+    };
+    for (const p of d.places) if (p.big) place(p);
+    const towns = boxes.length;
+    hidden.clear();
+    if (!isCircle && sz >= 20)
+      d.cells.forEach((c, i) => {
+        const b = [X(c.x) + 2, Y(c.y + d.size) + sz / 2 - 7, X(c.x) + sz - 2, Y(c.y + d.size) + sz / 2 + 6];
+        if (boxes.slice(0, towns).some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) hidden.add(i);
+        else boxes.push(b);
+      });
+    for (const p of d.places) {
+      if (p.big) continue;
+      if (!p.big && !isCircle && villages >= (narrow ? 3 : 6)) continue;
+      if (!p.big && isCircle && narrow) continue;
+      place(p);
     }
     const seen = new Set<string>();
-    for (const r of d.roads) {
+    // the longest roads' numbers first, at most eight on a computer and five on a phone
+    const longest = [...d.roads].filter((r) => r.no).sort((a, b) => b.pts.length - a.pts.length);
+    for (const r of longest) {
+      if (seen.size >= (narrow ? 5 : 8)) break;
       if (!r.no || seen.has(r.no) || r.pts.length < 2) continue;
       for (const m of [r.pts[Math.floor(r.pts.length / 2)], r.pts[0], r.pts[r.pts.length - 1]]) {
         const inside = d.circle ? Math.hypot(m[0] - d.circle.e, m[1] - d.circle.n) < d.circle.r * 0.85 : d.outline!.some((ring) => inRing(m, ring));
@@ -256,12 +285,12 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
   const clip = d.circle ? <circle cx={X(d.circle.e)} cy={Y(d.circle.n)} r={d.circle.r * k} /> : d.outline!.map((r, i) => <path key={i} d={`${path(r)}Z`} />);
   const edge = d.circle ? <circle className="edge" cx={X(d.circle.e)} cy={Y(d.circle.n)} r={d.circle.r * k} /> : d.outline!.map((r, i) => <path key={i} className="edge" d={`${path(r)}Z`} />);
   const byKind = (kinds: string) => d.roads.filter((r) => kinds.includes(r.k)).map((r) => path(r.pts)).join('');
-  const unit = isCircle ? '250-metre' : 'one-kilometre';
+  const unit = isCircle ? '250-metre' : d.size === 5000 ? 'five-kilometre' : 'one-kilometre';
   const cell = on !== null ? d.cells[on] : null;
   const numbers = !isCircle && sz >= 20;
 
   let grid: string | null = null;
-  if (!isCircle && mw) {
+  if (!isCircle && mw && sz >= 6) {
     const parts: string[] = [];
     for (let i = Math.floor(x0 / d.size); i <= Math.floor(x1 / d.size); i++) parts.push(`M${X(i * d.size).toFixed(1)} 0V${h}`);
     for (let j = Math.floor(y0 / d.size); j <= Math.floor(y1 / d.size) + 1; j++) parts.push(`M0 ${Y(j * d.size).toFixed(1)}H${mw}`);
@@ -321,7 +350,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
                 d.cells.map((c, i) => {
                   const b = steps.findIndex(([lo, hi]) => c.n >= lo && c.n <= hi) + (max <= 5 ? 0 : 5 - steps.length);
                   const inside = d.outline!.some((ring) => inRing([c.x + d.size / 2, c.y + d.size / 2], ring));
-                  if (!inside) return null;
+                  if (!inside || hidden.has(i)) return null;
                   return (
                     <text key={i} className={`num${(dark ? b < 3 : b >= 2) ? '' : ' dk'}`} x={X(c.x + d.size / 2)} y={Y(c.y + d.size / 2) + 4}>
                       {c.n}

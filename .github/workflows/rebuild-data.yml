@@ -40,6 +40,7 @@ jobs:
           python3 -I -u build/areas.py "$RUNNER_TEMP/dl" "$W" data
           python3 -I -u build/tiles.py "$RUNNER_TEMP/dl" "$W" data
           python3 -I -u build/lookup.py "$RUNNER_TEMP/dl" data
+          python3 -I -u build/roads.py "$RUNNER_TEMP/dl" data
           python3 -I build/review.py data "$W" design/data-review.md
       - name: Check
         run: |
@@ -51,7 +52,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$B"
-          git add data/areas.json data/squares data/councils-of.json design/data-review.md
+          git add data/areas.json data/squares data/councils-of.json data/council-maps data/roads-local data/roads-main design/data-review.md
           if git diff --cached --quiet; then
             echo "The rebuilt data is the same as the data already on main, so nothing was saved." >> "$GITHUB_STEP_SUMMARY"
             exit 0

@@ -452,6 +452,7 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 /* Stage 5: the map of shaded squares (SquaresMap.tsx) */
 .mapwrap { position: relative; max-width: 100%; margin-top: var(--space-3); touch-action: manipulation; }
 .map { display: block; width: 100%; height: auto; overflow: hidden; }
+.map .road, .map .edge, .map .grid0, .map .mid { pointer-events: none; }
 .map .road { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .map .r-minor { stroke: var(--color-neutral-500); stroke-width: 0.6; opacity: 0.8; }
 .map .r-b { stroke: var(--color-neutral-700); stroke-width: 1; }

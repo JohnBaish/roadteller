@@ -165,8 +165,26 @@ following the device):
 
 ## 8. Other agreed points
 
-1. **A map of shaded squares, counts only, to try** (November 9th 2026); not yet
-   designed (§13).
+1. **A map of shaded squares, counts only** (agreed November 10th 2026, from the options at
+   https://claude.ai/artifact/6dG7NzpN2bcy8L2GVcd8jp): "Where they happened", just before "Which roads"
+   (council area) or "Main roads through the circle" (circle). Collisions in the latest five years.
+   - A circle: 250-metre squares, slightly see-through, over every road, with the A-roads and motorways in
+     white on top.
+   - A council area: one-kilometre squares inside its outline (every square drawn, faint where there were
+     none), with motorways, A-roads and B-roads over them, and each square's count written in it where there's
+     room (a computer, usually). The 17 council areas more than 100 km across (Highland, Cornwall, Norfolk and
+     so on) use five-kilometre squares, as one-kilometre squares would be dots (proposed by Claude, for John).
+   - Shading: five steps of one colour, worked out from the place's own busiest square, each about the same
+     factor bigger than the one before; where the busiest square has five or fewer, each count is its own step
+     from the lightest (the floor).
+   - Labels never overlap: town names first, then the counts, then villages and road numbers (at most eight on a
+     computer, five on a phone); anything with no clear space is left out.
+   - A square's count shows when it's pointed at or tapped.
+   - "About these figures" (stage 6) says the squares count collisions and don't allow for traffic (John). Draft:
+     "Busy roads have more collisions because more people use them: these squares count collisions, they don't
+     allow for traffic."
+   - Roads come from OS Open Roads (`build/roads.py`): every road by 20 km square for circles, main roads by 50 km
+     square for council areas; council outlines and squares by region (`build/areas.py`).
 2. **Provisional January to June figures are included each November**, marked
    as provisional.
 3. **Counts go back to 1989, rates to 2000** (John, November 9th 2026). Before
