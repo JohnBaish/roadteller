@@ -71,6 +71,16 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — "Who was hurt" and "When" the same height (branch `stage-6-icons`, not merged)
+
+**John:** make the two side-by-side cards the same height, bringing the left one down. On computers (wider than 720px)
+both cards now take the taller one's height (460px for KT12 3JD and West Berkshire; the right one unchanged) and each
+share button is pinned to the card's foot, so the two line up (`.grid2` in `global.css`). A first try made the cards
+flex columns, which stopped the gaps between headings and text collapsing and made both 44px taller; dropped. Phones
+held upright keep one card under the other, unchanged. **Checked:** checks, typecheck, lint, build; Chromium at 1200px,
+390px and 844 by 390 with touch, light and dark (KT12 3JD, West Berkshire): equal heights and buttons level on both wider
+sizes, no errors, no sideways scrolling. Picture `design/previews/equal-cards-1200.png`.
+
 ### 2026-11-10 — choosing a year clears properly; the share button beside the year's figures (branch `stage-6-icons`, not merged)
 
 **John:** "click anywhere else to clear it" didn't seem to work; and the share button took a row of its own under the

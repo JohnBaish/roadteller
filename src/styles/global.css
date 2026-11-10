@@ -390,7 +390,13 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .view .card-kicker { color: var(--color-accent-700); font-weight: 600; margin: 0 0 4px; }
 .note { font-size: 12.5px; color: var(--color-neutral-700); margin: 4px 0 0 !important; }
 .stack { display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4); }
-.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: stretch; }
+/* Side by side on a computer, both cards are the height of the taller, with each share button pinned to the foot
+   so the two line up (the cards keep their ordinary flow, so the gaps between headings and text are unchanged). */
+@media (min-width: 721px) {
+  .grid2 > .card { position: relative; padding-bottom: calc(var(--space-6) + var(--space-2) + 60px); }
+  .grid2 > .card > .share-row:last-child { position: absolute; right: var(--space-6); bottom: var(--space-6); margin: 0; }
+}
 @media (max-width: 720px) { .grid2 { grid-template-columns: minmax(0, 1fr); } .view .card { padding: var(--space-4); } }
 .view .table { width: 100%; }
 .view .table th { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--color-divider); }
