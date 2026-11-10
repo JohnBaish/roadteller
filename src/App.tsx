@@ -3,6 +3,7 @@ import { Component, useEffect, useState, type FormEvent, type ReactNode } from '
 import { getPlaces, PlaceBox } from './components/PlaceBox.tsx';
 import { ThemeSwitch } from './components/ThemeSwitch.tsx';
 import { CircleView } from './components/CircleView.tsx';
+import { About } from './components/About';
 import { CouncilView } from './components/CouncilView.tsx';
 import { loadIndex, type PageIndex } from './lib/data.ts';
 import { findPlace, looksLikePostcode, namesakes, placeAt, placeLabel, type NamedPlace } from './lib/places.ts';
@@ -191,12 +192,17 @@ export default function App() {
             </div>
           )}
         </SafetyNet>
+        {target && <About />}
         <footer className="footer-notice">
           {!start && (
             <p>
-              Collisions: the police’s injury collision records (STATS19) and traffic counts, from the Department for Transport. Contains public sector information licensed under the Open
-              Government Licence v3.0. Roads, postcodes, places and council areas: Contains OS data © Crown Copyright and database rights 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026. Contains National
-              Statistics data © Crown copyright and database right 2026.
+              Collisions and traffic: Department for Transport. Contains public sector information licensed under the Open Government Licence v3.0.
+            </p>
+          )}
+          {!start && (
+            <p>
+              Roads, boundaries, postcodes and places: Contains OS data © Crown copyright and database right 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026.
+              Contains National Statistics data © Crown copyright and database right 2026.
             </p>
           )}
           <p data-noprint>
@@ -210,6 +216,7 @@ export default function App() {
             </a>
             . Contact: workshop@baish.net.
           </p>
+          <p data-noprint>Roadteller is an independent project, not connected with or endorsed by the Department for Transport, the police or Ordnance Survey.</p>
         </footer>
       </main>
     </>

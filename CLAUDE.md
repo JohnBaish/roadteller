@@ -71,6 +71,16 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — "About these figures", credits and footer built (branch `stage-6-about`, not merged)
+
+**John:** items 1 to 11 with his rewording, 13 to 19 agreed (13 as option B), 12 to be rewritten. **What:**
+`src/components/About.tsx` (11 paragraphs, shown under a circle or council view, not on the start screen); the note under
+"Which roads" is option B; the credits split into a Department for Transport line and an OS, Royal Mail and National
+Statistics line in OS's own form; the "not connected with or endorsed by" line added to the footer. Typing slips fixed
+("2016 to 202", a double full stop); "ten" written "10" (house rule); item 6's old last sentence dropped, as John's new
+middle sentence says the same. **Checked:** typecheck, lint, checks, build; Chromium at 1200px, 390px and 844 by 390 with
+touch, light and dark: start screen, RG14 and West Berkshire; no errors, no sideways scrolling.
+
 ### 2026-11-10 — stage 6 begun: "About these figures", credits and footer drafted (notes only)
 
 **John:** start stage 6 item 1. **What:** draft wording, 19 numbered items, at https://claude.ai/artifact/HdBXKu4iLz5HFYz7jsj9Ht

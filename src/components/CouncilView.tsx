@@ -353,7 +353,7 @@ function Roads({ f, gb, narrow }: { f: AreaFigures; gb: AreasFile['gb']; narrow:
           </table>
         </div>
       )}
-      <p className="note">A road’s collisions are those matched to its stretches in {f.name}; one at a junction between two stretches counts half to each.</p>
+      <p className="note">These are the main roads’ stretches in {f.name}, measured between junctions. Collisions at a junction between two stretches count half to each.</p>
     </>
   );
 }
