@@ -71,6 +71,15 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — icon C, the last About paragraph, a draft preview picture (branch `stage-6-icons`, not merged)
+
+**John:** icon C (a road ahead on solid terracotta; options A and B in `design/favicon-options/`, page
+`design/favicon-options.html`); the last paragraph of "About these figures" in his words ("Roadteller shows totals only,
+without details about individual collisions. …"). `public/favicon.svg`, linked from `index.html`. The road's top dash
+was dropped (it crowded the point where the edges meet). **Draft for John:** `design/og-roadteller.html` (picture in
+`design/previews/og-roadteller.png`) with his suggested tagline "Collisions on nearby roads, compared with traffic flows."
+Not yet in `public/` or the tags. **Checked:** typecheck, lint, build; both fonts loaded in the picture.
+
 ### 2026-11-10 — a tidier top to each view (branch `tidy-top`, merged the same day at John's word)
 
 **John:** drop "Road safety measured against traffic levels" from the results (kept on the opening screen); "In a circle

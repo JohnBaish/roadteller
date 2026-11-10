@@ -1,4 +1,4 @@
-// "About these figures" (John's wording, November 10th 2026). Item 12 in the draft (what Roadteller does and doesn't show) is still with John.
+// "About these figures" (John's wording, November 10th 2026).
 export function About() {
   return (
     <section className="about">
@@ -44,6 +44,10 @@ export function About() {
       <p>
         The map’s squares count collisions, they don’t allow for traffic. Busy roads have more collisions because more people use them, so a busy junction shows darker even where it is no more
         dangerous than a quiet lane.
+      </p>
+      <p>
+        Roadteller shows totals only, without details about individual collisions. It counts what was reported and, where traffic figures allow, makes fair
+        comparisons with other areas. It deliberately does not attempt to label any road or place as “dangerous” or “safe”. A higher figure can have many causes.
       </p>
     </section>
   );
