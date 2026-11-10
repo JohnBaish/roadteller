@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { count, RADII, squaresFor, stretchesIn } from '../src/lib/circle.ts';
 import { unpack, unpackSquare } from '../src/lib/packed.ts';
 import { compareText } from '../src/lib/words.ts';
+import { joinPieces, roadSpots } from '../src/lib/mapLabels.ts';
 import { toBritishGrid } from '../src/lib/grid.ts';
 import type { OldFile, SquareFile } from '../src/lib/data.ts';
 
@@ -57,6 +58,12 @@ check('road files hold text', typeof rl.l[0] === 'string' && unpack(rl.l[0]).len
 // Comparison wording (John, November 10th 2026): exact "lower than" from 70% to 95%, as above Great Britain's rate.
 const cmp = [0.912, 0.7, 0.69, 0.96, 1.44, 0.37].map((r) => compareText(r, 'x'));
 check('comparison wording', JSON.stringify(cmp) === JSON.stringify(['9% lower than x', '30% lower than x', 'About two thirds of x (69%)', 'About the same as x (96%)', '44% higher than x', 'About a third of x (37%)']), cmp);
+// Road numbers on the map (John, November 10th 2026): pieces joined end to end, the label in the middle of the longest
+// stretch on the map, and one more for each further 300 pixels.
+const joined = joinPieces([[[0, 0], [100, 0]], [[300, 0], [200, 0]], [[100, 0], [200, 0]], [[0, 500], [50, 500]]]);
+check('road pieces joined', joined.length === 2 && joined[0].length === 4 && joined[0][0][0] === 0 && joined[0][3][0] === 300, joined);
+const spots = roadSpots([{ pts: [[0, 0], [1000, 0]], no: 'A1' }, { pts: [[1000, 0], [3000, 0]], no: 'A1' }, { pts: [[0, 50], [400, 50]], no: 'B2' }, { pts: [[0, 90], [100, 90]] }], (p) => p[0] <= 2600, 5);
+check('road labels', spots.length === 2 && spots[0].length === 2 && spots[0].every((sp) => sp.no === 'A1') && Math.round(spots[0][0].at[0]) === 650 && spots[1][0].no === 'B2', spots.map((r) => r.map((sp) => [sp.no, Math.round(sp.at[0])])));
 console.log(`${passed} passed, ${fails.length} failed`);
 for (const f of fails) console.log('  FAIL', f);
 console.log('RG14 one mile:', rg.c.n, 'collisions,', rg.c.hurt, 'hurt,', rg.c.killed, 'killed; 2016 to 2020:', prev, '; squares', rg.names);

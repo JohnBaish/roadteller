@@ -71,6 +71,23 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — better road numbers and places on the map (branch `stage-6-icons`, not merged)
+
+**John** (KT12 3JD: the A244 through the middle unnamed, Hersham missing): build both rules. **Road numbers**
+(`src/lib/mapLabels.ts`, checked by `npm run check`): each numbered road's pieces are joined end to end, cut exactly at the
+circle's or council's edge, and the number goes in the middle of its longest stretch on the map, plus one more for every
+further 300 pixels of a stretch; if that's taken, nearby places along it, then anywhere along its stretches. Roads ranked
+by their total length on the map; still at most eight on a computer, five on a phone. **Places:** a circle names suburbs
+inside it, as before, and now towns and villages up to half as far again, where the map reaches (Hersham, 1.7 km from
+KT12 3JD, in the corner). Phones still name only towns in a circle. **Results:** KT12 3JD adds Hersham and puts the A244
+on the diagonal; RG14 adds Greenham and a second A339; West Berkshire names the A34 and A339 on a computer, which it
+didn't before (the A34's middle is covered by Newbury's counts, so the last resort placed it). **Checked:** checks 16 (two
+new: joining, placing; the check caught stretches cut short at the edge, now fixed), typecheck, lint, build; Chromium at
+1200px, 390px and 844 by 390 with touch, light and dark (KT12 3JD, RG14, RG4 7HN half a mile, EC2V two miles, West
+Berkshire, Surrey): no errors, no sideways scrolling. Before and after pictures in `design/previews/map-labels/`.
+**Noticed, not changed:** a council area's villages are picked in alphabetical order (Surrey: Abinger Common, Abinger
+Hammer, Albury…; West Berkshire on a phone: three Aldermastons), as OS Open Names gives no sizes.
+
 ### 2026-11-10 — "9% lower than", the 1989/2000 button, one button for "When" (branch `stage-6-icons`, not merged)
 
 **John:** below Great Britain's rate, say the exact difference down to 70% ("9% lower than the Great Britain rate", as

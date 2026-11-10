@@ -4,6 +4,7 @@
 // faint), the motorways, A-roads and B-roads over them, and each square's count written in it where there's room.
 // Everything is drawn on the page from Ordnance Survey's open data; a square's count shows when it's pointed at or tapped.
 import { unpack } from '../lib/packed';
+import { roadSpots } from '../lib/mapLabels.ts';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getPlaces } from './PlaceBox.tsx';
 import { useWidth } from './charts.tsx';
@@ -129,7 +130,9 @@ export function SquaresMap({ input }: { input: MapInput }) {
           }
         const groups = await Promise.all(squaresOf(bbox, new Set(ix.roadSquares.local), 20000).map((s) => loadRoads('local', s)));
         const roads = roadsIn(groups.flat(), bbox);
-        const places = await placesIn(placesP, bbox, (x, y) => (x - e) ** 2 + (y - n) ** 2 < (r * 0.93) ** 2, false);
+        // suburbs inside the circle; towns and villages up to half as far again, as far as the map reaches (John, November
+        // 10th 2026: Hersham, just outside a mile round KT12 3JD)
+        const places = await placesIn(placesP, bbox, (x, y, kind) => (x - e) ** 2 + (y - n) ** 2 < (r * (kind === 's' ? 0.93 : 1.5)) ** 2, false);
         if (live) setDrawn({ size, bbox, cells, total: cells.reduce((s, c) => s + c.n, 0), possible, roads, outline: null, circle: { e, n, r }, places });
       } else {
         const group = ix.councilMapGroup[input.code];
@@ -182,14 +185,14 @@ function roadsIn(files: RoadFile[], b: [number, number, number, number]) {
   return out;
 }
 
-async function placesIn(p: ReturnType<typeof getPlaces>, b: [number, number, number, number], inside: (x: number, y: number) => boolean, council: boolean) {
+async function placesIn(p: ReturnType<typeof getPlaces>, b: [number, number, number, number], inside: (x: number, y: number, kind: string) => boolean, council: boolean) {
   const ix = await p.catch(() => null);
   if (!ix) return [];
   const out: Drawn['places'] = [];
   for (const pl of ix.all) {
     if (council ? pl.kind !== 'c' && pl.kind !== 't' && pl.kind !== 'v' : pl.kind === 'c') continue;
     const { easting: x, northing: y } = toBritishGrid(pl.lat, pl.lon);
-    if (x < b[0] || x > b[2] || y < b[1] || y > b[3] || !inside(x, y)) continue;
+    if (x < b[0] || x > b[2] || y < b[1] || y > b[3] || !inside(x, y, pl.kind)) continue;
     out.push({ name: pl.name, big: pl.kind === 'c' || pl.kind === 't', x, y });
   }
   // towns first; among villages, those nearest the busiest parts are as good a guess as any, so keep the list order
@@ -262,22 +265,24 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
       if (!p.big && isCircle && narrow) continue;
       place(p);
     }
-    const seen = new Set<string>();
-    // the longest roads' numbers first, at most eight on a computer and five on a phone
-    const longest = [...d.roads].filter((r) => r.no).sort((a, b) => b.pts.length - a.pts.length);
-    for (const r of longest) {
-      if (seen.size >= (narrow ? 5 : 8)) break;
-      if (!r.no || seen.has(r.no) || r.pts.length < 2) continue;
-      for (const m of [r.pts[Math.floor(r.pts.length / 2)], r.pts[0], r.pts[r.pts.length - 1]]) {
-        const inside = d.circle ? Math.hypot(m[0] - d.circle.e, m[1] - d.circle.n) < d.circle.r * 0.85 : d.outline!.some((ring) => inRing(m, ring));
-        if (!inside) continue;
-        const at = fits(X(m[0]), Y(m[1]) + 4, tw(r.no, 10), 10);
-        if (at) {
-          seen.add(r.no);
-          out.push({ t: r.no, x: at[0], y: at[1], cls: 'rno' });
-          break;
+    // road numbers (src/lib/mapLabels.ts): each road's pieces joined, the number in the middle of its longest stretch on
+    // the map and once more for every further 300 pixels; at most eight roads on a computer and five on a phone
+    const onMap = (m: [number, number]) => (d.circle ? Math.hypot(m[0] - d.circle.e, m[1] - d.circle.n) < d.circle.r * 0.92 : d.outline!.some((ring) => inRing(m, ring)));
+    let named = 0;
+    for (const spots of roadSpots(d.roads, onMap, 1 / k)) {
+      if (named >= (narrow ? 5 : 8)) break;
+      let any = false;
+      for (const sp of spots) {
+        for (const m of [sp.at, ...sp.tries]) {
+          const at = fits(X(m[0]), Y(m[1]) + 4, tw(sp.no, 10), 10);
+          if (at) {
+            out.push({ t: sp.no, x: at[0], y: at[1], cls: 'rno' });
+            any = true;
+            break;
+          }
         }
       }
+      if (any) named++;
     }
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
