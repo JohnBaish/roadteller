@@ -1,6 +1,7 @@
 // A circle (SPEC §7, the agreed option B, round 5): counted on the device from the 50 km squares it touches. A circle has no
 // traffic figure of its own, so its big figure is a count; beside it, its council area's rate. Wording is John's where he gave
 // it; the rest, draft.
+import { ViewHead } from './ViewHead.tsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Lines, useWidth, YearBars, type Series } from './charts.tsx';
 import { ShareButton } from './ShareButton.tsx';
@@ -20,7 +21,7 @@ const RADIUS_WORDS: Record<Radius, string> = { half: 'half a mile', one: 'a mile
 const RADIUS_BUTTONS: [Radius, string][] = [['half', 'Half a mile'], ['one', 'One mile'], ['two', 'Two miles']];
 const lower1 = (t: string) => t[0].toLowerCase() + t.slice(1);
 
-export function CircleView({ index, target }: { index: PageIndex; target: CircleTarget }) {
+export function CircleView({ index, target, onChange }: { index: PageIndex; target: CircleTarget; onChange: () => void }) {
   const [where, setWhere] = useState<Located | null | 'none'>(null);
   const [areas, setAreas] = useState<AreasFile | null>(null);
   const [result, setResult] = useState<Result | null>(null);
@@ -55,10 +56,10 @@ export function CircleView({ index, target }: { index: PageIndex; target: Circle
   if (problem) return <p className="problem" role="alert">{problem}</p>;
   if (where === 'none') return <p className="problem" role="alert">We can’t find that place. Try a postcode.</p>;
   if (!where || !areas || !result || result.long !== long) return <p className="muted">Counting…</p>;
-  return <Circle index={index} target={target} where={where} areas={areas} result={result} onLong={() => setLong(true)} />;
+  return <Circle index={index} target={target} where={where} areas={areas} result={result} onLong={() => setLong(true)} onChange={onChange} />;
 }
 
-function Circle({ index, target, where, areas, result, onLong }: { index: PageIndex; target: CircleTarget; where: Located; areas: AreasFile; result: Result; onLong: () => void }) {
+function Circle({ index, target, where, areas, result, onLong, onChange }: { index: PageIndex; target: CircleTarget; where: Located; areas: AreasFile; result: Result; onLong: () => void; onChange: () => void }) {
   const c = result.c, gb = areas.gb, five = index.five;
   const middle = !(target.where.kind === 'postcode' && target.where.inward && !where.note);
   const within = `Within ${RADIUS_WORDS[target.radius]} of ${middle ? 'the middle of ' : ''}${where.label}`;
@@ -72,23 +73,32 @@ function Circle({ index, target, where, areas, result, onLong }: { index: PageIn
   const mapInput = useMemo<MapInput>(() => ({ kind: 'circle', e: result.e, n: result.n, r: RADII[target.radius], files: result.files, where: lower1(within), years: yearsText }), [result, target.radius, within, yearsText]);
   const short = target.where.kind === 'postcode' ? (target.where.inward ? `${target.where.outcode} ${target.where.inward}` : target.where.outcode) : where.label.split(',')[0];
 
+  const chips = (
+    <span className="chips" role="group" aria-label="Size of the circle">
+      {RADIUS_BUTTONS.map(([k, t]) => (
+        <a key={k} className="chip" href={`#${hashOf({ ...target, radius: k })}`} aria-current={k === target.radius ? 'true' : undefined}>
+          {t}
+        </a>
+      ))}
+    </span>
+  );
+
   return (
     <>
-      <div className="page-head view-head">
-        <p className="card-kicker">Injury collisions, {yearsText}</p>
-        <h2>{where.label}</h2>
-        {where.note && <p className="notes">{where.note}</p>}
+      <ViewHead
+        kicker={`Injury collisions, ${yearsText}`}
+        sub="In a circle around"
+        title={where.label}
+        note={where.note}
+        onChange={onChange}
+        bar={short}
+        barMore={{ label: RADIUS_BUTTONS.find(([k]) => k === target.radius)![1], options: chips }}
+      >
         <div className="radius-row" data-noprint>
-          <span className="chips" role="group" aria-label="Size of the circle">
-            {RADIUS_BUTTONS.map(([k, t]) => (
-              <a key={k} className="chip" href={`#${hashOf({ ...target, radius: k })}`} aria-current={k === target.radius ? 'true' : undefined}>
-                {t}
-              </a>
-            ))}
-          </span>
+          {chips}
           {council && <a href={`#council/${where.council}`}>See all of {council.name}</a>}
         </div>
-      </div>
+      </ViewHead>
       <div className="card" ref={full}>
         <div className="b-hero">
           <div>

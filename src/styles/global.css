@@ -441,7 +441,7 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .road-card dd { margin: 0; }
 .strip { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
 @media print { .share-row, .strip .btn { display: none !important; } .view .card { break-inside: avoid; } }
-.view-head { padding-top: 0; }
+.view-head { padding-top: var(--space-4); }
 
 /* Stage 4: the circle view */
 .radius-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); margin-top: var(--space-3); }
@@ -476,3 +476,25 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .map-tip { position: absolute; z-index: 3; width: 220px; pointer-events: none; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-divider); border-radius: 10px; padding: 6px 10px; font-size: 13px; box-shadow: 0 2px 8px #0003; }
 .map-key i { display: inline-block; width: 16px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
 @media print { .footer-notice .credits { border-bottom: 0; } }
+
+/* The top of a view (src/components/ViewHead.tsx, John, November 10th 2026). */
+.view-sub { margin: 0; color: var(--color-neutral-700); font-size: 15px; }
+.title-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.title-row h2 { margin: 2px 0 0; }
+.title-row .btn { padding: 6px 16px; }
+.slim-bar { display: none; }
+/* A computer: the whole block stays at the top. */
+@media (min-width: 721px) and (min-height: 501px) {
+  .view-head { position: sticky; top: 0; z-index: 5; background: var(--color-bg); padding-bottom: var(--space-3); margin-bottom: var(--space-2); border-bottom: 1px solid var(--color-divider); }
+}
+/* A phone held upright: a slim bar once the block has scrolled away. */
+@media (max-width: 720px) and (min-height: 501px) {
+  .slim-bar { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: var(--color-surface); border-bottom: 1px solid var(--color-divider); box-shadow: 0 2px 8px rgb(0 0 0 / 0.08); padding: 0 var(--space-4); padding-top: env(safe-area-inset-top, 0px); }
+}
+.slim-row { display: flex; align-items: center; gap: var(--space-3); min-height: 48px; }
+.slim-place { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.slim-size, .slim-change { font: inherit; font-size: 15px; background: none; border: 0; color: var(--color-accent-700); min-height: 44px; padding: 0 2px; cursor: pointer; white-space: nowrap; }
+.slim-size { margin-left: auto; }
+.slim-change { text-decoration: underline; text-underline-offset: 3px; }
+.slim-options { padding: 0 0 var(--space-3); }
+@media print { .slim-bar, .title-row .btn { display: none !important; } .view-head { position: static !important; border: 0 !important; } }

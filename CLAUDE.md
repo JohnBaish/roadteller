@@ -71,6 +71,19 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — a tidier top to each view (branch `tidy-top`, not merged)
+
+**John:** drop "Road safety measured against traffic levels" from the results (kept on the opening screen); "In a circle
+around" in small type between the years and the postcode, in place of "Showing a circle round a postcode or place.";
+Change beside the postcode; and Claude's compromise for keeping it in view: on a computer the whole top stays fixed while
+the page scrolls; on a phone held upright a slim bar ("RG14 5AA · One mile ▾ · Change") appears once the top has
+scrolled away, the size opening the three buttons; on a phone held sideways nothing stays. `src/components/ViewHead.tsx`
+(both views), styles at the end of `global.css`. Council areas: the years, then the name with Change. **Checked:**
+typecheck, lint, checks 13, build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark (RG14 5AA, West
+Berkshire): the top fixed on a computer, the bar 49px on a phone and none sideways, the size buttons opening from the bar
+and changing the circle, Change opening the chooser from both; no errors, no sideways scrolling. A new size from the bar
+returns to the top of the page, as any new choice does.
+
 ### 2026-11-10 — road map and circle files shrunk (branch `shrink-roads`, merged the same day at John's word)
 
 **Why:** the built site was 189 MB, and Vercel's free plan has 10 GB of Deployment Storage shared by every site's kept

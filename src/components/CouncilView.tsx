@@ -1,5 +1,6 @@
 // A council area (SPEC §6, the agreed option B, round 5). Its rate covers A-roads and motorways only (DfT's minor-road traffic
 // is only estimated); the counts (people hurt, who, when) cover all roads. Wording is John's where he gave it; the rest, draft.
+import { ViewHead } from './ViewHead.tsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Bars, DayBars, HourBars, Lines, PairBars, useWidth, type Series } from './charts.tsx';
 import { ShareButton } from './ShareButton.tsx';
@@ -22,7 +23,7 @@ export function whoSentence(who: Record<string, number>, hurt: number, gb: AreaF
   return `${share(best)}% of the people hurt were ${USER_WORDS[best]}, against ${g(best)}% across Great Britain.`;
 }
 
-export function CouncilView({ code }: { code: string }) {
+export function CouncilView({ code, onChange }: { code: string; onChange: () => void }) {
   const [areas, setAreas] = useState<AreasFile | null>(null);
   const [problem, setProblem] = useState(false);
   useEffect(() => {
@@ -32,10 +33,10 @@ export function CouncilView({ code }: { code: string }) {
   if (!areas) return <p className="muted">Loading…</p>;
   const f = areas.councils[code];
   if (!f) return <p className="problem" role="alert">There’s no council area with that code.</p>;
-  return <Council areas={areas} f={f} code={code} />;
+  return <Council areas={areas} f={f} code={code} onChange={onChange} />;
 }
 
-function Council({ areas, f, code }: { areas: AreasFile; f: AreaFigures; code: string }) {
+function Council({ areas, f, code, onChange }: { areas: AreasFile; f: AreaFigures; code: string; onChange: () => void }) {
   const gb = areas.gb, region = areas.regions[f.region!];
   const v = f.five, name = f.name!, five = areas.five, latest = five[five.length - 1];
   const sub = `${name}, ${yearsText(five)}`;
@@ -90,10 +91,7 @@ function Council({ areas, f, code }: { areas: AreasFile; f: AreaFigures; code: s
 
   return (
     <>
-      <div className="page-head view-head">
-        <p className="card-kicker">Injury collisions, {yearsText(five)}</p>
-        <h2>{name}</h2>
-      </div>
+      <ViewHead kicker={`Injury collisions, ${yearsText(five)}`} title={name} onChange={onChange} bar={name} />
       {hero}
       <div className="stack">
         <div className="card" ref={full}>

@@ -161,20 +161,15 @@ export default function App() {
         </div>
       </nav>
       <main className="col">
-        <div className="page-head">
-          <div className="card-kicker">Road safety measured against traffic levels</div>
-          {start && <h2>How safe are the roads near you?</h2>}
-          {start && <p className="lead">Enter a postcode or a place to see how many people were hurt on the roads nearby, and how that compares with the traffic.</p>}
-          {(start || changing) && <Chooser start={start} index={index} />}
-          {!start && !changing && (
-            <div className="strip" data-noprint>
-              <span className="muted">Showing {target?.kind === 'council' ? 'a council area' : 'a circle round a postcode or place'}.</span>
-              <button type="button" className="btn btn-secondary" onClick={() => setChanging(true)}>
-                Change
-              </button>
-            </div>
-          )}
-        </div>
+        {(start || changing) && (
+          <div className="page-head">
+            {/* The tagline only on the opening screen; a view's own top says what it shows (John, November 10th 2026). */}
+            {start && <div className="card-kicker">Road safety measured against traffic levels</div>}
+            {start && <h2>How safe are the roads near you?</h2>}
+            {start && <p className="lead">Enter a postcode or a place to see how many people were hurt on the roads nearby, and how that compares with the traffic.</p>}
+            {(start || changing) && <Chooser start={start} index={index} />}
+          </div>
+        )}
         {loadProblem && (
           <p className="problem" role="alert">
             Sorry, the figures couldn’t be loaded. Check your connection and try again.
@@ -183,12 +178,12 @@ export default function App() {
         <SafetyNet key={target ? hashOf(target) : ''}>
           {index && target?.kind === 'circle' && (
             <div className="view">
-              <CircleView index={index} target={target} />
+              <CircleView index={index} target={target} onChange={() => setChanging(true)} />
             </div>
           )}
           {target?.kind === 'council' && (
             <div className="view">
-              <CouncilView code={target.code} />
+              <CouncilView code={target.code} onChange={() => setChanging(true)} />
             </div>
           )}
         </SafetyNet>
