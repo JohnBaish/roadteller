@@ -71,6 +71,13 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — `stage-6-icons` merged
+
+**John:** merge and tidy. Merged to `main` (fast-forward; checks and build first): the icon, link-preview picture and
+tags, the reworded opening screen, the map's road numbers and places, the 1989/2000 button, one share button for "When",
+year clearing, and equal card heights. "Delete merged branches": trial, then the real run; only `main` left. Tracker
+updated. Next: search set-up (stage 6 item 3), wording drafted for John.
+
 ### 2026-11-10 — "Who was hurt" and "When" the same height (branch `stage-6-icons`, not merged)
 
 **John:** make the two side-by-side cards the same height, bringing the left one down. On computers (wider than 720px)
