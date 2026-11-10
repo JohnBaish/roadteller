@@ -71,6 +71,17 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — search set-up (branch `stage-6-search`, not merged)
+
+**John:** title "Roadteller – free road collision figures for any postcode" (57 characters); description A, "Free road
+accident figures for any postcode or place in Great Britain: how many, when, where, and whether people were walking,
+cycling or driving." (146); the opening-screen paragraph with "how the people hurt were travelling" (not "who was
+hurt", as the page doesn't say who). **What:** `index.html` title and description; the paragraph under the chooser on the
+opening screen only (`.chooser-about`, 14px); `public/robots.txt` and `public/sitemap.xml` (plain files, one domain).
+"noindex" stays until launch; nothing sets `document.title`. **Checked:** typecheck, lint, checks, build; robots.txt and
+sitemap.xml served by `vite preview` (text/xml); Chromium at 1200px, 390px and 844 by 390 with touch, light and dark: title,
+description and paragraph right, no errors, no sideways scrolling. Pictures `design/previews/search-opening-*.png`.
+
 ### 2026-11-10 — `stage-6-icons` merged
 
 **John:** merge and tidy. Merged to `main` (fast-forward; checks and build first): the icon, link-preview picture and

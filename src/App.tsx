@@ -168,6 +168,17 @@ export default function App() {
             {start && <h2>Collisions on the roads near you</h2>}
             {start && <p className="lead">Enter a postcode or a place to see how many people were hurt on the roads nearby, and how that compares with the traffic.</p>}
             {(start || changing) && <Chooser start={start} index={index} />}
+            {/* For first-time visitors and for search, which only ever sees the opening screen (SEO-HANDOVER item 9;
+                John's wording, November 10th 2026). */}
+            {start && (
+              <p className="lead chooser-about">
+                Roadteller counts the injury collisions reported to the police on the roads within half a mile, a mile or
+                two miles of any postcode or place in Great Britain, or across a whole council area, going back to 1989. It
+                shows how the people hurt were travelling, at what times and on which roads, and compares the main roads with
+                the traffic they carry, using the Department for Transport’s official figures. Many people call them road
+                accidents or crashes; the police and the Department for Transport call them collisions. Free to use.
+              </p>
+            )}
           </div>
         )}
         {loadProblem && (

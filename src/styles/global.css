@@ -15,6 +15,7 @@ a { color: var(--color-accent-700); }
 .back-link { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0 6px; color: var(--color-accent-700); font-size: 15px; font-weight: 600; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
 .lead { color: var(--color-neutral-700); margin: 6px 0 0; max-width: 640px; }
+.lead.chooser-about { margin-top: var(--space-6); font-size: 14px; }
 .muted { color: var(--color-neutral-700); }
 
 .search { display: flex; gap: var(--space-2); align-items: center; margin-top: var(--space-4); flex-wrap: wrap; }
