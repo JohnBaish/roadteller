@@ -80,6 +80,7 @@ Statistics line in OS's own form; the "not connected with or endorsed by" line a
 ("2016 to 202", a double full stop); "ten" written "10" (house rule); item 6's old last sentence dropped, as John's new
 middle sentence says the same. **Checked:** typecheck, lint, checks, build; Chromium at 1200px, 390px and 844 by 390 with
 touch, light and dark: start screen, RG14 and West Berkshire; no errors, no sideways scrolling.
+**Preview:** the branch was pushed before John created the Vercel project, so it got no build; pushed again to start one.
 
 ### 2026-11-10 — stage 6 begun: "About these figures", credits and footer drafted (notes only)
 
