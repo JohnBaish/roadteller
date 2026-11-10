@@ -71,6 +71,17 @@ Data notes:
 
 ## Log
 
+### 2026-11-10 — tagline, opening screen and link-preview tags (branch `stage-6-icons`, not merged)
+
+**John:** the tagline is "Collisions on nearby roads, compared with traffic levels." ("levels", not "flows"; plain
+"collisions" is fine, as About says only injury collisions count); and yes to rewording the opening screen and tab title
+away from "road safety". **What:** `public/og-roadteller.png` (rendered from `design/og-roadteller.html`, both fonts
+loaded); `index.html`: tab title "Roadteller – collisions on nearby roads, compared with traffic", a search description
+(draft, 148 characters), the canonical link and the og:/twitter: tags with the tagline; "noindex" kept until launch. The
+opening screen: kicker "Roads in Great Britain" and heading "Collisions on the roads near you" (both drafts). **Checked:**
+typecheck, lint, build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark: the title, kicker and
+heading, the icon and picture served; no errors, no sideways scrolling.
+
 ### 2026-11-10 — icon C, the last About paragraph, a draft preview picture (branch `stage-6-icons`, not merged)
 
 **John:** icon C (a road ahead on solid terracotta; options A and B in `design/favicon-options/`, page

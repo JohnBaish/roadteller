@@ -164,8 +164,8 @@ export default function App() {
         {(start || changing) && (
           <div className="page-head">
             {/* The tagline only on the opening screen; a view's own top says what it shows (John, November 10th 2026). */}
-            {start && <div className="card-kicker">Road safety measured against traffic levels</div>}
-            {start && <h2>How safe are the roads near you?</h2>}
+            {start && <div className="card-kicker">Roads in Great Britain</div>}
+            {start && <h2>Collisions on the roads near you</h2>}
             {start && <p className="lead">Enter a postcode or a place to see how many people were hurt on the roads nearby, and how that compares with the traffic.</p>}
             {(start || changing) && <Chooser start={start} index={index} />}
           </div>

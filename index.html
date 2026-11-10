@@ -3,10 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Roadteller – road safety measured against traffic levels</title>
-    <!-- Search and link-preview tags come in stage 6 (PLAN.md). -->
+    <title>Roadteller – collisions on nearby roads, compared with traffic</title>
+    <meta name="description" content="Free figures for collisions on the roads near any postcode or place in Great Britain: how many, who was hurt, when and where, compared with traffic." />
+    <link rel="canonical" href="https://roadteller.baish.net/" />
+    <!-- Search (SEO): the <title> and search description are for search results (drafts, November 10th 2026); the
+         canonical link names the one main address. The og:/twitter: tags are for link previews and keep the wording drawn
+         into the preview picture (design/og-roadteller.html; John, November 10th 2026). "noindex" stays until launch. -->
     <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Roadteller" />
+    <meta property="og:description" content="Collisions on nearby roads, compared with traffic levels." />
+    <meta property="og:image" content="https://roadteller.baish.net/og-roadteller.png" />
+    <meta property="og:url" content="https://roadteller.baish.net/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Roadteller" />
+    <meta name="twitter:description" content="Collisions on nearby roads, compared with traffic levels." />
+    <meta name="twitter:image" content="https://roadteller.baish.net/og-roadteller.png" />
     <!-- Dark mode: set before the page draws, so there's no flash of the wrong colours. A choice kept by the switch wins;
          otherwise the device's own setting (HOUSE-STYLE §2). The same key and rule as src/lib/theme.ts. -->
     <script>
