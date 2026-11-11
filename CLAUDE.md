@@ -99,7 +99,11 @@ were first added after the line that prints the total, so not counted; both corr
 **Verified:** `npm run check` (21), lint, build; Chromium at 1200px, 390px, 844 by 390 and 667 by 320 with touch,
 light and dark: maps within the screen (RG14 365px tall at 844 by 390, was 600), touch targets 44px, no errors, no
 sideways scrolling; the bad addresses, Cancel, the same place, the keyboard; a page printed from dark mode light with its
-key. **Launch:** "noindex" removed (robots.txt and the sitemap already there); roadteller.baish.net answers.
+key. **Launch:** "noindex" removed (robots.txt and the sitemap already there); roadteller.baish.net answers. Merged
+to `main` (fast-forward; checks and build first); live site checked: no "noindex", robots.txt served. "Delete merged
+branches": trial run, then the real run; `git ls-remote --heads origin` shows only `main`. The baish.net card is on
+clockwheel's branch `landing-roadteller`, not merged (John: more work on baish.net first). Still to do: Search Console
+(John), and Roadteller in the baish.net overview.
 
 ### 2026-11-10 — search set-up merged; fresh-look prompt
 
