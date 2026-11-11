@@ -1,0 +1,26 @@
+// Council areas shown by the names people use, not DfT's file spellings (John, fresh look 3.2, November 11th 2026).
+// `the`: the name takes "the" in a sentence ("in the Isles of Scilly"). Sorted and listed without it.
+export const COUNCIL_NAMES: Record<string, { name: string; the?: true }> = {
+  E06000023: { name: 'Bristol' },
+  E06000010: { name: 'Kingston upon Hull' },
+  E06000019: { name: 'Herefordshire' },
+  E06000052: { name: 'Cornwall' },
+  E06000053: { name: 'Isles of Scilly', the: true },
+  E09000001: { name: 'City of London', the: true },
+  W06000014: { name: 'Vale of Glamorgan', the: true },
+  S12000013: { name: 'Western Isles', the: true },
+  S12000023: { name: 'Orkney' },
+  S12000027: { name: 'Shetland' },
+  E06000049: { name: 'Cheshire East' },
+  E06000050: { name: 'Cheshire West and Chester' },
+  E06000047: { name: 'County Durham' },
+  W06000016: { name: 'Rhondda Cynon Taf' },
+  E08000013: { name: 'St Helens' },
+  S12000035: { name: 'Argyll and Bute' },
+  S12000006: { name: 'Dumfries and Galloway' },
+  S12000048: { name: 'Perth and Kinross' },
+  S12000033: { name: 'Aberdeen' },
+  S12000042: { name: 'Dundee' },
+  S12000049: { name: 'Glasgow' },
+  S12000036: { name: 'Edinburgh' },
+};

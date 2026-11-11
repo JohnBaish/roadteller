@@ -7,7 +7,7 @@ import { ShareButton } from './ShareButton.tsx';
 import { SquaresMap, type MapInput } from './SquaresMap.tsx';
 import { loadAreas, type AreaFigures, type AreasFile } from '../lib/data.ts';
 import { useTapAway } from '../lib/tapAway.ts';
-import { cap1, compareText, DAY_NAMES, fall, fmt, hourText, pct, perMiles, shareWords, word, USER_WORDS } from '../lib/words.ts';
+import { cap1, compareText, DAY_NAMES, fall, fmt, hourText, named, Named, pct, people, perMiles, poss, shareWords, word, Word, USER_WORDS } from '../lib/words.ts';
 
 const USERS = ['car', 'walking', 'cycling', 'motorcycle', 'other'] as const;
 const yearsText = (five: number[]) => `${five[0]} to ${five[five.length - 1]} inclusive`;
@@ -23,7 +23,7 @@ export function whoSentence(who: Record<string, number>, hurt: number, gb: AreaF
   return `${share(best)}% of the people hurt were ${USER_WORDS[best]}, against ${g(best)}% across Great Britain.`;
 }
 
-export function CouncilView({ code, onChange }: { code: string; onChange: () => void }) {
+export function CouncilView({ code, onChange, onMissing }: { code: string; onChange: () => void; onMissing: (message: string) => void }) {
   const [areas, setAreas] = useState<AreasFile | null>(null);
   const [problem, setProblem] = useState(false);
   useEffect(() => {
@@ -32,14 +32,14 @@ export function CouncilView({ code, onChange }: { code: string; onChange: () => 
   if (problem) return <p className="problem" role="alert">Sorry, the figures couldn’t be loaded. Check your connection and try again.</p>;
   if (!areas) return <p className="muted">Loading…</p>;
   const f = areas.councils[code];
-  if (!f) return <p className="problem" role="alert">There’s no council area with that code.</p>;
+  if (!f) return <Missing onMissing={onMissing} text="We can’t find that council area. Choose one from the list." />;
   return <Council areas={areas} f={f} code={code} onChange={onChange} />;
 }
 
 function Council({ areas, f, code, onChange }: { areas: AreasFile; f: AreaFigures; code: string; onChange: () => void }) {
   const gb = areas.gb, region = areas.regions[f.region!];
-  const v = f.five, name = f.name!, five = areas.five, latest = five[five.length - 1];
-  const sub = `${name}, ${yearsText(five)}`;
+  const v = f.five, name = named(f), Name = Named(f), five = areas.five, latest = five[five.length - 1];
+  const sub = `${Name}, ${yearsText(five)}`;
   const mapInput = useMemo<MapInput>(() => ({ kind: 'council', code, where: `in ${name}`, years: yearsText(five) }), [code, name, five]);
   const [full, fw] = useWidth<HTMLDivElement>();
   const [half, hw] = useWidth<HTMLDivElement>();
@@ -58,17 +58,18 @@ function Council({ areas, f, code, onChange }: { areas: AreasFile; f: AreaFigure
                 One injury collision <span className="small">for every</span>
               </p>
               <p className="big">{perMiles(rate)}</p>
-              <p className="muted hero-sub">driven on {name}’s {roads}</p>
+              <p className="muted hero-sub">driven on {poss(f)} {roads}</p>
               <p className="hero-compare">
                 <b>{compareText(rate / gb.five.rate!, 'the Great Britain rate for A-roads and motorways')}</b>
               </p>
             </>
           ) : (
-            <p className="big-lead">Too few collisions on {name}’s {roads} to give a fair rate</p>
+            <p className="big-lead">Too few collisions on {poss(f)} {roads} to give a fair rate</p>
           )}
           <p className="hero-text">
-            From {yearsText(five)}, police recorded {fmt(v.all)} collisions in {name} in which someone was hurt. {fmt(v.hurt)} people were injured, {word(v.killed)} of them fatally, and{' '}
-            {fmt(v.ksi_recorded)} collisions were serious or fatal. This compares to {fmt(v.prev_all)} in the previous five years.
+            From {yearsText(five)}, police recorded {word(v.all)} collision{v.all === 1 ? '' : 's'} in {name} in which someone was hurt. {Word(v.hurt)} {people(v.hurt)}{' '}
+            {v.hurt === 1 ? 'was' : 'were'} injured,{v.killed ? ` ${word(v.killed)} of them fatally,` : ''} and {word(v.ksi_recorded)} collision{v.ksi_recorded === 1 ? ' was' : 's were'} serious or
+            fatal. This compares to {v.prev_all === 0 ? 'none' : word(v.prev_all)} in the previous five years.
           </p>
         </div>
         <div className="pair">
@@ -91,19 +92,19 @@ function Council({ areas, f, code, onChange }: { areas: AreasFile; f: AreaFigure
 
   return (
     <>
-      <ViewHead kicker={`Injury collisions, ${yearsText(five)}`} title={name} onChange={onChange} bar={name} />
+      <ViewHead kicker={`Injury collisions, ${yearsText(five)}`} title={Name} onChange={onChange} bar={Name} />
       {hero}
       <div className="stack">
         <div className="card" ref={full}>
           {rate && <Mix f={f} areas={areas} w={fw} sub={`${roadsOf(f)}, ${yearsText(five)}`} />}
-          {!rate && <p className="muted">There were {word(v.am)} collisions on {name}’s {roads} in five years, too few to compare fairly.</p>}
+          {!rate && <p className="muted">There {v.am === 1 ? 'was' : 'were'} {v.am === 0 ? 'no' : word(v.am)} collision{v.am === 1 ? '' : 's'} on {poss(f)} {roads} in five years, too few to compare fairly.</p>}
         </div>
         <Trend f={f} gb={gb} w={fw} latest={latest} />
         <div className="grid2">
           <div className="card" ref={half}>
             <h3>Who was hurt</h3>
             <p>{whoSentence(v.who, v.hurt, gb)}</p>
-            <Who who={v.who} hurt={v.hurt} gb={gb} w={hw} name={name} sub={sub} />
+            <Who who={v.who} hurt={v.hurt} gb={gb} w={hw} name={Name} sub={sub} />
           </div>
           <div className="card">
             <When hours={v.hours} days={v.days} w={hw} sub={sub} />
@@ -125,7 +126,7 @@ function Mix({ f, areas, w, sub }: { f: AreaFigures; areas: AreasFile; w: number
   const v = f.five, gb = areas.gb, region = areas.regions[f.region!];
   const kinds = (['motorway', 'a'] as const).filter((k) => v.kinds[k].mvm > 0);
   const rows = [
-    { t: f.name!, v: v.ratio ?? 0, cls: 'me' as const, me: true },
+    { t: Named(f), v: v.ratio ?? 0, cls: 'me' as const, me: true },
     ...(region?.five.ratio ? [{ t: region.name!, v: region.five.ratio, cls: 'reg' as const }] : []),
     { t: 'Great Britain', v: 1, cls: 'gb' as const },
   ];
@@ -134,10 +135,10 @@ function Mix({ f, areas, w, sub }: { f: AreaFigures; areas: AreasFile; w: number
     <>
       <h3>Allowing for the mix of roads</h3>
       <p>
-        Taking the mix of roads for {f.name}’s {roadsOf(f)}, and applying the national average for those kinds of roads to {f.name}’s own traffic, would give {fmt(v.expected)} injury collisions in five
-        years. There were {fmt(v.am)}:{' '}
+        Taking the mix of roads for {poss(f)} {roadsOf(f)}, and applying the national average for those kinds of roads to {poss(f)} own traffic, would give {word(Math.round(v.expected))} injury collisions in five
+        years. There were {word(v.am)}:{' '}
         <b>
-          {shareWords(v.ratio!)} ({pct(v.am, v.expected)}%)
+          {shareWords(v.ratio!).replace(/ (of|than|as)$/, '')} ({Math.round(v.ratio! * 100)}%)
         </b>
         .
       </p>
@@ -163,7 +164,7 @@ function Mix({ f, areas, w, sub }: { f: AreaFigures; areas: AreasFile; w: number
                 <td className="r num">{fmt((v.kinds[k].mvm / 100) * gb.kind_rate[k])}</td>
               </tr>
             ))}
-            <tr>
+            {kinds.length > 1 && <tr>
               <td>
                 <b>{cap1(roadsOf(f))}</b>
               </td>
@@ -174,7 +175,7 @@ function Mix({ f, areas, w, sub }: { f: AreaFigures; areas: AreasFile; w: number
               <td className="r num">
                 <b>{fmt(v.expected)}</b>
               </td>
-            </tr>
+            </tr>}
           </tbody>
         </table>
       </div>
@@ -200,7 +201,7 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
     return (
       <div className="card">
         <h3>Better or worse than before?</h3>
-        <p className="muted">Too few collisions on {f.name}’s A-roads in some years to compare fairly year by year.</p>
+        <p className="muted">Too few collisions on {poss(f)} A-roads in some years to compare fairly year by year.</p>
       </div>
     );
   const pts = years.map((y) => [y, rate(f, y)!] as [number, number]);
@@ -208,7 +209,7 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
   const idx = (p: [number, number][]) => p.map(([y, v]) => [y, (100 * v) / p[0][1]] as [number, number]);
   const ser: Series[] = [
     { pts: idx(gbp), cls: 'gb', dash: true, end: 'GB' },
-    { pts: idx(pts), cls: 'me', end: f.name!.length > 12 ? 'Here' : f.name! },
+    { pts: idx(pts), cls: 'me', end: Named(f).length > 12 ? 'Here' : Named(f) },
   ];
   const max = Math.max(120, ...ser.flatMap((s) => s.pts.map((p) => p[1] * 1.05)));
   const shown = sel ?? latest;
@@ -219,7 +220,7 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
     <div className="card">
       <h3>Better or worse than before?</h3>
       <p>
-        Since {years[0]}, collisions per mile driven on A-roads and motorways have {fallBy(pts[0][1], pts[pts.length - 1][1])} in {f.name} and{' '}
+        Since {years[0]}, collisions per mile driven on A-roads and motorways have {fallBy(pts[0][1], pts[pts.length - 1][1])} in {named(f)} and{' '}
         {(pts[pts.length - 1][1] <= pts[0][1]) === (gbp[gbp.length - 1][1] <= gbp[0][1]) ? fallBy(gbp[0][1], gbp[gbp.length - 1][1]).replace(/^\S+ /, '') : fallBy(gbp[0][1], gbp[gbp.length - 1][1])} across Great
         Britain. Both lines start at 100 in {years[0]}.
       </p>
@@ -227,7 +228,7 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
       <div className="legend">
         <span>
           <i className="l k-me" />
-          {f.name}
+          {Named(f)}
         </span>
         <span>
           <i className="l d k-gb" />
@@ -241,9 +242,9 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
           <b>{shown}:</b> {fmt(row[1])} injury collisions on A-roads and motorways
           {row[2] > 0 && row[1] > 0 ? `, one for every ${perMiles((100 * row[1]) / row[2])} driven` : ''} (Great Britain: one for every {perMiles((100 * g[1]) / g[2])}).
         </p>
-        <ShareButton svg={svg} title="Better or worse than before?" sub={`Injury collisions per mile driven on A-roads and motorways, ${f.name} and Great Britain, ${years[0]} = 100`} file="roadteller-trend.png" />
+        <ShareButton svg={svg} title="Better or worse than before?" sub={`Injury collisions per mile driven on A-roads and motorways, ${named(f)} and Great Britain, ${years[0]} = 100`} file="roadteller-trend.png" />
       </div>
-      <p className="note">
+      <p className="note" data-noprint>
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
       </p>
     </div>
@@ -362,7 +363,13 @@ function Roads({ f, gb, narrow }: { f: AreaFigures; gb: AreasFile['gb']; narrow:
           </table>
         </div>
       )}
-      <p className="note">These are the main roads’ stretches in {f.name}, measured between junctions. Collisions at a junction between two stretches count half to each.</p>
+      <p className="note">These are the main roads’ stretches in {named(f)}, measured between junctions. Collisions at a junction between two stretches count half to each.</p>
     </>
   );
+}
+
+/** Tells the page a council area or place can't be shown, so it can offer the box again (fresh look 2.1). */
+export function Missing({ text, onMissing }: { text: string; onMissing: (message: string) => void }) {
+  useEffect(() => onMissing(text), [text, onMissing]);
+  return null;
 }

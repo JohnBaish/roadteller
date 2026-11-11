@@ -2,7 +2,8 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { count, RADII, squaresFor, stretchesIn } from '../src/lib/circle.ts';
 import { unpack, unpackSquare } from '../src/lib/packed.ts';
-import { compareText } from '../src/lib/words.ts';
+import { compareText, named, perMiles, poss } from '../src/lib/words.ts';
+import { COUNCIL_NAMES } from './councilNames.ts';
 import { joinPieces, roadSpots } from '../src/lib/mapLabels.ts';
 import { toBritishGrid } from '../src/lib/grid.ts';
 import type { OldFile, SquareFile } from '../src/lib/data.ts';
@@ -64,6 +65,16 @@ const joined = joinPieces([[[0, 0], [100, 0]], [[300, 0], [200, 0]], [[100, 0], 
 check('road pieces joined', joined.length === 2 && joined[0].length === 4 && joined[0][0][0] === 0 && joined[0][3][0] === 300, joined);
 const spots = roadSpots([{ pts: [[0, 0], [1000, 0]], no: 'A1' }, { pts: [[1000, 0], [3000, 0]], no: 'A1' }, { pts: [[0, 50], [400, 50]], no: 'B2' }, { pts: [[0, 90], [100, 90]] }], (p) => p[0] <= 2600, 5);
 check('road labels', spots.length === 2 && spots[0].length === 2 && spots[0].every((sp) => sp.no === 'A1') && Math.round(spots[0][0].at[0]) === 650 && spots[1][0].no === 'B2', spots.map((r) => r.map((sp) => [sp.no, Math.round(sp.at[0])])));
+// Fresh look, November 11th 2026: wording of rates and council names
+check('3.1: 17 times', compareText(16.52, 'the Great Britain rate') === 'About 17 times the Great Britain rate (1652%)', compareText(16.52, 'the Great Britain rate'));
+check('3.1: three times still in words', compareText(2.7, 'x') === 'About three times x (270%)', compareText(2.7, 'x'));
+check('3.5: less than a million miles', perMiles(100 / 0.26) === '260,000 miles' && perMiles(100 / 14.04) === '14.0 million miles', [perMiles(100 / 0.26), perMiles(100 / 14.04)]);
+check('3.2: names', poss({ name: 'Isles of Scilly', the: true }) === 'the Isles of Scilly’s' && poss({ name: 'St Helens' }) === 'St Helens’' && poss({ name: 'Bristol' }) === 'Bristol’s' && named({ name: 'City of London', the: true }) === 'the City of London');
+{
+  const areas = JSON.parse(readFileSync('data/areas.json', 'utf8')) as { councils: Record<string, unknown> };
+  const lost = Object.keys(COUNCIL_NAMES).filter((c) => !areas.councils[c]);
+  check('3.2: every renamed council exists', lost.length === 0, lost);
+}
 console.log(`${passed} passed, ${fails.length} failed`);
 for (const f of fails) console.log('  FAIL', f);
 console.log('RG14 one mile:', rg.c.n, 'collisions,', rg.c.hurt, 'hurt,', rg.c.killed, 'killed; 2016 to 2020:', prev, '; squares', rg.names);

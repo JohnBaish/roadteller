@@ -5,15 +5,15 @@ import { ViewHead } from './ViewHead.tsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Lines, useWidth, YearBars, type Series } from './charts.tsx';
 import { ShareButton } from './ShareButton.tsx';
-import { When, Who, whoSentence } from './CouncilView.tsx';
+import { Missing, When, Who, whoSentence } from './CouncilView.tsx';
 import { getPlaces } from './PlaceBox.tsx';
 import { count, RADII, squaresFor, stretchesIn, type CircleCount, type Radius } from '../lib/circle.ts';
 import { loadAreas, loadOld, loadSquare, type AreasFile, type PageIndex, type SquareFile, type Stretch } from '../lib/data.ts';
 import { SquaresMap, type MapInput } from './SquaresMap.tsx';
 import { toBritishGrid } from '../lib/grid.ts';
 import { useTapAway } from '../lib/tapAway.ts';
-import { hashOf, locate, type Located, type Target } from '../lib/where.ts';
-import { cap1, compareText, fall, fmt, perMiles, word } from '../lib/words.ts';
+import { hashOf, locate, POSTCODE_PROBLEMS, readPostcode, type Located, type Target } from '../lib/where.ts';
+import { cap1, compareText, fall, fmt, named, Named, people, perMiles, word, Word } from '../lib/words.ts';
 
 type CircleTarget = Extract<Target, { kind: 'circle' }>;
 type Result = { c: CircleCount; s: (Stretch & { insideKm: number })[]; long: boolean; files: SquareFile[]; e: number; n: number };
@@ -21,7 +21,7 @@ const RADIUS_WORDS: Record<Radius, string> = { half: 'half a mile', one: 'a mile
 const RADIUS_BUTTONS: [Radius, string][] = [['half', 'Half a mile'], ['one', 'One mile'], ['two', 'Two miles']];
 const lower1 = (t: string) => t[0].toLowerCase() + t.slice(1);
 
-export function CircleView({ index, target, onChange }: { index: PageIndex; target: CircleTarget; onChange: () => void }) {
+export function CircleView({ index, target, onChange, onMissing }: { index: PageIndex; target: CircleTarget; onChange: () => void; onMissing: (message: string) => void }) {
   const [where, setWhere] = useState<Located | null | 'none'>(null);
   const [areas, setAreas] = useState<AreasFile | null>(null);
   const [result, setResult] = useState<Result | null>(null);
@@ -54,7 +54,17 @@ export function CircleView({ index, target, onChange }: { index: PageIndex; targ
   }, [where, r, long, index]);
 
   if (problem) return <p className="problem" role="alert">{problem}</p>;
-  if (where === 'none') return <p className="problem" role="alert">We can’t find that place. Try a postcode.</p>;
+  if (where === 'none') {
+    // An address after "#" that can't be shown: the page offers the box again, with the message the box would give (fresh look 2.1).
+    const w = target.where;
+    let text = `We can’t find “${w.kind === 'place' ? w.place : w.outcode}” among Great Britain’s postcodes, towns, villages and suburbs. Check the spelling, or try a postcode.`;
+    if (w.kind === 'postcode') {
+      const typed = `${w.outcode}${w.inward ? ` ${w.inward}` : ''}`;
+      const r = readPostcode(typed, index.outcodes);
+      if (!r.ok) text = POSTCODE_PROBLEMS[r.problem](typed);
+    }
+    return <Missing text={text} onMissing={onMissing} />;
+  }
   if (!where || !areas || !result || result.long !== long) return <p className="muted">Counting…</p>;
   return <Circle index={index} target={target} where={where} areas={areas} result={result} onLong={setLong} onChange={onChange} />;
 }
@@ -96,7 +106,7 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
       >
         <div className="radius-row" data-noprint>
           {chips}
-          {council && <a href={`#council/${where.council}`}>See all of {council.name}</a>}
+          {council && <a href={`#council/${where.council}`}>See all of {named(council)}</a>}
         </div>
       </ViewHead>
       <div className="card" ref={full}>
@@ -104,22 +114,22 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
           <div>
             <p className="big-lead">{within}</p>
             <p className="big">
-              {c.n === 0 ? 'No injury collisions' : `${fmt(c.n)} injury collision${c.n === 1 ? '' : 's'}`}
+              {c.n === 0 ? 'No injury collisions' : `${Word(c.n)} injury collision${c.n === 1 ? '' : 's'}`}
             </p>
             <p className="muted">from {yearsText}</p>
             {c.n > 0 && (
               <p className="hero-people">
                 <b>
-                  {fmt(c.hurt)} {c.hurt === 1 ? 'person' : 'people'} hurt{c.killed ? `, ${word(c.killed)} of them fatally` : ''}
+                  {Word(c.hurt)} {people(c.hurt)} hurt{c.killed ? `, ${word(c.killed)} of them fatally` : ''}
                 </b>
               </p>
             )}
-            <p className="hero-text">{prev === 0 && c.n === 0 ? 'There were none in the previous five years either.' : `This compares to ${prev === 0 ? 'none' : fmt(prev)} in the previous five years.`}</p>
+            <p className="hero-text">{prev === 0 && c.n === 0 ? 'There were none in the previous five years either.' : `This compares to ${prev === 0 ? 'none' : word(prev)} in the previous five years.`}</p>
           </div>
           {council && (
             <div className="pair">
               <div>
-                <b>{council.name} as a whole</b>
+                <b>{Named(council)} as a whole</b>
                 <br />
                 {crate ? (
                   <>
@@ -191,7 +201,7 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
       <h3>Better or worse than before?</h3>
       <p>
         There {n(from) === 1 ? 'was' : 'were'} {n(from) === 0 ? 'no' : word(n(from))} collision{n(from) === 1 ? '' : 's'} here in {from} and {n(latest) === 0 ? 'none' : word(n(latest))} in {latest}
-        {n(from) > 0 ? `, ${down(n(from), n(latest))}` : ''}. Across Great Britain they {fell(g(from), g(latest))}.{indexed ? ` Both lines start at 100 in ${from}.` : ''}
+        {indexed ? `, ${down(n(from), n(latest))}` : ''}. Across Great Britain they {fell(g(from), g(latest))}.{indexed ? ` Both lines start at 100 in ${from}.` : ''}
       </p>
       <div className="trend-chart" ref={box}>
         {w > 0 &&
@@ -229,7 +239,7 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
           file="roadteller-trend.png"
         />
       </div>
-      <p className="note">
+      <p className="note" data-noprint>
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
       </p>
       {/* A little room above it, and back again once pressed (John, November 10th 2026). */}
@@ -259,7 +269,7 @@ function Roads({ c, s, gb, radius, narrow }: { c: CircleCount; s: (Stretch & { i
     <>
       <h3>Main roads through the circle</h3>
       <p>
-        {cap1(word(main))} of the {fmt(c.n)} collisions in the circle were on A-roads{c.kinds.motorway ? ' and motorways' : ''} and {word(c.kinds.minor)} on minor roads.
+        {cap1(word(Math.round(main)))} of the {word(c.n)} collisions in the circle were on A-roads{c.kinds.motorway ? ' and motorways' : ''} and {word(Math.round(c.kinds.minor))} on minor roads.
         {top && (
           <>
             {' '}

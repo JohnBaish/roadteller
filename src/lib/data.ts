@@ -24,7 +24,7 @@ export type Five = {
   am: number; am_mvm: number; rate: number | null; expected: number; ratio: number | null;
   who: Record<string, number>; hours: number[]; days: number[];
 };
-export type AreaFigures = { name?: string; region?: string; trend: Record<string, number[]>; five: Five; roads?: { road: string; n: number; mvm: number; stretches: number; rate: number | null }[] };
+export type AreaFigures = { name?: string; the?: boolean; region?: string; trend: Record<string, number[]>; five: Five; roads?: { road: string; n: number; mvm: number; stretches: number; rate: number | null }[] };
 export type AreasFile = { latest: number; five: number[]; prev_five: number[]; gb: AreaFigures & { kind_rate: Record<string, number> }; regions: Record<string, AreaFigures>; councils: Record<string, AreaFigures> };
 
 export type Stretch = { cp: number; road: string; start: string | null; end: string | null; km: number; n: number; mvm: number; rate: number | null; rebuilt: boolean; line: number[] };

@@ -14,6 +14,7 @@
 import { createHash } from 'node:crypto';
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { COUNCIL_NAMES } from './councilNames.ts';
 
 export const SOURCES = ['data/areas.json', 'data/squares/index.json', 'data/os/places.json', 'data/os/outcodes.json', 'data/councils-of.json', 'data/place-sizes.json'];
 
@@ -44,8 +45,15 @@ export function writePageData(root: string) {
   const outcodes = read<{ outcodes: Record<string, [number, number, string]> }>(d('os/outcodes.json')).outcodes;
   const squares = read<{ size: number; squares: Record<string, number[]> }>(d('squares/index.json'));
 
-  const vAreas = fingerprint(d('areas.json'));
-  writeFileSync(join(out, `areas-${vAreas}.json`), readFileSync(d('areas.json')));
+  // Council areas by the names people use (scripts/councilNames.ts); the file name changes with the names too.
+  for (const [code, n] of Object.entries(COUNCIL_NAMES)) {
+    const c = areas.councils[code] as { name: string; the?: true } | undefined;
+    if (!c) throw new Error(`councilNames.ts: no council area ${code}`);
+    c.name = n.name;
+    if (n.the) c.the = true;
+  }
+  const vAreas = createHash('sha1').update(readFileSync(d('areas.json'))).update(JSON.stringify(COUNCIL_NAMES)).digest('hex').slice(0, 10);
+  writeFileSync(join(out, `areas-${vAreas}.json`), JSON.stringify(areas));
   const vSquares = fingerprint(d('squares/index.json'));
   cpSync(d('squares'), join(out, `squares-${vSquares}`), { recursive: true });
 

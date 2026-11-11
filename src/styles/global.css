@@ -465,7 +465,7 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .view .notes { color: var(--color-neutral-700); font-size: 14px; }
 
 /* Stage 5: the map of shaded squares (SquaresMap.tsx) */
-.mapwrap { position: relative; max-width: 100%; margin-top: var(--space-3); touch-action: manipulation; }
+.mapwrap { position: relative; max-width: 100%; margin: var(--space-3) auto 0; touch-action: manipulation; }
 .map { display: block; width: 100%; height: auto; overflow: hidden; }
 .map .road, .map .edge, .map .grid0, .map .mid { pointer-events: none; }
 .map .road { fill: none; stroke-linecap: round; stroke-linejoin: round; }
@@ -480,13 +480,21 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .map .cell { stroke: var(--color-surface); stroke-width: 1; cursor: pointer; }
 .map .cell.on { stroke: var(--color-text); stroke-width: 2; }
 .map .num { font: 600 11px var(--font-body); fill: #fff; text-anchor: middle; pointer-events: none; }
-.map .num.dk { fill: #201e1d; }
+/* The map's five shades: light everywhere, dark on screen in dark mode only, so printing is always light (fresh look 5.2).
+   The counts are dark on the pale shades. */
+:root { --sq0: #d18b61; --sq1: #bb6c40; --sq2: #a0532a; --sq3: #7c3c1b; --sq4: #552610; }
+.map .num.s0, .map .num.s1 { fill: #201e1d; }
+@media screen {
+  :root[data-theme="dark"] { --sq0: #9a5532; --sq1: #b9693b; --sq2: #d6824f; --sq3: #eba477; --sq4: #fbd2b4; }
+  :root[data-theme="dark"] .map .num { fill: #fff; }
+  :root[data-theme="dark"] .map .num.s3, :root[data-theme="dark"] .map .num.s4 { fill: #201e1d; }
+}
 .map .place { font: 600 12px var(--font-body); fill: var(--color-text); paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
 .map .place.t { font-size: 13.5px; font-weight: 700; }
 .map .mid { fill: var(--color-text); }
 .map .rno { font: 700 10px var(--font-body); fill: var(--color-text); paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; pointer-events: none; }
 .map-tip { position: absolute; z-index: 3; width: 220px; pointer-events: none; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-divider); border-radius: 10px; padding: 6px 10px; font-size: 13px; box-shadow: 0 2px 8px #0003; }
-.map-key i { display: inline-block; width: 16px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.map-key i { display: inline-block; width: 16px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 @media print { .footer-notice .credits { border-bottom: 0; } }
 
 /* The top of a view (src/components/ViewHead.tsx, John, November 10th 2026). */
@@ -510,3 +518,9 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .slim-change { text-decoration: underline; text-underline-offset: 3px; }
 .slim-options { padding: 0 0 var(--space-3); }
 @media print { .slim-bar, .title-row .btn { display: none !important; } .view-head { position: static !important; border: 0 !important; } }
+
+/* Fresh look 6.1: buttons and links at least 44px on touch screens. */
+@media (pointer: coarse) {
+  .title-row .btn, .trend-range .btn, .view .btn-secondary, .chooser .btn { min-height: 44px; }
+  .radius-row > a { display: inline-flex; align-items: center; min-height: 44px; }
+}

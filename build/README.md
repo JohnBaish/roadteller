@@ -16,6 +16,12 @@ Run from the repo, with a download folder (DL) and a work folder (WORK) outside 
    50 km square; about 25 minutes). `areas.py` also writes each council's map (`data/council-maps/`).
 6. `python3 -I build/check.py data WORK` and `node scripts/check-page.ts`: the checks.
 7. `python3 -I build/review.py data WORK design/data-review.md`: the review list.
+8. After a rebuild, check three figures typed into "About these figures" (`src/components/About.tsx`; its years come
+   from the data): "about a quarter" of yearly A-road and motorway traffic figures from a count that year, "about a
+   third" of stretches never counted in the five years, and "about one in seven" collisions on these roads counted
+   half to each stretch (for 2021 to 2025: 24% of yearly figures counted, 6,999 of 19,073 count points never
+   counted, and 33,746 of 242,499 collisions at a junction; `design/wording/about-draft-2026-11-10.html`). Also check that every council in
+   `scripts/councilNames.ts` still exists (the build stops if one doesn't).
 
 The download folder holds (not kept in the repo):
 

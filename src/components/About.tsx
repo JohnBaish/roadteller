@@ -1,5 +1,7 @@
 // "About these figures" (John's wording, November 10th 2026).
-export function About() {
+// The years come from the data, so they move on when it's rebuilt (fresh look 6.4).
+export function About({ five = [2021, 2022, 2023, 2024, 2025] }: { five?: number[] }) {
+  const a = five[0], b = five[five.length - 1];
   return (
     <section className="about">
       <h3>About these figures</h3>
@@ -8,8 +10,9 @@ export function About() {
         Collisions in which nobody was hurt aren’t included, and some injuries are never reported to the police, so the true numbers are higher.
       </p>
       <p>
-        The main figures cover the last five complete years, 2021 to 2025, compared with the five years before, 2016 to 2020. The earlier period includes the pandemic year of 2020 when there
-        was much less traffic.
+        The main figures cover the last five complete years, {a} to {b}, compared with the five years before, {a - 5} to {b - 5}.
+        {a - 5 <= 2020 && b - 5 >= 2020 ? ' The earlier period includes the pandemic year of 2020 when there was much less traffic.' : ''}
+        {a <= 2020 && b >= 2020 ? ' This period includes the pandemic year of 2020 when there was much less traffic.' : ''}
       </p>
       <p>
         A circle counts every collision the police recorded within half a mile, a mile or two miles of the middle of the postcode or place. A council area counts every collision within its
@@ -21,7 +24,7 @@ export function About() {
       </p>
       <p>
         Traffic is measured stretch by stretch, between junctions. Only about a quarter of the yearly figures for A-roads and motorways come from a count on that road in that year; the rest are
-        the Department for Transport’s estimates, and about a third of stretches weren’t counted at all from 2021 to 2025. The Department says figures for a single road or a small area are less
+        the Department for Transport’s estimates, and about a third of stretches weren’t counted at all from {a} to {b}. The Department says figures for a single road or a small area are less
         reliable than those for a region or the whole country, so a road’s figure is a guide rather than an exact measure.
       </p>
       <p>

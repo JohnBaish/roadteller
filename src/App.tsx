@@ -1,5 +1,6 @@
 // The page: choosing a place (stage 2), then a council area (SPEC §6) or a circle (SPEC §7) in the agreed design, option B.
-import { Component, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { Component, useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import { getPlaces, PlaceBox } from './components/PlaceBox.tsx';
 import { ThemeSwitch } from './components/ThemeSwitch.tsx';
 import { CircleView } from './components/CircleView.tsx';
@@ -27,10 +28,16 @@ function remember(t: Target | null) {
   }
 }
 
-function Chooser({ start, index }: { start: boolean; index: PageIndex | null }) {
+// Go to a choice; choosing what's already shown just closes the box (fresh look 2.2).
+function goTo(h: string, onSame?: () => void) {
+  if (decodeURIComponent(location.hash.replace(/^#/, '')) === h) onSame?.();
+  else location.hash = h;
+}
+
+function Chooser({ start, index, first, onCancel }: { start: boolean; index: PageIndex | null; first?: string; onCancel?: () => void }) {
   const [typed, setTyped] = useState('');
   const [picked, setPicked] = useState<NamedPlace | null>(null);
-  const [problem, setProblem] = useState('');
+  const [problem, setProblem] = useState(first ?? '');
 
   async function go(e: FormEvent) {
     e.preventDefault();
@@ -55,7 +62,7 @@ function Chooser({ start, index }: { start: boolean; index: PageIndex | null }) 
         );
         return;
       }
-      location.hash = placeHash(placeOf(chosen));
+      goTo(placeHash(placeOf(chosen)), onCancel);
       return;
     }
     if (!index) return;
@@ -64,7 +71,7 @@ function Chooser({ start, index }: { start: boolean; index: PageIndex | null }) 
       setProblem(POSTCODE_PROBLEMS[r.problem](t));
       return;
     }
-    location.hash = r.inward ? `${r.outcode}-${r.inward}` : r.outcode;
+    goTo(r.inward ? `${r.outcode}-${r.inward}` : r.outcode, onCancel);
   }
 
   return (
@@ -75,6 +82,11 @@ function Chooser({ start, index }: { start: boolean; index: PageIndex | null }) 
           <button type="submit" className="btn btn-primary">
             Go
           </button>
+          {onCancel && (
+            <button type="button" className="btn btn-secondary" onClick={onCancel}>
+              Cancel
+            </button>
+          )}
         </div>
         {problem && (
           <p className="problem" role="alert">
@@ -93,7 +105,7 @@ function Chooser({ start, index }: { start: boolean; index: PageIndex | null }) 
             className="input"
             value=""
             onChange={(e) => {
-              if (e.target.value) location.hash = `council/${e.target.value}`;
+              if (e.target.value) goTo(`council/${e.target.value}`, onCancel);
             }}
           >
             <option value="">Choose a council area</option>
@@ -132,6 +144,17 @@ export default function App() {
   const [index, setIndex] = useState<PageIndex | null>(null);
   const [loadProblem, setLoadProblem] = useState(false);
   const [changing, setChanging] = useState(false);
+  // An address after "#" that can't be shown (fresh look 2.1): the box again, with the reason, and not remembered.
+  const [missing, setMissing] = useState<string | null>(null);
+  const onMissing = useCallback((m: string) => {
+    setMissing(m);
+    remember(null);
+  }, []);
+  // Change opens the box with the cursor in it, so a phone's keyboard opens straight away (fresh look 2.2).
+  const startChange = useCallback(() => {
+    flushSync(() => setChanging(true));
+    document.getElementById('where')?.focus();
+  }, []);
   useEffect(() => {
     loadIndex().then(setIndex, () => setLoadProblem(true));
     const onHash = () => {
@@ -139,6 +162,7 @@ export default function App() {
       setTarget(t);
       remember(t);
       setChanging(false);
+      setMissing(null);
       window.scrollTo(0, 0);
     };
     window.addEventListener('hashchange', onHash);
@@ -149,7 +173,7 @@ export default function App() {
     if (target && !readHash(location.hash)) history.replaceState(null, '', `#${hashOf(target)}`);
   }, [target]);
 
-  const start = target === null;
+  const start = target === null || missing !== null;
   return (
     <>
       <nav className="nav" data-noprint>
@@ -167,7 +191,7 @@ export default function App() {
             {start && <div className="card-kicker">Roads in Great Britain</div>}
             {start && <h2>Collisions on the roads near you</h2>}
             {start && <p className="lead">Enter a postcode or a place to see how many people were hurt on the roads nearby, and how that compares with the traffic.</p>}
-            {(start || changing) && <Chooser start={start} index={index} />}
+            {(start || changing) && <Chooser key={missing ?? ''} start={start} index={index} first={missing ?? undefined} onCancel={start ? undefined : () => setChanging(false)} />}
             {/* For first-time visitors and for search, which only ever sees the opening screen (SEO-HANDOVER item 9;
                 John's wording, November 10th 2026). */}
             {start && (
@@ -187,18 +211,18 @@ export default function App() {
           </p>
         )}
         <SafetyNet key={target ? hashOf(target) : ''}>
-          {index && target?.kind === 'circle' && (
+          {!missing && index && target?.kind === 'circle' && (
             <div className="view">
-              <CircleView index={index} target={target} onChange={() => setChanging(true)} />
+              <CircleView index={index} target={target} onChange={startChange} onMissing={onMissing} />
             </div>
           )}
-          {target?.kind === 'council' && (
+          {!missing && target?.kind === 'council' && (
             <div className="view">
-              <CouncilView code={target.code} onChange={() => setChanging(true)} />
+              <CouncilView code={target.code} onChange={startChange} onMissing={onMissing} />
             </div>
           )}
         </SafetyNet>
-        {target && <About />}
+        {target && !missing && <About five={index?.five} />}
         <footer className="footer-notice">
           {/* The credits in italic, with a line below them before the project lines (John, November 10th 2026). */}
           {!start && (

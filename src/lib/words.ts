@@ -10,8 +10,23 @@ export const Word = (n: number) => {
 export const pct = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 export const cap1 = (t: string) => t[0].toUpperCase() + t.slice(1);
 
-/** "14.0 million miles": a rate (collisions per 100 million vehicle miles) as the miles driven for each collision */
-export const perMiles = (rate: number) => `${(100 / rate).toFixed(1)} million miles`;
+/** "14.0 million miles": a rate (collisions per 100 million vehicle miles) as the miles driven for each collision.
+ * Less than a million, to the nearest 10,000: "260,000 miles" (John, fresh look 3.5). */
+export const perMiles = (rate: number) => {
+  const m = 100 / rate;
+  return m < 0.95 ? `${fmt(Math.max(1, Math.round(m * 100)) * 10000)} miles` : `${m.toFixed(1)} million miles`;
+};
+
+/** A council area's name in a sentence ("the Isles of Scilly"), at the start of one ("The Isles of Scilly"), and with
+ * "'s" ("St Helens’", John, fresh look 3.2). */
+export const named = (f: { name?: string; the?: boolean }) => `${f.the ? 'the ' : ''}${f.name ?? ''}`;
+export const Named = (f: { name?: string; the?: boolean }) => cap1(named(f));
+export const poss = (f: { name?: string; the?: boolean }) => {
+  const n = named(f);
+  return n.endsWith('s') ? `${n}’` : `${n}’s`;
+};
+/** "person" or "people" */
+export const people = (n: number) => (n === 1 ? 'person' : 'people');
 
 /** The nearest of a quarter, a third, half … three times, for a ratio */
 export function shareWords(r: number): string {
@@ -20,6 +35,8 @@ export function shareWords(r: number): string {
     [0.75, 'about three quarters of'], [1, 'about the same as'], [1.25, 'about a quarter more than'],
     [1.5, 'about half as much again as'], [2, 'about twice'], [3, 'about three times'],
   ];
+  // From about three and a half times, the number itself: "about 17 times" (John, fresh look 3.1).
+  if (r >= 3.5) return `about ${word(Math.round(r))} times`;
   return [...opts].sort((a, b) => Math.abs(Math.log(a[0] / r)) - Math.abs(Math.log(b[0] / r)))[0][1];
 }
 

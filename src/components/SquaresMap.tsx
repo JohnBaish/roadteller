@@ -11,7 +11,7 @@ import { useWidth } from './charts.tsx';
 import { loadCouncilMaps, loadIndex, loadRoads, type CouncilMap, type RoadFile, type SquareFile } from '../lib/data.ts';
 import { toBritishGrid } from '../lib/grid.ts';
 import { useTapAway } from '../lib/tapAway.ts';
-import { fmt, Word } from '../lib/words.ts';
+import { word, Word } from '../lib/words.ts';
 
 type Cell = { x: number; y: number; n: number };
 export type MapInput =
@@ -20,8 +20,8 @@ export type MapInput =
 
 /** Council areas more than this many kilometres across get five-kilometre squares. */
 export const BIG_COUNCIL_KM = 100;
-const LIGHT = ['#d18b61', '#bb6c40', '#a0532a', '#7c3c1b', '#552610'];
-const DARK = ['#9a5532', '#b9693b', '#d6824f', '#eba477', '#fbd2b4'];
+// The five shades are --sq0 to --sq4 in global.css: light, and dark on screen in dark mode only, so a printed map is
+// always light, whichever mode the device is in (fresh look 5.2).
 
 /** Shading steps from the place's own busiest square, each about the same factor bigger than the one before (busiest^(1/5));
  * where the busiest square has five or fewer, each count is its own step from the lightest (the floor). */
@@ -41,22 +41,15 @@ export function stepsFor(max: number): [number, number][] {
 }
 export const stepText = ([lo, hi]: [number, number]) => (lo === hi ? `${lo}` : `${lo} to ${hi}`);
 
-function useDark() {
-  const q = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : null;
-  const read = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && !!q?.matches);
-  const [dark, setDark] = useState(read);
+/** The window's height, kept up to date: no map taller than the screen (fresh look 5.1). */
+function useWindowHeight() {
+  const [h, setH] = useState(() => window.innerHeight);
   useEffect(() => {
-    const on = () => setDark(read());
-    q?.addEventListener('change', on);
-    const mo = new MutationObserver(on);
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => {
-      q?.removeEventListener('change', on);
-      mo.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const on = () => setH(window.innerHeight);
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
   }, []);
-  return dark;
+  return h;
 }
 
 const decode = (l: number[] | string, ox: number, oy: number) => {
@@ -151,10 +144,13 @@ export function SquaresMap({ input }: { input: MapInput }) {
           const [i, j] = key.split(',').map(Number);
           return { x: i * size, y: j * size, n: c };
         });
-        let possible = 0;
+        // the squares whose middle is inside the council area, and any square at its edge that had a collision (Islington
+        // had 27 squares with collisions but only 16 middles inside it)
+        const inside = new Set<string>(sum.keys());
         for (let i = Math.floor(m.bbox[0] / size); i <= Math.floor(m.bbox[2] / size); i++)
           for (let j = Math.floor(m.bbox[1] / size); j <= Math.floor(m.bbox[3] / size); j++)
-            if (outline.some((ring) => inRing([i * size + size / 2, j * size + size / 2], ring))) possible++;
+            if (outline.some((ring) => inRing([i * size + size / 2, j * size + size / 2], ring))) inside.add(`${i},${j}`);
+        const possible = inside.size;
         const groups = await Promise.all(squaresOf(m.bbox, new Set(ix.roadSquares.main), 50000).map((s) => loadRoads('main', s)));
         const roads = roadsIn(groups.flat(), m.bbox);
         const places = await placesIn(placesP, m.bbox, (x, y) => outline.some((ring) => inRing([x, y], ring)), true);
@@ -202,21 +198,21 @@ async function placesIn(p: ReturnType<typeof getPlaces>, b: [number, number, num
 
 function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
   const [box, w] = useWidth<HTMLDivElement>();
-  const dark = useDark();
+  const vh = useWindowHeight();
   const [on, setOn] = useState<number | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const clear = useCallback(() => setOn(null), []);
   useTapAway(on !== null, wrap, clear);
   const isCircle = input.kind === 'circle';
-  const P = dark ? DARK : LIGHT;
   const max = Math.max(0, ...d.cells.map((c) => c.n));
   const steps = stepsFor(max);
-  const shade = (n: number) => {
-    const i = steps.findIndex(([lo, hi]) => n >= lo && n <= hi);
-    return P[i + (max <= 5 ? 0 : 5 - steps.length)];
-  };
-  const mw = Math.min(isCircle ? 600 : 900, w);
+  const step = (n: number) => steps.findIndex(([lo, hi]) => n >= lo && n <= hi) + (max <= 5 ? 0 : 5 - steps.length);
+  const shade = (n: number) => `var(--sq${step(n)})`;
   const [x0, y0, x1, y1] = d.bbox;
+  // Never taller than the screen: on a short screen (a phone held sideways) nothing stays at the top, elsewhere the view's
+  // top may (up to about 170px). The map narrows, keeping its shape.
+  const room = Math.max(220, vh <= 500 ? vh - 24 : vh - 190);
+  const mw = Math.floor(Math.min(isCircle ? 600 : 900, w, (room * (x1 - x0)) / (y1 - y0)));
   const k = mw / (x1 - x0), h = Math.round((y1 - y0) * k);
   const X = (x: number) => (x - x0) * k, Y = (y: number) => (y1 - y) * k;
   const path = (pts: [number, number][]) => pts.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join('');
@@ -312,7 +308,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
       <p>
         {d.total === 0
           ? `There were no injury collisions ${input.where} from ${input.years}.`
-          : `The ${fmt(d.total)} injury collision${d.total === 1 ? '' : 's'} ${input.where}, from ${input.years}, in ${unit} squares. ${Word(d.cells.length)} of the ${fmt(d.possible)} squares had at least one; the busiest had ${fmt(busiest.n)}.`}
+          : `${d.total === 1 ? 'The one injury collision' : `The ${word(d.total)} injury collisions`} ${input.where}, from ${input.years}, in ${unit} squares. ${Word(d.cells.length)} of the ${word(d.possible)} squares had at least one; the busiest had ${word(busiest.n)}.`}
       </p>
       {mw > 0 && d.total > 0 && (
         <>
@@ -337,7 +333,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
                     y={Y(c.y + d.size)}
                     width={sz}
                     height={sz}
-                    fill={shade(c.n)}
+                    style={{ fill: shade(c.n) }}
                     fillOpacity={isCircle ? 0.82 : 1}
                     onPointerEnter={(e) => e.pointerType === 'mouse' && setOn(i)}
                     onPointerLeave={(e) => e.pointerType === 'mouse' && setOn(null)}
@@ -357,11 +353,11 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
               {d.circle && <circle className="mid" cx={X(d.circle.e)} cy={Y(d.circle.n)} r={4} />}
               {numbers &&
                 d.cells.map((c, i) => {
-                  const b = steps.findIndex(([lo, hi]) => c.n >= lo && c.n <= hi) + (max <= 5 ? 0 : 5 - steps.length);
+                  const b = step(c.n);
                   const inside = d.outline!.some((ring) => inRing([c.x + d.size / 2, c.y + d.size / 2], ring));
                   if (!inside || hidden.has(i)) return null;
                   return (
-                    <text key={i} className={`num${(dark ? b < 3 : b >= 2) ? '' : ' dk'}`} x={X(c.x + d.size / 2)} y={Y(c.y + d.size / 2) + 4}>
+                    <text key={i} className={`num s${b}`} x={X(c.x + d.size / 2)} y={Y(c.y + d.size / 2) + 4}>
                       {c.n}
                     </text>
                   );
@@ -389,7 +385,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
               </span>
             ))}
           </div>
-          <p className="note">{matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Point at'} a square for its count.</p>
+          <p className="note" data-noprint>{matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Point at'} a square for its count.</p>
         </>
       )}
     </div>

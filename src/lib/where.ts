@@ -56,7 +56,12 @@ export const POSTCODE_PROBLEMS: Record<Exclude<PostcodeRead, { ok: true }>['prob
   empty: () => 'Please type a postcode or a place, such as RG1 8FR or Newbury.',
   notPostcode: (t) => `“${t.trim()}” doesn’t look like a postcode. Try one like RG1 or RG1 8FR.`,
   northernIreland: () => 'Roadteller covers Great Britain. The police in Northern Ireland publish their own figures.',
-  notFound: (t) => `We can’t find the postcode district “${t.trim().toUpperCase()}”. Check it and try again.`,
+  // Only the first half is named, as that's what wasn't found (fresh look 2.3).
+  notFound: (t) => {
+    const c = t.toUpperCase().replace(/\s+/g, '');
+    const m = /^([A-Z]{1,2}\d[A-Z\d]?)(\d[A-Z]{2})?$/.exec(c);
+    return `We can’t find the postcode district “${m ? m[1] : t.trim().toUpperCase()}”. Check it and try again.`;
+  },
 };
 
 // Where a chosen place is: its position, how to name it, its council area, and a note when a full postcode wasn't found.
