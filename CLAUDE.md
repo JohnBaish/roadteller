@@ -71,6 +71,36 @@ Data notes:
 
 ## Log
 
+### 2026-11-11 — fresh look; every fix built and live; launched
+
+**Review** (`/fresh-look` of `main` at `b892bbc`, built locally; PDF sent): 2.1 a wrong address after "#" a remembered
+dead end; 2.2 Change with no Cancel, the same place again doing nothing; 2.3 the whole postcode named as a district;
+3.1 "about three times (1652%)"; 3.2 DfT's council spellings ("Bristol, City of's", "Orkney Islands's"); 3.3 small
+numbers as digits, "zero of them fatally"; 3.4 "A-roads" twice in the mix table; 3.5 "0.3 million miles"; 4.1 "up by
+200%" from one to three; 5.1 maps taller than a sideways phone; 5.2 the map printed with dark shading and no key
+colours; 5.3 the circle's map at the left; 6.1 phone buttons under 44px; 6.2 no keyboard mark on years; 6.3
+instructions printed; 6.4 About's years typed in; 7.1 to 7.6 left alone.
+
+**John:** all of it, and live. His choices: the display names as suggested (`scripts/councilNames.ts`, applied by
+`scripts/pageData.ts`; the build stops if one no longer exists), Scottish cities shortened ("Glasgow"), "St Helens'";
+"About 17 times …" from three and a half times; 3b, leaving out "of them fatally" when nobody died; less than a million
+miles to the nearest 10,000 ("260,000 miles"); no percentage for a circle with fewer than 10 in its first year.
+
+**What:** as above, plus: Cancel beside Go while changing (`goTo()` closes the box when the choice is already shown);
+the bad address shows the box with the message it would give and isn't remembered (`Missing` in `CouncilView.tsx`);
+maps never taller than the window (`useWindowHeight` in `SquaresMap.tsx`), centred; the five shades as `--sq0` to
+`--sq4` (dark only on screen); About's years from the data, and a rebuild checklist item in `build/README.md`. 6.2
+needed nothing: the year already shows an outline when reached with Tab (my probe had focused it by script, which
+doesn't show it). **Found and fixed on the way:** Islington's map said "27 of the 16 squares" (squares at the edge with
+collisions weren't counted as possible); the mix sentence said "about three quarters of (72%)". Two expectations in
+the new checks were mine and wrong (14.05 rounds to 14.1; "Scilly" ends in y, so "Scilly's"), and the new checks
+were first added after the line that prints the total, so not counted; both corrected (21 checks).
+
+**Verified:** `npm run check` (21), lint, build; Chromium at 1200px, 390px, 844 by 390 and 667 by 320 with touch,
+light and dark: maps within the screen (RG14 365px tall at 844 by 390, was 600), touch targets 44px, no errors, no
+sideways scrolling; the bad addresses, Cancel, the same place, the keyboard; a page printed from dark mode light with its
+key. **Launch:** "noindex" removed (robots.txt and the sitemap already there); roadteller.baish.net answers.
+
 ### 2026-11-10 — search set-up merged; fresh-look prompt
 
 **John:** merge. `stage-6-search` merged to `main` (fast-forward; checks and build first); "Delete merged branches": trial,
