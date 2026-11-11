@@ -105,7 +105,8 @@ branches": trial run, then the real run; `git ls-remote --heads origin` shows on
 clockwheel's branch `landing-roadteller`, not merged (John: more work on baish.net first). Still to do: Search Console
 (John), and Roadteller in the baish.net overview.
 **Later the same day:** John did the Search Console steps (sitemap submitted; URL Inspection, Test live URL, Request
-indexing for `https://roadteller.baish.net/`). The baish.net overview is being updated in a separate session.
+indexing for `https://roadteller.baish.net/`). Another session has since merged the hub card (`landing-roadteller`, in the
+redesigned hub) and added Roadteller to the baish.net overview. Nothing more is planned; the tracker says "Awaited."
 
 ### 2026-11-10 — search set-up merged; fresh-look prompt
 
