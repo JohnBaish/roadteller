@@ -524,3 +524,11 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
   .title-row .btn, .trend-range .btn, .view .btn-secondary, .chooser .btn { min-height: 44px; }
   .radius-row > a { display: inline-flex; align-items: center; min-height: 44px; }
 }
+
+/* Dark mode a step darker, to match the other tools (John, November 14th 2026; HOUSE-STYLE §2): the page
+   #24211e and cards lifted with a shadow. Dark mode on screen only: light mode, printing and shared charts
+   are unchanged. */
+@media screen {
+  :root[data-theme="dark"] { --color-bg: #24211e; }
+  :root[data-theme="dark"] .card { box-shadow: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
+}

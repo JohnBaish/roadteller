@@ -71,6 +71,14 @@ Data notes:
 
 ## Log
 
+### 2026-11-14 — dark mode a step darker, to match the other tools (branch `dark-step`, merged)
+
+After the dark colour review of Riverwatcher, Lightreader, Refueller and Hindcaster (house style §2), John saw a mock-up and
+asked for Roadteller to match. `global.css`, one block at the end, dark mode on screen only: the page `#24211e` (was `#2a2723`)
+and cards lifted with a shadow. Light mode, printing and shared pictures unchanged. **Verified:** typecheck, lint, checks 21,
+build; Chromium at 1200px, 390px and 844 by 390 with touch, light and dark (the chooser, RG14, West Berkshire): dark page
+`#24211e`, light unchanged, no errors, no sideways scrolling. **Couldn't check:** a real phone or Mac.
+
 ### 2026-11-11 — fresh look; every fix built and live; launched
 
 **Review** (`/fresh-look` of `main` at `b892bbc`, built locally; PDF sent): 2.1 a wrong address after "#" a remembered
