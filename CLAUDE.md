@@ -24,7 +24,7 @@ Read these first, in this order:
 4. The design options: https://claude.ai/artifact/Ej97EjfWGY6DYMLcVTwt8d
    (source `design/mockups/`; pictures in `design/mockups/previews/`).
 5. `HOUSE-STYLE.md`, copied from clockwheel on November 9th 2026 (commit
-   `49cbf9e`), with `SEO-HANDOVER.md`, `.claude/skills/fresh-look/`,
+   `49cbf9e`; `HOUSE-STYLE.md` re-copied 2026-11-17 at `ba9c802`), with `SEO-HANDOVER.md`, `.claude/skills/fresh-look/`,
    `.gitignore` and `.github/workflows/tidy-branches.yml`. Clockwheel holds
    the master copies; if they change, re-copy them and note it here.
 6. The baish.net overview, `design/overview/` in clockwheel.
@@ -71,7 +71,7 @@ Data notes:
 
 ## Log
 
-### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, not merged)
+### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, merged)
 
 **John** (after testing shares on iPhone and Android, in Lightreader's thread): every Share button sends a sentence, a link
 to the same view (sent separately) and a title ("Roadteller: Who was hurt"). His wording: "Injury collisions within a mile
@@ -83,7 +83,8 @@ the area, given its mix of roads, from Roadteller." A full postcode is cut to it
 (`#RG14-5AA/two` → `#RG14/two`). `ShareWords` and `shareWords()` in `src/lib/shareImage.ts`; a `text` prop on
 `ShareButton`; an `at` prop on `Who` and `When`. **Checked:** tsc, lint, checks (21), build; in Chromium as an iPhone 13,
 the share sheet replaced by a recorder: `#RG14-5AA`, `#RG14/two`, `#@Newbury`, `#council/E06000037` and
-`#council/E09000033`; the words and links above; no errors.
+`#council/E09000033`; the words and links above; no errors. **Live** at John's word;
+`HOUSE-STYLE.md` re-copied (new §17, sharing a picture).
 
 ### 2026-11-14 — dark mode a step darker, to match the other tools (branch `dark-step`, merged)
 
