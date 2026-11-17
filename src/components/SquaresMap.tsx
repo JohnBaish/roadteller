@@ -197,7 +197,10 @@ async function placesIn(p: ReturnType<typeof getPlaces>, b: [number, number, num
   }
   // towns first, then the biggest places (postcodes nearer to each than to any other place; build/place_sizes.py), so a
   // council area's map names its best-known villages rather than the first in the alphabet (John, November 10th 2026)
-  return out.sort((a, c) => Number(c.big) - Number(a.big) || c.size - a.size);
+  // Cities come before towns: a city's suburbs are places of their own, so its size counts only its centre (Norwich 171,
+  // Great Yarmouth 447), and Norfolk's map left Norwich out (John, November 17th 2026).
+  const rank = (q: { kind: string; big: boolean }) => (q.kind === 'c' ? 2 : q.big ? 1 : 0);
+  return out.sort((a, c) => rank(c) - rank(a) || c.size - a.size);
 }
 
 function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
@@ -230,11 +233,15 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
     if (!mw) return [];
     // places first, then road numbers; a label overlapping one already placed, or off the map, is moved above or below, else left out
     const boxes: number[][] = [], out: { t: string; x: number; y: number; cls: string }[] = [];
-    const fits = (x0_: number, y0_: number, wd: number, ht: number) => {
-      for (const dy of [0, -ht - 2, ht + 4]) {
+    // `far`: a city or town may also go a line further above or below, where nearer is taken (Norfolk on a phone: Great
+    // Yarmouth, hemmed in by Norwich and Wymondham, November 17th 2026)
+    const fits = (x0_: number, y0_: number, wd: number, ht: number, far = false) => {
+      for (const dy of far ? [0, -ht - 2, ht + 4, -2 * ht - 4, 2 * ht + 6] : [0, -ht - 2, ht + 4]) {
         const x = Math.max(wd / 2 + 3, Math.min(mw - wd / 2 - 3, x0_)), y = y0_ + dy;
         const b = [x - wd / 2 - 3, y - ht - 2, x + wd / 2 + 3, y + 3];
-        if (b[1] < 0 || b[3] > h || Math.abs(x - x0_) > wd) continue;
+        // a label near the edge may slide inwards, but only by three quarters of its width, so it still covers its place (Norfolk's
+        // "Great Yarmouth" had slid over Norwich, November 17th 2026)
+        if (b[1] < 0 || b[3] > h || Math.abs(x - x0_) > wd * 0.75) continue;
         if (boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) continue;
         boxes.push(b);
         return [x, y];
@@ -246,7 +253,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
     let villages = 0;
     const place = (p: Drawn['places'][number]) => {
       const px = p.big ? 13.5 : 12;
-      const at = fits(X(p.x), Y(p.y), tw(p.name, px), px);
+      const at = fits(X(p.x), Y(p.y), tw(p.name, px), px, p.big);
       if (at) {
         out.push({ t: p.name, x: at[0], y: at[1], cls: p.big ? 'place t' : 'place' });
         if (!p.big) villages++;

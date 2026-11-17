@@ -71,6 +71,17 @@ Data notes:
 
 ## Log
 
+### 2026-11-17 — the map names cities first (branch `claude/kind-davinci-g7an6a`, not merged)
+
+**John** (Norfolk's shared map): Norwich was missing, and "Great Yarmouth" sat where Norwich is. **Why:** places are
+ranked by their postcode count, and a city's suburbs are places of their own, so Norwich counts only its centre (171,
+against Great Yarmouth's 447); and a label at the edge could slide inwards by its whole width, so Great Yarmouth's had
+slid over Norwich and blocked it. **What** (`SquaresMap.tsx`): cities before towns, then by size; a label slides at most
+three quarters of its width; a city or town may also go one more line above or below where nearer is taken. Norfolk
+now names Norwich and Great Yarmouth on a phone and a computer. **Checked:** tsc, checks (21), build; Chromium at 390px
+with touch and 1200px: Norfolk, West Berkshire, Reading, Surrey, RG14, KT12 3JD (Surrey gains a few towns; the others
+unchanged), no errors, no sideways scroll.
+
 ### 2026-11-17 — the map: darker is more in dark mode; a share button (branch `claude/kind-davinci-g7an6a`, not merged)
 
 **John** (from a screenshot of Reading in dark mode): reverse the map's shades so darker means more, and add a share button
