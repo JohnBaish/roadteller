@@ -104,10 +104,10 @@ function Council({ areas, f, code, onChange }: { areas: AreasFile; f: AreaFigure
           <div className="card" ref={half}>
             <h3>Who was hurt</h3>
             <p>{whoSentence(v.who, v.hurt, gb)}</p>
-            <Who who={v.who} hurt={v.hurt} gb={gb} w={hw} name={Name} sub={sub} />
+            <Who who={v.who} hurt={v.hurt} gb={gb} w={hw} name={Name} sub={sub} at={`in ${name}, ${five[0]} to ${latest}`} />
           </div>
           <div className="card">
-            <When hours={v.hours} days={v.days} w={hw} sub={sub} />
+            <When hours={v.hours} days={v.days} w={hw} sub={sub} at={`in ${name}, ${five[0]} to ${latest}`} />
           </div>
         </div>
         <div className="card">
@@ -143,7 +143,7 @@ function Mix({ f, areas, w, sub }: { f: AreaFigures; areas: AreasFile; w: number
         .
       </p>
       {w > 0 && <Bars rows={rows} w={w - 0} max={max} unit={(x) => `${Math.round(x * 100)}%`} label="Collisions against what national averages would give" svgRef={svg} />}
-      <ShareButton svg={svg} title="Allowing for the mix of roads" sub={`Injury collisions against what national averages would give, ${sub}`} file="roadteller-mix.png" />
+      <ShareButton svg={svg} title="Allowing for the mix of roads" sub={`Injury collisions against what national averages would give, ${sub}`} file="roadteller-mix.png" text={`Injury collisions in ${named(f)} against the national average if it were projected onto the area, given its mix of roads, from Roadteller.`} />
       <p className="note">100% means exactly as many as national averages would give for that mix of roads.</p>
       <div className="tablewrap">
         <table className="table">
@@ -242,7 +242,7 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
           <b>{shown}:</b> {fmt(row[1])} injury collisions on A-roads and motorways
           {row[2] > 0 && row[1] > 0 ? `, one for every ${perMiles((100 * row[1]) / row[2])} driven` : ''} (Great Britain: one for every {perMiles((100 * g[1]) / g[2])}).
         </p>
-        <ShareButton svg={svg} title="Better or worse than before?" sub={`Injury collisions per mile driven on A-roads and motorways, ${named(f)} and Great Britain, ${years[0]} = 100`} file="roadteller-trend.png" />
+        <ShareButton svg={svg} title="Better or worse than before?" sub={`Injury collisions per mile driven on A-roads and motorways, ${named(f)} and Great Britain, ${years[0]} = 100`} file="roadteller-trend.png" text={`Injury collisions in ${named(f)} since ${years[0]}, compared with Great Britain, from Roadteller.`} />
       </div>
       <p className="note" data-noprint>
         {touch ? 'Tap' : 'Click'} a year on the chart for its own figures; {touch ? 'tap' : 'click'} anywhere else to clear it.
@@ -251,19 +251,19 @@ function Trend({ f, gb, w, latest }: { f: AreaFigures; gb: AreaFigures; w: numbe
   );
 }
 
-export function Who({ who, hurt, gb, w, name, sub }: { who: Record<string, number>; hurt: number; gb: AreaFigures; w: number; name: string; sub: string }) {
+export function Who({ who, hurt, gb, w, name, sub, at }: { who: Record<string, number>; hurt: number; gb: AreaFigures; w: number; name: string; sub: string; at: string }) {
   const svg = useRef<SVGSVGElement>(null);
   const tot = hurt || 1, gtot = gb.five.hurt || 1;
   const rows = USERS.map((k) => ({ t: k === 'other' ? 'Others' : `People ${USER_WORDS[k]}`, a: pct(who[k] ?? 0, tot), b: pct(gb.five.who[k] ?? 0, gtot) }));
   return (
     <>
       {w > 0 && <PairBars rows={rows} w={w} meName={name.length > 22 ? 'Here' : name} label="People hurt by road user, against Great Britain" svgRef={svg} />}
-      <ShareButton svg={svg} title="Who was hurt" sub={sub} file="roadteller-who.png" />
+      <ShareButton svg={svg} title="Who was hurt" sub={sub} file="roadteller-who.png" text={`Classification of people injured in collisions ${at}, from Roadteller.`} />
     </>
   );
 }
 
-export function When({ hours, days, w, sub }: { hours: number[]; days: number[]; w: number; sub: string }) {
+export function When({ hours, days, w, sub, at }: { hours: number[]; days: number[]; w: number; sub: string; at: string }) {
   const hs = useRef<SVGSVGElement>(null), ds = useRef<SVGSVGElement>(null);
   const bh = hours.indexOf(Math.max(...hours));
   const most = days.indexOf(Math.max(...days)), least = days.indexOf(Math.min(...days));
@@ -285,6 +285,7 @@ export function When({ hours, days, w, sub }: { hours: number[]; days: number[];
           { svg: ds, caption: 'By day of the week' },
         ]}
         title="When injury collisions happened"
+        text={`Timing of injury collisions ${at}, from Roadteller.`}
         sub={sub}
         file="roadteller-when.png"
       />

@@ -80,6 +80,9 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
   const [full, fw] = useWidth<HTMLDivElement>();
   const [half, hw] = useWidth<HTMLDivElement>();
   const sub = `${within}, ${yearsText}`;
+  // For the words sent with a picture (John, November 17th 2026): a full postcode cut to its first half.
+  const shareAt = `within ${RADIUS_WORDS[target.radius]} of ${target.where.kind === 'postcode' ? target.where.outcode : where.label}`;
+  const shareSpan = `${five[0]} to ${five[five.length - 1]}`;
   const mapInput = useMemo<MapInput>(() => ({ kind: 'circle', e: result.e, n: result.n, r: RADII[target.radius], files: result.files, where: lower1(within), years: yearsText }), [result, target.radius, within, yearsText]);
   const short = target.where.kind === 'postcode' ? (target.where.inward ? `${target.where.outcode} ${target.where.inward}` : target.where.outcode) : where.label.split(',')[0];
 
@@ -146,15 +149,15 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
       </div>
       {c.n > 0 && (
         <div className="stack">
-          <Trend c={c} gb={areas} w={fw} within={within} short={short} long={result.long} first={index.first} latest={index.latest} onLong={onLong} />
+          <Trend c={c} gb={areas} w={fw} within={within} shareAt={shareAt} short={short} long={result.long} first={index.first} latest={index.latest} onLong={onLong} />
           <div className="grid2">
             <div className="card" ref={half}>
               <h3>Who was hurt</h3>
               <p>{whoSentence(c.who, c.hurt, gb)}</p>
-              <Who who={c.who} hurt={c.hurt} gb={gb} w={hw} name={short} sub={sub} />
+              <Who who={c.who} hurt={c.hurt} gb={gb} w={hw} name={short} sub={sub} at={`${shareAt}, ${shareSpan}`} />
             </div>
             <div className="card">
-              <When hours={c.hours} days={c.days} w={hw} sub={sub} />
+              <When hours={c.hours} days={c.days} w={hw} sub={sub} at={`${shareAt}, ${shareSpan}`} />
             </div>
           </div>
           <div className="card">
@@ -169,8 +172,8 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
   );
 }
 
-function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
-  c: CircleCount; gb: AreasFile; w: number; within: string; short: string; long: boolean; first: number; latest: number; onLong: (long: boolean) => void;
+function Trend({ c, gb, w, within, shareAt, short, long, first, latest, onLong }: {
+  c: CircleCount; gb: AreasFile; w: number; within: string; shareAt: string; short: string; long: boolean; first: number; latest: number; onLong: (long: boolean) => void;
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -237,6 +240,7 @@ function Trend({ c, gb, w, within, short, long, first, latest, onLong }: {
           title="Better or worse than before?"
           sub={indexed ? `Injury collisions ${lower1(within)} and across Great Britain, ${from} = 100` : `Injury collisions a year ${lower1(within)}`}
           file="roadteller-trend.png"
+          text={indexed ? `Injury collisions ${shareAt} since ${from}, compared with Great Britain, from Roadteller.` : `Injury collisions a year ${shareAt} since ${from}, from Roadteller.`}
         />
       </div>
       <p className="note" data-noprint>

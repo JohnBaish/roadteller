@@ -71,6 +71,20 @@ Data notes:
 
 ## Log
 
+### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, not merged)
+
+**John** (after testing shares on iPhone and Android, in Lightreader's thread): every Share button sends a sentence, a link
+to the same view (sent separately) and a title ("Roadteller: Who was hurt"). His wording: "Injury collisions within a mile
+of RG14 since 2000, compared with Great Britain, from Roadteller." ("Injury collisions a year … since 2000" where the
+chart shows counts); "Classification of people injured in collisions within a mile of RG14, 2021 to 2025, from
+Roadteller."; "Timing of injury collisions within a mile of RG14, 2021 to 2025, from Roadteller."; for a council area
+"in West Berkshire", plus "Injury collisions in West Berkshire against the national average if it were projected onto
+the area, given its mix of roads, from Roadteller." A full postcode is cut to its first half in the sentence and the link
+(`#RG14-5AA/two` → `#RG14/two`). `ShareWords` and `shareWords()` in `src/lib/shareImage.ts`; a `text` prop on
+`ShareButton`; an `at` prop on `Who` and `When`. **Checked:** tsc, lint, checks (21), build; in Chromium as an iPhone 13,
+the share sheet replaced by a recorder: `#RG14-5AA`, `#RG14/two`, `#@Newbury`, `#council/E06000037` and
+`#council/E09000033`; the words and links above; no errors.
+
 ### 2026-11-14 — dark mode a step darker, to match the other tools (branch `dark-step`, merged)
 
 After the dark colour review of Riverwatcher, Lightreader, Refueller and Hindcaster (house style §2), John saw a mock-up and

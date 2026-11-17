@@ -1,11 +1,12 @@
 // Copied from Refueller (src/components/ShareButton.tsx): "Share chart" on a touch screen, "Copy chart" on a computer, with
 // "Copied" just under it once done. If neither works the picture is saved.
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import { deliver, makePicture, shareVerb, type Part } from '../lib/shareImage.ts';
+import { deliver, makePicture, shareVerb, shareWords, type Part } from '../lib/shareImage.ts';
 
 // One chart, or several in one picture ({ svg, caption } each): "Copy charts" / "Share charts", as Refueller's.
 type Many = { svg: RefObject<SVGSVGElement | null>; caption: string }[];
-export function ShareButton({ svg, title, sub, file }: { svg: RefObject<SVGSVGElement | null> | Many; title: string; sub: string; file: string }) {
+// `text` is the sentence sent with the picture (John, November 17th 2026).
+export function ShareButton({ svg, title, sub, file, text }: { svg: RefObject<SVGSVGElement | null> | Many; title: string; sub: string; file: string; text: string }) {
   const [status, setStatus] = useState('');
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -21,7 +22,7 @@ export function ShareButton({ svg, title, sub, file }: { svg: RefObject<SVGSVGEl
     }
     window.clearTimeout(timer.current);
     setStatus('');
-    const r = await deliver(makePicture(what, title, sub), file, title);
+    const r = await deliver(makePicture(what, title, sub), file, shareWords(title, text));
     const words = r === 'copied' ? 'Copied' : r === 'saved' ? 'Saved as a picture' : '';
     setStatus(words);
     if (words) timer.current = window.setTimeout(() => setStatus(''), 4000);
