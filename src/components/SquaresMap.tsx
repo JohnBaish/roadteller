@@ -352,7 +352,16 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
                     onClick={() => setOn(i)}
                   />
                 ))}
-                {!isCircle && <path className="road r-over" d={byKind('mab')} />}
+                {/* main roads white with a dark edge, so they show on every shade; B-roads thinner and cream (John, option C,
+                    November 17th 2026) */}
+                {!isCircle && (
+                  <>
+                    <path className="road r-case" d={byKind('mab')} />
+                    <path className="road r-ob" d={byKind('b')} />
+                    <path className="road r-oa" d={byKind('a')} />
+                    <path className="road r-om" d={byKind('m')} />
+                  </>
+                )}
               </g>
               {isCircle && (
                 <>

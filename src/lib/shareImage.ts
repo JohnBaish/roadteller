@@ -19,11 +19,13 @@ text{font-family:Figtree,system-ui,sans-serif;font-size:11px;fill:#645c50}
 .ring{fill:#ebddc5;stroke-width:2}
 svg.map{--sq0:#d18b61;--sq1:#bb6c40;--sq2:#a0532a;--sq3:#7c3c1b;--sq4:#552610}
 .map .road{fill:none;stroke-linecap:round;stroke-linejoin:round}.map .r-minor{stroke:#8d8476;stroke-width:.6;opacity:.8}
-.map .r-b{stroke:#645c50;stroke-width:1}.map .r-over{stroke:#201e1d;stroke-width:1.4;opacity:.75}
+.map .r-b{stroke:#645c50;stroke-width:1}.map .r-case{stroke:#201e1d;stroke-width:4.4;opacity:.7}
+.map .r-oa{stroke:#fff;stroke-width:2.6}.map .r-om{stroke:#fff;stroke-width:3.2}.map .r-ob{stroke:#f5ead8;stroke-width:1.2}
 .map .w-case{stroke:rgba(32,30,29,.55);stroke-width:4.6}.map .w-a{stroke:#fff;stroke-width:2.6}.map .w-m{stroke:#fff;stroke-width:3.4}
 .map .edge{fill:none;stroke:#201e1d;stroke-width:1.6;stroke-dasharray:6 4}.map .grid0{fill:none;stroke:rgba(32,30,29,.09);stroke-width:.6}
 .map .cell,.map .cell.on{stroke:#f5ead8;stroke-width:1}.map .mid{fill:#201e1d}
-.map .num{font-weight:600;font-size:11px;fill:#fff;text-anchor:middle}.map .num.s0,.map .num.s1{fill:#201e1d}
+.map .num{font-weight:600;font-size:11px;fill:#fff;text-anchor:middle;paint-order:stroke;stroke-width:3px;stroke-linejoin:round}
+.map .num.s0{stroke:var(--sq0)}.map .num.s1{stroke:var(--sq1)}.map .num.s2{stroke:var(--sq2)}.map .num.s3{stroke:var(--sq3)}.map .num.s4{stroke:var(--sq4)}.map .num.s0,.map .num.s1{fill:#201e1d}
 .map .place{font-weight:600;font-size:12px;fill:#201e1d;paint-order:stroke;stroke:#f5ead8;stroke-width:3px;stroke-linejoin:round}
 .map .place.t{font-size:13.5px;font-weight:700}.map .rno{font-weight:700;font-size:10px;fill:#201e1d;paint-order:stroke;stroke:#f5ead8;stroke-width:3px}`;
 
@@ -71,7 +73,15 @@ async function chartImage(svg: SVGSVGElement, full: number) {
   clone.setAttribute('width', String(cw));
   clone.setAttribute('height', String(ch));
   const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
-  style.textContent = (await fonts()) + LIGHT_CSS;
+  // A map shared from a phone is the phone-sized map scaled up, so its labels and roads came out very large: they're
+  // drawn at no more than one and a half times their size on the page (John, November 17th 2026; the counts keep theirs).
+  const f = Math.min(1, 1.5 / (cw / vb.width));
+  const thin = svg.classList.contains('map') && f < 1
+    ? `.map .place{font-size:${12 * f}px}.map .place.t{font-size:${13.5 * f}px}.map .rno{font-size:${10 * f}px}` +
+      [['r-case', 4.4], ['r-oa', 2.6], ['r-om', 3.2], ['r-ob', 1.2], ['edge', 1.6], ['w-case', 4.6], ['w-a', 2.6], ['w-m', 3.4], ['r-minor', 0.6], ['r-b', 1]]
+        .map(([c, w]) => `.map .${c}{stroke-width:${(w as number) * f}px}`).join('')
+    : '';
+  style.textContent = (await fonts()) + LIGHT_CSS + thin;
   clone.insertBefore(style, clone.firstChild);
   const img = new Image();
   await new Promise<void>((res, rej) => {

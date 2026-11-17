@@ -471,7 +471,11 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .map .road { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .map .r-minor { stroke: var(--color-neutral-500); stroke-width: 0.6; opacity: 0.8; }
 .map .r-b { stroke: var(--color-neutral-700); stroke-width: 1; }
-.map .r-over { stroke: var(--color-text); stroke-width: 1.4; opacity: 0.75; }
+/* a council area's main roads: a dark edge, motorways and A-roads white on it, B-roads thinner and cream (option C) */
+.map .r-case { stroke: #201e1d; stroke-width: 4.4; opacity: 0.7; }
+.map .r-oa { stroke: #fff; stroke-width: 2.6; }
+.map .r-om { stroke: #fff; stroke-width: 3.2; }
+.map .r-ob { stroke: #f5ead8; stroke-width: 1.2; }
 .map .w-case { stroke: color-mix(in srgb, #201e1d 55%, transparent); stroke-width: 4.6; }
 .map .w-a { stroke: #fff; stroke-width: 2.6; }
 .map .w-m { stroke: #fff; stroke-width: 3.4; }
@@ -479,7 +483,9 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 .map .grid0 { fill: none; stroke: color-mix(in srgb, var(--color-text) 9%, transparent); stroke-width: 0.6; }
 .map .cell { stroke: var(--color-surface); stroke-width: 1; cursor: pointer; }
 .map .cell.on { stroke: var(--color-text); stroke-width: 2; }
-.map .num { font: 600 11px var(--font-body); fill: #fff; text-anchor: middle; pointer-events: none; }
+.map .num { font: 600 11px var(--font-body); fill: #fff; text-anchor: middle; pointer-events: none; paint-order: stroke; stroke-width: 3px; stroke-linejoin: round; }
+/* each count outlined in its own square's shade, so a road crossing it doesn't cut through it */
+.map .num.s0 { stroke: var(--sq0); } .map .num.s1 { stroke: var(--sq1); } .map .num.s2 { stroke: var(--sq2); } .map .num.s3 { stroke: var(--sq3); } .map .num.s4 { stroke: var(--sq4); }
 /* The map's five shades: light everywhere, dark on screen in dark mode only, so printing is always light (fresh look 5.2).
    The counts are dark on the pale shades. */
 :root { --sq0: #d18b61; --sq1: #bb6c40; --sq2: #a0532a; --sq3: #7c3c1b; --sq4: #552610; }

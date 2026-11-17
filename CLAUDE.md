@@ -71,7 +71,20 @@ Data notes:
 
 ## Log
 
-### 2026-11-17 — the map names cities first (branch `claude/kind-davinci-g7an6a`, not merged)
+### 2026-11-17 — clearer roads on council maps; smaller labels in phone pictures; merged and live
+
+**John:** roads were lost on the darker squares; of three mock-ups (A as before, B all white with a dark edge, C motorways
+and A-roads white with a dark edge, B-roads thinner and cream) he chose C, with each count outlined in its square's
+shade so a road crossing it doesn't cut through it. Pictures shared from a phone had very large labels and thick roads
+(the phone-sized map scaled up); of three picture mock-ups (Norfolk, Reading, Surrey) he chose smaller labels and thinner
+roads. **What:** `SquaresMap.tsx` draws a council's main roads as a dark edge plus three paths (`r-case`, `r-ob`, `r-oa`,
+`r-om`; styles in `global.css` and the picture's `LIGHT_CSS`); `.map .num` outlined (`paint-order: stroke`, its shade's
+`--sqN`); `chartImage` in `shareImage.ts` draws a map's labels and road lines at no more than one and a half times their
+page size (counts unchanged). **Checked:** tsc, lint, checks (21), build; Chromium at 1200px, 390px and 844 by 390 with
+touch, light and dark, Norfolk, Bracknell Forest and RG14: no errors, no sideways scroll, pictures made from each size.
+**Merged** to `main` at John's word, with the two entries below.
+
+### 2026-11-17 — the map names cities first (branch `claude/kind-davinci-g7an6a`, merged)
 
 **John** (Norfolk's shared map): Norwich was missing, and "Great Yarmouth" sat where Norwich is. **Why:** places are
 ranked by their postcode count, and a city's suburbs are places of their own, so Norwich counts only its centre (171,
@@ -82,7 +95,7 @@ now names Norwich and Great Yarmouth on a phone and a computer. **Checked:** tsc
 with touch and 1200px: Norfolk, West Berkshire, Reading, Surrey, RG14, KT12 3JD (Surrey gains a few towns; the others
 unchanged), no errors, no sideways scroll.
 
-### 2026-11-17 — the map: darker is more in dark mode; a share button (branch `claude/kind-davinci-g7an6a`, not merged)
+### 2026-11-17 — the map: darker is more in dark mode; a share button (branch `claude/kind-davinci-g7an6a`, merged)
 
 **John** (from a screenshot of Reading in dark mode): reverse the map's shades so darker means more, and add a share button
 with words like the other charts'. **What:** `global.css`, dark mode's five shades now run from pale peach (fewest) to deep
