@@ -71,6 +71,18 @@ Data notes:
 
 ## Log
 
+### 2026-11-17 — the map: darker is more in dark mode; a share button (branch `claude/kind-davinci-g7an6a`, not merged)
+
+**John** (from a screenshot of Reading in dark mode): reverse the map's shades so darker means more, and add a share button
+with words like the other charts'. **What:** `global.css`, dark mode's five shades now run from pale peach (fewest) to deep
+brown (most), the darkest still clear of the card; counts in dark text on the three palest. "Where they happened" gets
+"Copy map" / "Share map" (`SquaresMap.tsx`): the picture is the map in the light colours with its key drawn underneath
+(`makePicture` takes an optional key; a tall map is drawn no taller than it is wide), heading "Where they happened", line
+"Injury collisions in each one-kilometre square, Reading, 2021 to 2025 inclusive". Sentence (draft): "Locations of injury
+collisions within a mile of RG14, 2021 to 2025, from Roadteller." or "… in Reading, 2021 to 2025 …"; the link as the other
+buttons'. **Checked:** tsc, lint, checks (21), build; Chromium against `vite preview`, Reading at 390px with touch (dark
+and light), RG14 at 1200px (dark) and 844 by 390 (light): pictures made, fonts and key right, no errors, no sideways scroll.
+
 ### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, merged)
 
 **John** (after testing shares on iPhone and Android, in Lightreader's thread): every Share button sends a sentence, a link

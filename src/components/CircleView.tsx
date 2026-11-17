@@ -83,7 +83,7 @@ function Circle({ index, target, where, areas, result, onLong, onChange }: { ind
   // For the words sent with a picture (John, November 17th 2026): a full postcode cut to its first half.
   const shareAt = `within ${RADIUS_WORDS[target.radius]} of ${target.where.kind === 'postcode' ? target.where.outcode : where.label}`;
   const shareSpan = `${five[0]} to ${five[five.length - 1]}`;
-  const mapInput = useMemo<MapInput>(() => ({ kind: 'circle', e: result.e, n: result.n, r: RADII[target.radius], files: result.files, where: lower1(within), years: yearsText }), [result, target.radius, within, yearsText]);
+  const mapInput = useMemo<MapInput>(() => ({ kind: 'circle', e: result.e, n: result.n, r: RADII[target.radius], files: result.files, where: lower1(within), years: yearsText, share: { sub: `${lower1(within)}, ${yearsText}`, at: `${shareAt}, ${shareSpan}` } }), [result, target.radius, within, yearsText, shareAt, shareSpan]);
   const short = target.where.kind === 'postcode' ? (target.where.inward ? `${target.where.outcode} ${target.where.inward}` : target.where.outcode) : where.label.split(',')[0];
 
   const chips = (

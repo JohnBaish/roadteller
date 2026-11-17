@@ -1,12 +1,13 @@
 // Copied from Refueller (src/components/ShareButton.tsx): "Share chart" on a touch screen, "Copy chart" on a computer, with
 // "Copied" just under it once done. If neither works the picture is saved.
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import { deliver, makePicture, shareVerb, shareWords, type Part } from '../lib/shareImage.ts';
+import { deliver, makePicture, shareVerb, shareWords, type MapKey, type Part } from '../lib/shareImage.ts';
 
 // One chart, or several in one picture ({ svg, caption } each): "Copy charts" / "Share charts", as Refueller's.
 type Many = { svg: RefObject<SVGSVGElement | null>; caption: string }[];
 // `text` is the sentence sent with the picture (John, November 17th 2026).
-export function ShareButton({ svg, title, sub, file, text }: { svg: RefObject<SVGSVGElement | null> | Many; title: string; sub: string; file: string; text: string }) {
+// `mapKey`: the map's key, drawn under it in the picture; with it the button says "map" (November 17th 2026).
+export function ShareButton({ svg, title, sub, file, text, mapKey }: { svg: RefObject<SVGSVGElement | null> | Many; title: string; sub: string; file: string; text: string; mapKey?: MapKey }) {
   const [status, setStatus] = useState('');
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -22,7 +23,7 @@ export function ShareButton({ svg, title, sub, file, text }: { svg: RefObject<SV
     }
     window.clearTimeout(timer.current);
     setStatus('');
-    const r = await deliver(makePicture(what, title, sub), file, shareWords(title, text));
+    const r = await deliver(makePicture(what, title, sub, mapKey), file, shareWords(title, text));
     const words = r === 'copied' ? 'Copied' : r === 'saved' ? 'Saved as a picture' : '';
     setStatus(words);
     if (words) timer.current = window.setTimeout(() => setStatus(''), 4000);
@@ -43,7 +44,7 @@ export function ShareButton({ svg, title, sub, file, text }: { svg: RefObject<SV
               <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
             </svg>
           )}
-          {verb} {Array.isArray(svg) ? 'charts' : 'chart'}
+          {verb} {mapKey ? 'map' : Array.isArray(svg) ? 'charts' : 'chart'}
         </button>
         <span className="share-status" role="status">
           {status}

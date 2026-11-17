@@ -485,9 +485,9 @@ tr.closed td:not(:last-child), .pcard.closed .grid > div:not(.openv) { opacity: 
 :root { --sq0: #d18b61; --sq1: #bb6c40; --sq2: #a0532a; --sq3: #7c3c1b; --sq4: #552610; }
 .map .num.s0, .map .num.s1 { fill: #201e1d; }
 @media screen {
-  :root[data-theme="dark"] { --sq0: #9a5532; --sq1: #b9693b; --sq2: #d6824f; --sq3: #eba477; --sq4: #fbd2b4; }
-  :root[data-theme="dark"] .map .num { fill: #fff; }
-  :root[data-theme="dark"] .map .num.s3, :root[data-theme="dark"] .map .num.s4 { fill: #201e1d; }
+  /* darker is more here too, as in light mode (John, November 17th 2026); the darkest still stands out from the card */
+  :root[data-theme="dark"] { --sq0: #f6c4a0; --sq1: #e39a68; --sq2: #c97540; --sq3: #a65427; --sq4: #7d3816; }
+  :root[data-theme="dark"] .map .num.s2 { fill: #201e1d; }
 }
 .map .place { font: 600 12px var(--font-body); fill: var(--color-text); paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
 .map .place.t { font-size: 13.5px; font-weight: 700; }

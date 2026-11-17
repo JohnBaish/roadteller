@@ -40,7 +40,7 @@ function Council({ areas, f, code, onChange }: { areas: AreasFile; f: AreaFigure
   const gb = areas.gb, region = areas.regions[f.region!];
   const v = f.five, name = named(f), Name = Named(f), five = areas.five, latest = five[five.length - 1];
   const sub = `${Name}, ${yearsText(five)}`;
-  const mapInput = useMemo<MapInput>(() => ({ kind: 'council', code, where: `in ${name}`, years: yearsText(five) }), [code, name, five]);
+  const mapInput = useMemo<MapInput>(() => ({ kind: 'council', code, where: `in ${name}`, years: yearsText(five), share: { sub, at: `in ${name}, ${five[0]} to ${latest}` } }), [code, name, five, sub, latest]);
   const [full, fw] = useWidth<HTMLDivElement>();
   const [half, hw] = useWidth<HTMLDivElement>();
   const roads = roadsOf(f);

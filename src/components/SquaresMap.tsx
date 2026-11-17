@@ -12,11 +12,15 @@ import { loadCouncilMaps, loadIndex, loadRoads, type CouncilMap, type RoadFile, 
 import { toBritishGrid } from '../lib/grid.ts';
 import { useTapAway } from '../lib/tapAway.ts';
 import { word, Word } from '../lib/words.ts';
+import { ShareButton } from './ShareButton.tsx';
 
 type Cell = { x: number; y: number; n: number };
 export type MapInput =
-  | { kind: 'circle'; e: number; n: number; r: number; files: SquareFile[]; where: string; years: string }
-  | { kind: 'council'; code: string; where: string; years: string };
+  | { kind: 'circle'; e: number; n: number; r: number; files: SquareFile[]; where: string; years: string; share: Share }
+  | { kind: 'council'; code: string; where: string; years: string; share: Share };
+/** For the shared picture: its line under the heading, and the place and years in the sentence sent with it (a full
+ *  postcode cut to its first half), e.g. "within a mile of RG14, 2021 to 2025". */
+type Share = { sub: string; at: string };
 
 /** Council areas more than this many kilometres across get five-kilometre squares. */
 export const BIG_COUNCIL_KM = 100;
@@ -201,6 +205,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
   const vh = useWindowHeight();
   const [on, setOn] = useState<number | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const clear = useCallback(() => setOn(null), []);
   useTapAway(on !== null, wrap, clear);
   const isCircle = input.kind === 'circle';
@@ -313,7 +318,7 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
       {mw > 0 && d.total > 0 && (
         <>
           <div className="mapwrap" ref={wrap} style={{ width: mw }}>
-            <svg className="map" viewBox={`0 0 ${mw} ${h}`} width={mw} height={h} role="img" aria-label={`Injury collisions in each ${unit} square`}>
+            <svg ref={svgRef} className="map" viewBox={`0 0 ${mw} ${h}`} width={mw} height={h} role="img" aria-label={`Injury collisions in each ${unit} square`}>
               <defs>
                 <clipPath id={clipId}>{clip}</clipPath>
               </defs>
@@ -386,6 +391,14 @@ function MapDrawing({ d, input }: { d: Drawn; input: MapInput }) {
             ))}
           </div>
           <p className="note" data-noprint>{matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Point at'} a square for its count.</p>
+          <ShareButton
+            svg={svgRef}
+            title="Where they happened"
+            sub={`Injury collisions in each ${unit} square, ${input.share.sub}`}
+            file="roadteller-map.png"
+            text={`Locations of injury collisions ${input.share.at}, from Roadteller.`}
+            mapKey={{ label: 'Injury collisions in each square:', items: steps.map((s) => ({ n: step(s[0]), text: stepText(s) })) }}
+          />
         </>
       )}
     </div>
