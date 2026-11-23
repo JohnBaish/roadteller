@@ -39,8 +39,9 @@ and the tracker's decisions list.
 All under the Open Government Licence or OS OpenData.
 
 1. **STATS19** (DfT): every injury collision reported to the police in Great
-   Britain, with its casualties. Final figures for a year come in late July; a
-   provisional January to June file at the end of November.
+   Britain, with its casualties. Final figures for a year come in late July.
+   DfT's provisional half-year release each November has summary tables only
+   (no locations), so it isn't used (§8.2).
 2. **DfT traffic counts:** daily flows at each count point (AADF), council-area
    totals for all roads (including DfT's estimates for minor roads), and
    regional totals by kind of road. Once a year (the 2025 file is dated June
@@ -185,8 +186,12 @@ following the device):
      allow for traffic."
    - Roads come from OS Open Roads (`build/roads.py`): every road by 20 km square for circles, main roads by 50 km
      square for council areas; council outlines and squares by region (`build/areas.py`).
-2. **Provisional January to June figures are included each November**, marked
-   as provisional.
+2. **No provisional figures** (John, November 23rd 2026, replacing his November
+   9th decision). DfT's November release (checked: November 27th 2025's) has
+   summary tables only: people hurt, not collisions; Great Britain, countries or
+   police force areas, the last rounded to the nearest 10; no locations. None of
+   it fits a circle, a council area or a count of collisions, so every figure is
+   from complete years.
 3. **Counts go back to 1989, rates to 2000** (John, November 9th 2026). Before
    1989 too many locations are unusable: from 1983 to 1988, 4% to 15% of
    collisions a year (whole police forces in some years, Strathclyde in every
@@ -237,7 +242,7 @@ following the device):
 2. **About these figures** (draft in stage 6): what counts and what doesn't; that
    most traffic figures are DfT's estimates (a typical stretch is counted in one
    year of five); the half-and-half rule; adjusted severity; rough older
-   locations; provisional figures.
+   locations.
 3. **Credits** (wording to check against each source's terms in stage 6):
    "Contains public sector information licensed under the Open Government
    Licence v3.0." for DfT's data, and the OS line for Open Roads and postcodes.
@@ -270,7 +275,7 @@ targets 44px; boxes 16px on touch screens; dark mode following the device.
    for a council area, and see; options in stage 5.
 5. **Provisional half-years:** yes, five-year figures on complete years only;
    the provisional January to June figures on the trend chart, marked
-   "provisional".
+   "provisional". Replaced on November 23rd 2026: not used at all (§8.2).
 6. **Filters and a second place:** left for later, if at all.
 7. **Updating the data:** agreed in principle, kept in this repo (John left
    where it lives to Claude: this repo, §9.4); how it's rebuilt (by hand or a

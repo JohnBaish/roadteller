@@ -69,9 +69,7 @@ The items in SPEC §12.
 
 ## Dates to remember
 
-1. End of November 2026: DfT's provisional January to June 2026 collisions
-   (SPEC §8.2).
-2. About June 2027: DfT's 2026 traffic figures.
-3. Late July 2027: DfT's final 2026 collisions, which move the five years on to
+1. About June 2027: DfT's 2026 traffic figures.
+2. Late July 2027: DfT's final 2026 collisions, which move the five years on to
    2022 to 2026.
-4. Every six months: a new OS Open Roads.
+3. Every six months: a new OS Open Roads.

@@ -71,6 +71,15 @@ Data notes:
 
 ## Log
 
+### 2026-11-23 — no provisional half-year figures (notes only)
+
+**John:** don't use DfT's provisional figures, replacing his November 9th decision. **Why:** last year's release
+(November 27th 2025) had a report and one spreadsheet (`ras90.ods`) of summary tables: people hurt (not collisions)
+by road user, by kind of road and country, and by police force area rounded to the nearest 10; no file of single
+collisions, so nothing can be placed in a circle or council area. This year's ("year ending June 2026") is confirmed
+for November 26th, 9.30am; Claude to look that day in case it unexpectedly includes locations. Nothing had been built,
+and the site never mentioned them. `SPEC.md` §2, §8.2, §10.2 and §13.5 and `PLAN.md`'s dates updated; tracker too.
+
 ### 2026-11-17 — clearer roads on council maps; smaller labels in phone pictures; merged and live
 
 **John:** roads were lost on the darker squares; of three mock-ups (A as before, B all white with a dark edge, C motorways
@@ -337,7 +346,7 @@ OS Open Roads' licence file gives "Contains Ordnance Survey data © Crown copyri
 licence page couldn't be opened from here). **Figures in the draft, from the data:** A-roads and motorways 2021 to 2025,
 24% of yearly traffic figures counted and 6,999 of 19,073 count points never counted; 33,746 of 242,499 collisions at a
 junction between stretches (14%), 1.3% unmatched. **Not yet built:** the provisional half-year figures (DfT publishes
-2026's at the end of November).
+2026's at the end of November). (November 23rd 2026: dropped; see the log.)
 
 ### 2026-11-10 — stage 5 merged
 
