@@ -71,6 +71,10 @@ Data notes:
 
 ## Log
 
+### November 27th 2026: a Home Screen icon, short name and manifest; live (`main`; Claude Code)
+
+A Home Screen icon (`public/apple-touch-icon.png`, drawn from the favicon, John's choice, made in clockwheel's `design/home-icons/`), the short name and a web app manifest (start "/"), so "Add to Home Screen" on an iPhone offers the short name and opens the front page (house style §7; tried first on Trainchecker). Checks and build clean. Not checked: a real iPhone.
+
 ### 2026-11-23 — no provisional half-year figures (notes only)
 
 **John:** don't use DfT's provisional figures, replacing his November 9th decision. **Why:** last year's release
